@@ -1,0 +1,102 @@
+swagger: "2.0"
+info:
+  description: "On-boarding server API"
+  version: "0.3.11"
+  title: "On-boarding Server"
+basePath: "/v2"
+tags:
+- name: "Model"
+- name: "Auth"
+schemes:
+- "http"
+- "https"
+paths:
+  /models:
+    post:
+      tags:
+      - "Model"
+      summary: "Upload a new model"
+      operationId: "app.upload"
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+          description: The JWT string received from /auth
+        - in: formData
+          name: model
+          type: file
+          required: true
+          description: The serialized model archive
+        - in: formData
+          name: metadata
+          type: file
+          required: true
+          description: The model metadata
+        - in: formData
+          name: schema
+          type: file
+          required: true
+          description: The model schema definitions (e.g. proto file, etc.)
+        - in: formData
+          name: docker
+          type: file
+          description: The serialized docker file archive (e.g. a zip file)
+          required: false
+        - in: formData
+          name: docs
+          type: file
+          description: A JSON based string for some basic documentation of the model
+          required: false
+        - in: formData
+          name: thumbnail
+          type: file
+          description: An image file in PNG encoding with a max resolution of 256x256
+          required: false
+      responses:
+        201:
+          description: "Model uploaded"
+  /auth:
+    post:
+      tags:
+      - "Auth"
+      summary: "Authenticate"
+      operationId: "app.authenticate"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+      - in: "body"
+        name: "auth_request"
+        description: "Authentication request"
+        required: true
+        schema:
+          $ref: "#/definitions/AuthRequest"
+      responses:
+        200:
+          description: "Authentication successful"
+          schema:
+            $ref: "#/definitions/AuthResponse"
+        401:
+          description: "Authentication failure"
+definitions:
+  AuthRequest:
+    type: "object"
+    properties:
+      request_body:
+        type: "object"
+        properties:
+          username:
+            type: "string"
+          password:
+            type: "string"
+  AuthResponse:
+    type: "object"
+    properties:
+      jwtToken:
+        type: "string"

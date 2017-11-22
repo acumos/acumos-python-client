@@ -1,0 +1,12 @@
+pytest
+pytest-rerunfailures
+connexion
+pandas
+scikit-learn
+jsonschema
+keras
+h5py
+tensorflow
+pexpect
+pillow
+mock

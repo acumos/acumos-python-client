@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "self": {
+    "name": "acumos.schema.model",
+    "version": "0.4.0"
+  },
+  "properties": {
+    "schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "runtime": {
+      "$ref": "#/definitions/Runtime"
+    },
+    "methods": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/Function"
+          },
+          {
+            "$ref": "#/definitions/VoidFunction"
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "runtime",
+    "methods",
+    "schema",
+    "name"
+  ],
+  "definitions": {
+    "Runtime": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "enum": [
+            "python",
+            "r",
+            "java"
+          ]
+        },
+        "version": {
+          "type": "string"
+        },
+        "encoding": {
+          "enum": [
+            "protobuf"
+          ]
+        },
+        "dependencies": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/PythonDependencies"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "dependencies"
+      ]
+    },
+    "PythonDependencies": {
+      "type": "object",
+      "properties": {
+        "conda": {
+          "$ref": "#/definitions/CondaRequirements"
+        },
+        "pip": {
+          "$ref": "#/definitions/PipRequirements"
+        }
+      },
+      "required": [
+        "pip",
+        "conda"
+      ]
+    },
+    "PipRequirements": {
+      "type": "object",
+      "properties": {
+        "indexes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PythonRequirement"
+          }
+        }
+      },
+      "required": [
+        "indexes",
+        "requirements"
+      ]
+    },
+    "CondaRequirements": {
+      "type": "object",
+      "properties": {
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PythonRequirement"
+          }
+        }
+      },
+      "required": [
+        "channels",
+        "requirements"
+      ]
+    },
+    "PythonRequirement": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ]
+    },
+    "VoidFunction": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "input": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "input"
+      ]
+    },
+    "Function": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "input",
+        "output"
+      ]
+    }
+  }
+}
