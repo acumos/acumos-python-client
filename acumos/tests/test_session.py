@@ -24,7 +24,7 @@ from acumos.session import AcumosSession, _dump_model, Requirements
 from acumos.exc import AcumosError
 from acumos.utils import load_artifact
 from acumos.auth import clear_jwt, _USERNAME_VAR, _PASSWORD_VAR
-
+from acumos.metadata import SCHEMA_VERSION
 from mock_server import MockServer, MODEL_URI, AUTH_URI
 
 
@@ -33,10 +33,6 @@ _REQ_FILES = ('model.zip', 'model.proto', 'metadata.json')
 _CUSTOM_PACKAGE_DIR = path_join(_TEST_DIR, 'custom_package')
 _FAKE_USERNAME = 'foo'
 _FAKE_PASSWORD = 'bar'
-
-
-with open(path_join(_TEST_DIR, 'schema-0.4.0.json')) as f:
-    _SCHEMA = json.load(f)
 
 
 def test_auth_envvar():
@@ -105,7 +101,8 @@ def test_dump_model():
         assert set(listdir(dump_dir)) == set(_REQ_FILES)
 
         metadata = load_artifact(dump_dir, 'metadata.json', module=json, mode='r')
-        validate(metadata, _SCHEMA)
+        schema = _load_schema(SCHEMA_VERSION)
+        validate(metadata, schema)
 
         # test that a user-provided library was included and correctly mapped
         assert 'scipy' in {r['name'] for r in metadata['runtime']['dependencies']['pip']['requirements']}
@@ -114,6 +111,14 @@ def test_dump_model():
         model_dir = _infer_model_dir(dump_dir)
         assert isfile(path_join(model_dir, 'scripts', 'user_provided', 'custom_package', 'custom_module.py'))
         assert isfile(path_join(model_dir, 'scripts', 'user_provided', 'custom_package', '__init__.py'))
+
+
+def _load_schema(version):
+    '''Returns a jsonschema dict from the model-schema submodule'''
+    path = path_join(_TEST_DIR, 'schemas', "schema-{}.json".format(version))
+    with open(path) as f:
+        schema = json.load(f)
+    return schema
 
 
 def test_session_push_sklearn():

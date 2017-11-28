@@ -1,0 +1,3 @@
+[submodule "acumos/tests/schemas"]
+	path = acumos/tests/schemas
+	url = https://gerrit.acumos.org/r/model-schema
