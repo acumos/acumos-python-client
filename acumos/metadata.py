@@ -13,6 +13,7 @@ from acumos.exc import AcumosError
 
 BUILTIN_MODULE_NAMES = set(sys.builtin_module_names)
 PACKAGE_DIRS = {'site-packages', 'dist-packages'}
+_SCHEMA = 'acumos.schema.model:0.4.0'
 
 # known package mappings because Python packaging is madness
 _REQ_MAP = {
@@ -57,7 +58,7 @@ def _safe_set(input_):
 
 def create_model_meta(model, name, requirements, encoding='protobuf'):
     '''Returns a model metadata dictionary'''
-    return {'schema': 'acumos.schema.model:0.3.0',
+    return {'schema': _SCHEMA,
             'runtime': _create_runtime(requirements, encoding),
             'name': name,
             'methods': {name: {'input': f.input_type.__name__,
