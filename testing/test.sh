@@ -25,7 +25,7 @@ do
   echo "tox iteration $n"
   tox -vv 
   retval=$?
-  $retval || break
+  if (( $retval == 0 )); then break; fi
 done
 
-if [ $retval -ne 0 ]; then { echo "All tox tests failed" ; exit 1; } fi
+if (( $retval != 0 )); then { echo "All tox tests failed" ; exit 1; } fi
