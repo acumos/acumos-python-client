@@ -3,10 +3,9 @@ import os
 import sys
 from setuptools import setup, find_packages
 
-
+# Complain (don't exit) on bad version to allow tox setup in LF
 if sys.version_info < (3, 4):
-    sys.exit('Sorry, Python < 3.4 is not supported')
-
+   print('WARNING: Python < 3.4 is not supported, this module will not function as documented!')
 
 # extract __version__ from version file. importing will lead to install failures
 setup_dir = os.path.dirname(__file__)
