@@ -1,7 +1,7 @@
 pytest
 pytest-rerunfailures
 connexion
-pandas
+pandas<0.21.1
 scikit-learn
 jsonschema
 keras
