@@ -4,6 +4,8 @@ Provides a mock web server
 """
 import os
 import pexpect
+import socket
+from collections import namedtuple
 
 import requests
 from requests import ConnectionError
@@ -11,24 +13,40 @@ from requests import ConnectionError
 from utils import get_workspace
 
 
-_PORT = 8887
-_BASE_URI = "http://localhost:{}/v2".format(_PORT)
-_UI_URI = "{}/ui".format(_BASE_URI)
 _EXPECT_RE = r'.*Running on (?P<server>http://.*:\d+).*'
 
-MODEL_URI = "{}/models".format(_BASE_URI)
-AUTH_URI = "{}/auth".format(_BASE_URI)
+
+def _find_port():
+    '''Returns an open port number'''
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('localhost', 0))
+    port = sock.getsockname()[1]
+    sock.close()
+    return port
+
+
+class _Config(namedtuple('_Config', ['model_uri', 'auth_uri', 'ui_uri', 'port'])):
+
+    def __new__(cls, port):
+        base_uri = "http://localhost:{}/v2".format(port)
+        ui_uri = "{}/ui".format(base_uri)
+        model_uri = "{}/models".format(base_uri)
+        auth_uri = "{}/auth".format(base_uri)
+        return super().__new__(cls, model_uri, auth_uri, ui_uri, port)
 
 
 class MockServer(object):
 
-    def __init__(self, timeout=5, use_localhost=True, server=None, extra_envs=None, port=_PORT, https=False):
+    def __init__(self, timeout=5, use_localhost=True, server=None, extra_envs=None, port=None, https=False):
         '''Creates a test server running with a mock upload API in another process'''
         self._use_localhost = use_localhost
         self._timeout = timeout
         self._child = None
         self._https = https
         self.server = server
+
+        port = _find_port() if port is None else port
+        self.config = _Config(port)
 
         workspace = get_workspace()
         app_path = os.path.join(workspace, 'testing', 'upload', 'app.py')
@@ -40,7 +58,7 @@ class MockServer(object):
 
     def __enter__(self):
         '''Spawns the child process and waits for server to start until `timeout`'''
-        assert not _server_running(), 'A mock server is already running'
+        assert not _server_running(self.config.ui_uri), 'A mock server is already running'
 
         self._child = pexpect.spawn(self._cmd, env=os.environ)
         self._child.expect(_EXPECT_RE, timeout=self._timeout)
@@ -63,10 +81,10 @@ class MockServer(object):
         return cmd
 
 
-def _server_running():
+def _server_running(ui_uri):
     '''Returns False if test server is not available'''
     try:
-        requests.get(_UI_URI)
+        requests.get(ui_uri)
     except ConnectionError:
         return False
     else:
