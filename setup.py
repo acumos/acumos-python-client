@@ -4,10 +4,6 @@ import sys
 from setuptools import setup, find_packages
 
 
-if sys.version_info < (3, 4):
-    sys.exit('Sorry, Python < 3.4 is not supported')
-
-
 # extract __version__ from version file. importing will lead to install failures
 setup_dir = os.path.dirname(__file__)
 with open(os.path.join(setup_dir, 'acumos', '_version.py')) as file:

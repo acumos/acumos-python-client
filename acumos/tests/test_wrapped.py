@@ -6,6 +6,7 @@ import tempfile
 import io
 import subprocess
 import sys
+import os
 from os.path import join as path_join, abspath, dirname
 from collections import Counter
 from operator import eq
@@ -46,7 +47,8 @@ def test_custom_package():
     with _dump_model(model, model_name, reqs) as dump_dir:
         workspace = get_workspace()
         test = subprocess.Popen([sys.executable, _CUSTOM_PACKAGE_HELPER, dump_dir],
-                                stderr=subprocess.PIPE, env={'PYTHONPATH': workspace})
+                                stderr=subprocess.PIPE, env={'PYTHONPATH': workspace,
+                                                             'PATH': os.environ['PATH']})
         _, stderr = test.communicate()
         assert test.returncode == 0, stderr.decode()
 

@@ -25,7 +25,7 @@ from acumos.exc import AcumosError
 from acumos.utils import load_artifact
 from acumos.auth import clear_jwt, _USERNAME_VAR, _PASSWORD_VAR
 from acumos.metadata import SCHEMA_VERSION
-from mock_server import MockServer, MODEL_URI, AUTH_URI
+from mock_server import MockServer
 
 
 _TEST_DIR = dirname(abspath(__file__))
@@ -126,7 +126,7 @@ def test_session_push_sklearn():
     clear_jwt()
 
     with _patch_auth():
-        with MockServer():
+        with MockServer() as server:
             iris = load_iris()
             X = iris.data
             y = iris.target
@@ -149,7 +149,8 @@ def test_session_push_sklearn():
 
             model = Model(predict=predict)
 
-            s = AcumosSession(MODEL_URI, AUTH_URI)
+            model_uri, auth_uri, _, _ = server.config
+            s = AcumosSession(model_uri, auth_uri)
             s.push(model, name='sklearn_iris_push')
 
 
@@ -158,7 +159,7 @@ def test_session_push_keras():
     clear_jwt()
 
     with _patch_auth():
-        with MockServer():
+        with MockServer() as server:
             iris = load_iris()
             X = iris.data
             y = pd.get_dummies(iris.target).values
@@ -184,7 +185,8 @@ def test_session_push_keras():
 
             model = Model(predict=predict)
 
-            s = AcumosSession(MODEL_URI, AUTH_URI)
+            model_uri, auth_uri, _, _ = server.config
+            s = AcumosSession(model_uri, auth_uri)
             s.push(model, name='keras_iris_push')
 
 
@@ -196,8 +198,9 @@ def _push_dummy_model():
 
     model = Model(transform=my_transform)
 
-    with MockServer():
-        s = AcumosSession(MODEL_URI, AUTH_URI)
+    with MockServer() as server:
+        model_uri, auth_uri, _, _ = server.config
+        s = AcumosSession(model_uri, auth_uri)
         s.push(model, name='my-model')
 
 
