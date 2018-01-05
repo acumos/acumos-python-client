@@ -10,3 +10,4 @@ tensorflow
 pexpect
 pillow
 mock
+cython
