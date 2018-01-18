@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 from setuptools import setup, find_packages
 
 
@@ -29,7 +28,8 @@ setup(
                       'requests',
                       'numpy',
                       'dill<0.2.8',
-                      'appdirs'],
+                      'appdirs',
+                      'filelock'],
     python_requires='>=3.4',
     license='Apache License 2.0',
 )
