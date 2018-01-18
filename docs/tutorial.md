@@ -138,6 +138,8 @@ Check out the `sklearn` examples in the examples directory for full runnable scr
 
 ## Declaring Requirements
 
+### Custom Packages
+
 If your model depends on another Python package that you wrote, you can declare the package via the `Requirements` class. Note that only pure Python packages are supported at this time.
 
 Assuming that the package `~/repos/my_pkg` contains:
@@ -165,6 +167,18 @@ reqs = Requirements(packages=['~/repos/my_pkg'])
 # using the AcumosSession created earlier:
 session.push(model, 'my-model', reqs)
 session.dump(model, 'my-model', '~/', reqs)  # creates ~/my-model
+```
+
+### Requirement Mapping
+
+Python packaging and [PyPI](https://pypi.python.org/pypi) aren't perfect, and sometimes the name of the Python package you import in your code is different than the package name used to install it. One example of this is the `PIL` package, which is commonly installed using a fork called [`pillow`](https://pillow.readthedocs.io) (i.e. `pip install pillow` will provide the `PIL` package).
+
+To address this inconsistency, the `acumos.modeling.Requirements` class allows you to map Python package names to PyPI package names. When your model is analyzed for dependencies by `acumos`, this mapping is used to ensure the correct PyPI packages will be used.
+
+In the example below, the `req_map` parameter is used to declare a requirements mapping from the `PIL` Python package to the `pillow` PyPI package:
+
+```python
+reqs = Requirements(req_map={'PIL': 'pillow'})
 ```
 
 ## TensorFlow

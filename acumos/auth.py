@@ -8,7 +8,8 @@ from os.path import extsep, isfile, join as path_join
 from getpass import getpass
 
 import requests
-import appdirs
+from appdirs import user_data_dir
+from filelock import FileLock
 
 import acumos
 from acumos.exc import AcumosError
@@ -16,8 +17,9 @@ from acumos.logging import get_logger
 from acumos.utils import load_artifact, dump_artifact
 
 
-CONFIG_DIR = appdirs.user_data_dir('acumos')
-CONFIG_PATH = path_join(CONFIG_DIR, extsep.join(('config', 'json')))
+_CONFIG_DIR = user_data_dir('acumos')
+_CONFIG_PATH = path_join(_CONFIG_DIR, extsep.join(('config', 'json')))
+_LOCK_PATH = path_join(_CONFIG_DIR, extsep.join(('config', 'lock')))
 
 _USERNAME_VAR = 'ACUMOS_USERNAME'
 _PASSWORD_VAR = 'ACUMOS_PASSWORD'
@@ -60,10 +62,14 @@ def clear_jwt():
 
 def _configuration(**kwargs):
     '''Optionally updates and returns the config dict'''
-    config = dict() if not isfile(CONFIG_PATH) else load_artifact(CONFIG_PATH, module=json, mode='r')
+    lock = FileLock(_LOCK_PATH)
+    with lock:
+        config = dict() if not isfile(_CONFIG_PATH) else load_artifact(_CONFIG_PATH, module=json, mode='r')
+
     config.update(kwargs)
     config['version'] = acumos.__version__
 
-    makedirs(CONFIG_DIR, exist_ok=True)
-    dump_artifact(CONFIG_PATH, data=config, module=json, mode='w')
+    makedirs(_CONFIG_DIR, exist_ok=True)
+    with lock:
+        dump_artifact(_CONFIG_PATH, data=config, module=json, mode='w')
     return config
