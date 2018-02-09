@@ -21,7 +21,6 @@ setup(
     setup_requires=['pytest-runner'],
     entry_points='''
     [console_scripts]
-    run_acumos_model=acumos.model_runner:main
     ''',
     install_requires=['typing',
                       'protobuf',
