@@ -57,6 +57,8 @@ _type_lookup = {
 
 def compile_protostr(proto_str, package_name, module_name, out_dir):
     '''Compiles a Python module from a protobuf definition str and returns the module abspath'''
+    _assert_protoc()
+
     with TemporaryDirectory() as tdir:
         protopath = path_join(tdir, package_name, "{}.proto".format(module_name))
 
@@ -78,6 +80,12 @@ def compile_protostr(proto_str, package_name, module_name, out_dir):
         out_module_path = path_join(out_dir, gen_module_name)
         shutil.copy(gen_module_path, out_module_path)
         return out_module_path
+
+
+def _assert_protoc():
+    '''Raises an AcumosError if protoc is not found'''
+    if shutil.which('protoc') is None:
+        raise AcumosError('The protocol buffers compiler `protoc` was not found. Verify that it is installed and visible in $PATH')
 
 
 def model2proto(model, package_name):
