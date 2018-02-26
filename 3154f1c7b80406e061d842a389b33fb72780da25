@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9c736079_085f4fc1",
+        "filename": "acumos/pickler.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2018-02-26T16:51:51Z",
+      "side": 1,
+      "message": "This should generalize to different backends, and also allow us to peg the backend version so that we hopefully don\u0027t run into Guy\u0027s issue again",
+      "parentUuid": "2fc3bffa_204953bb",
+      "revId": "3154f1c7b80406e061d842a389b33fb72780da25",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ac6635a7_b94b1ee0",
         "filename": "docs/README.md",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2018-02-26T16:38:38Z",
       "side": 1,
       "message": "I thought we now need 3.5 or greater?",
+      "revId": "3154f1c7b80406e061d842a389b33fb72780da25",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78d7d0e1_bfa46f9e",
+        "filename": "docs/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2018-02-26T16:51:51Z",
+      "side": 1,
+      "message": "I haven\u0027t dropped Python 3.4 support yet, because technically Pandas is not a required dependency. Users with Python 3.4 who don\u0027t need to use Pandas are still safe. If they need to use Pandas, then they won\u0027t (can\u0027t) use Python 3.4 inherently.",
+      "parentUuid": "ac6635a7_b94b1ee0",
       "revId": "3154f1c7b80406e061d842a389b33fb72780da25",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
