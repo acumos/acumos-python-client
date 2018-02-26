@@ -12,6 +12,7 @@ import fnmatch
 from tempfile import TemporaryDirectory
 from os import walk, mkdir
 from os.path import dirname, isdir, expanduser, relpath, basename, join as path_join
+from pathlib import Path
 
 from acumos.pickler import AcumosContextManager, dump_model
 from acumos.metadata import create_model_meta, Requirements
@@ -162,7 +163,9 @@ def _dump_model(model, name, requirements=None):
             dump_artifact(rootdir, 'metadata.json', data=metadata, module=json, mode='w')
 
             # bundle user-provided scripts
-            c.create_subdir(path_join('scripts', 'user_provided'))
+            user_provided = c.create_subdir(path_join('scripts', 'user_provided'))
+            Path(user_provided, '.keep').touch()  # may resolve pruning issues when unzipping
+
             scripts = _gather_scripts(requirements.packages)
             _copy_scripts(c, scripts)
 

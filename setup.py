@@ -19,9 +19,6 @@ setup(
     author_email='trianta@research.att.com',
     description=('Acumos client library'),
     setup_requires=['pytest-runner'],
-    entry_points='''
-    [console_scripts]
-    ''',
     install_requires=['typing',
                       'protobuf',
                       'requests',

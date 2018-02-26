@@ -7,6 +7,8 @@ from zipfile import ZipFile
 from os import listdir
 from os.path import isfile, isdir, join as path_join
 
+from google.protobuf.json_format import Parse as ParseJson, ParseDict, MessageToJson, MessageToDict
+
 from acumos.modeling import _is_namedtuple, List, Dict
 from acumos.pickler import AcumosContextManager, load_model as _load_model
 from acumos.utils import load_module
@@ -81,8 +83,8 @@ class WrappedFunction(object):
         self._module = module
         self._input_type = func.input_type
         self._output_type = func.output_type
-        self._pb_input_type = getattr(module, self._input_type.__name__)
-        self._pb_output_type = getattr(module, self._output_type.__name__)
+        self._pb_input_type = getattr(module, func.input_type.__name__)
+        self._pb_output_type = getattr(module, func.output_type.__name__)
 
     def from_pb_bytes(self, pb_bytes_in):
         '''Consumes a binary Protobuf message and returns a WrappedResponse object'''
@@ -102,7 +104,17 @@ class WrappedFunction(object):
     def from_wrapped(self, wrapped_in):
         '''Consumes a NamedTuple wrapped type and returns a WrappedResponse object'''
         wrapped_out = self._func.wrapped(wrapped_in)
-        return WrappedResponse(wrapped_out, self._module)
+        return WrappedResponse(wrapped_out, self._module, self._pb_output_type)
+
+    def from_dict(self, dict_in):
+        '''Consumes a dict and returns a WrappedResponse object'''
+        pb_msg_in = ParseDict(dict_in, self._pb_input_type())
+        return self.from_pb_msg(pb_msg_in)
+
+    def from_json(self, json_in):
+        '''Consumes a json str and returns a WrappedResponse object'''
+        pb_msg_in = ParseJson(json_in, self._pb_input_type())
+        return self.from_pb_msg(pb_msg_in)
 
     @property
     def pb_input_type(self):
@@ -116,21 +128,32 @@ class WrappedFunction(object):
 class WrappedResponse(object):
     '''A WrappedFunction response with various return options'''
 
-    def __init__(self, resp, module):
+    def __init__(self, resp, module, pb_output_type):
         self._resp = resp
         self._module = module
+        self._pb_output_type = pb_output_type
 
     def as_pb_bytes(self):
-        '''Returns a Protobuf binary string'''
+        '''Returns a Protobuf binary string representation of the model response'''
         return self.as_pb_msg().SerializeToString()
 
     def as_pb_msg(self):
-        '''Returns a Protobuf message object'''
+        '''Returns a Protobuf message representation of the model response'''
         return _pack_pb_msg(self._resp, self._module)
 
     def as_wrapped(self):
-        '''Returns a Python NamedTuple wrapped object'''
+        '''Returns a Python NamedTuple representation of the model response'''
         return self._resp
+
+    def as_dict(self):
+        '''Returns a dict representation of the model response'''
+        pb_msg_out = self.as_pb_msg()
+        return MessageToDict(pb_msg_out, self._pb_output_type())
+
+    def as_json(self):
+        '''Returns a json str representation of the model response'''
+        pb_msg_out = self.as_pb_msg()
+        return MessageToJson(pb_msg_out, self._pb_output_type(), indent=0)
 
 
 def _pack_pb_msg(wrapped_in, module):
