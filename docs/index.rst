@@ -4,7 +4,7 @@ acumos-python-client
 .. toctree::
        :maxdepth: 2
     
-       readme
+       README
        tutorial
        release-notes
        contributing

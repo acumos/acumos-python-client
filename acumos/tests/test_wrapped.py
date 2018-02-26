@@ -4,9 +4,7 @@ Provides wrapped model tests
 """
 import tempfile
 import io
-import subprocess
 import sys
-import os
 from os.path import join as path_join, abspath, dirname
 from collections import Counter
 from operator import eq
@@ -18,18 +16,30 @@ import numpy as np
 import tensorflow as tf
 from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
+from google.protobuf.json_format import MessageToJson, MessageToDict
 
 from acumos.wrapped import load_model, _pack_pb_msg
 from acumos.modeling import Model, create_dataframe, List, Dict, create_namedtuple
 from acumos.session import _dump_model, _copy_dir, Requirements
 
-from utils import get_workspace
+from utils import run_command
 
 
 _TEST_DIR = dirname(abspath(__file__))
 _IMG_PATH = path_join(_TEST_DIR, 'att.png')
 _CUSTOM_PACKAGE_DIR = path_join(_TEST_DIR, 'custom_package')
 _CUSTOM_PACKAGE_HELPER = path_join(_TEST_DIR, 'custom_package_test_helper.py')
+
+
+@pytest.mark.skipif(sys.version_info < (3, 6), reason='Requires python3.6')
+def test_py36_namedtuple():
+    '''Tests to make sure that new syntax for NamedTuple works with wrapping'''
+    from py36_namedtuple import Input, Output
+
+    def adder(data: Input) -> Output:
+        return Output(data.x + data.y)
+
+    _generic_test(adder, Input(1, 2), Output(3))
 
 
 def test_custom_package():
@@ -45,12 +55,7 @@ def test_custom_package():
     reqs = Requirements(packages=[_CUSTOM_PACKAGE_DIR])
 
     with _dump_model(model, model_name, reqs) as dump_dir:
-        workspace = get_workspace()
-        test = subprocess.Popen([sys.executable, _CUSTOM_PACKAGE_HELPER, dump_dir],
-                                stderr=subprocess.PIPE, env={'PYTHONPATH': workspace,
-                                                             'PATH': os.environ['PATH']})
-        _, stderr = test.communicate()
-        assert test.returncode == 0, stderr.decode()
+        run_command([sys.executable, _CUSTOM_PACKAGE_HELPER, dump_dir])
 
 
 @pytest.mark.flaky(reruns=5)
@@ -67,7 +72,7 @@ def test_wrapped_prim_type():
         pass
 
     def f4() -> int:
-        return 0
+        return 3330
 
     def f5(data: bytes) -> str:
         '''Something more complex'''
@@ -94,8 +99,8 @@ def test_wrapped_prim_type():
     f3_in = ()
     f3_out = ()
 
-    f4_in = ()
-    f4_out = (0, )
+    f4_in = (0, )
+    f4_out = (3330, )
 
     with open(_IMG_PATH, 'rb') as f:
         f5_in = (f.read(), )
@@ -259,7 +264,7 @@ def _build_tf_model(session, data, target):
     return x, y, prediction
 
 
-def _generic_test(func, in_, out, wrapped_eq=eq, pb_mg_eq=eq, pb_bytes_eq=eq, preload=None, reqs=None):
+def _generic_test(func, in_, out, wrapped_eq=eq, pb_mg_eq=eq, pb_bytes_eq=eq, dict_eq=eq, json_eq=eq, preload=None, reqs=None):
     '''Reusable wrap test routine with swappable equality functions'''
 
     model = Model(transform=func)
@@ -287,19 +292,28 @@ def _generic_test(func, in_, out, wrapped_eq=eq, pb_mg_eq=eq, pb_bytes_eq=eq, pr
         trans_in_pb_bytes = trans_in_pb.SerializeToString()
         trans_out_pb_bytes = trans_out_pb.SerializeToString()
 
+        trans_in_dict = MessageToDict(trans_in_pb)
+        trans_out_dict = MessageToDict(trans_out_pb)
+
+        trans_in_json = MessageToJson(trans_in_pb, indent=0)
+        trans_out_json = MessageToJson(trans_out_pb, indent=0)
+
         # test all from / as combinations
-
-        assert wrapped_eq(wrapped_model.transform.from_wrapped(trans_in).as_wrapped(), trans_out)
-        assert wrapped_eq(wrapped_model.transform.from_pb_msg(trans_in_pb).as_wrapped(), trans_out)
-        assert wrapped_eq(wrapped_model.transform.from_pb_bytes(trans_in_pb_bytes).as_wrapped(), trans_out)
-
-        assert pb_mg_eq(wrapped_model.transform.from_wrapped(trans_in).as_pb_msg(), trans_out_pb)
-        assert pb_mg_eq(wrapped_model.transform.from_pb_msg(trans_in_pb).as_pb_msg(), trans_out_pb)
-        assert pb_mg_eq(wrapped_model.transform.from_pb_bytes(trans_in_pb_bytes).as_pb_msg(), trans_out_pb)
-
-        assert pb_bytes_eq(wrapped_model.transform.from_wrapped(trans_in).as_pb_bytes(), trans_out_pb_bytes)
-        assert pb_bytes_eq(wrapped_model.transform.from_pb_msg(trans_in_pb).as_pb_bytes(), trans_out_pb_bytes)
-        assert pb_bytes_eq(wrapped_model.transform.from_pb_bytes(trans_in_pb_bytes).as_pb_bytes(), trans_out_pb_bytes)
+        for as_method_name, as_data_expected, eq_func in (('as_wrapped', trans_out, wrapped_eq),
+                                                          ('as_pb_msg', trans_out_pb, pb_mg_eq),
+                                                          ('as_pb_bytes', trans_out_pb_bytes, pb_bytes_eq),
+                                                          ('as_dict', trans_out_dict, dict_eq),
+                                                          ('as_json', trans_out_json, json_eq)):
+            for from_method_name, from_data in (('from_wrapped', trans_in),
+                                                ('from_pb_msg', trans_in_pb),
+                                                ('from_pb_bytes', trans_in_pb_bytes),
+                                                ('from_dict', trans_in_dict),
+                                                ('from_json', trans_in_json)):
+                from_method = getattr(wrapped_model.transform, from_method_name)
+                resp = from_method(from_data)
+                as_data_method = getattr(resp, as_method_name)
+                as_data = as_data_method()
+                assert eq_func(as_data, as_data_expected)
 
 
 if __name__ == '__main__':
