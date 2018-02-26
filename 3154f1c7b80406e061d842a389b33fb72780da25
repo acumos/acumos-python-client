@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2fc3bffa_204953bb",
+        "filename": "acumos/pickler.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2018-02-26T16:38:38Z",
+      "side": 1,
+      "message": "I guess we won\u0027t know until others are trying it in the field, but hopefully this will solve the problem of different versions as well (instead of just pegging to the name)?",
+      "revId": "3154f1c7b80406e061d842a389b33fb72780da25",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ac6635a7_b94b1ee0",
+        "filename": "docs/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2018-02-26T16:38:38Z",
+      "side": 1,
+      "message": "I thought we now need 3.5 or greater?",
+      "revId": "3154f1c7b80406e061d842a389b33fb72780da25",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
