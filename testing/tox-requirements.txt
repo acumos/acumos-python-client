@@ -10,3 +10,4 @@ tensorflow
 pexpect
 pillow
 mock
+git+https://github.com/keras-team/keras-contrib.git#egg=keras_contrib
