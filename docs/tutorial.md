@@ -97,6 +97,17 @@ def get_shape(data: bytes) -> ImageShape:
 model = Model(get_format=get_format, get_shape=get_shape)
 ```
 
+**Note:** Starting in Python 3.6, you can alternatively use this simpler syntax:
+
+```python
+from acumos.modeling import NamedTuple
+
+class ImageShape(NamedTuple):
+    '''Type representing the shape of an image'''
+    width: int
+    height: int
+```
+
 ## Using DataFrames With scikit-learn
 
 In this example, we train a `RandomForestClassifier` using `scikit-learn` and use it to create an Acumos model.
@@ -120,10 +131,18 @@ y = iris.target
 clf = RandomForestClassifier(random_state=0)
 clf.fit(X, y)
 
-columns = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
-X_df = pd.DataFrame(X, columns=columns)
-
+# here, an appropriate NamedTuple type is inferred from a pandas DataFrame
+X_df = pd.DataFrame(X, columns=['sepal_length', 'sepal_width', 'petal_length', 'petal_width'])
 IrisDataFrame = create_dataframe('IrisDataFrame', X_df)
+
+# ==================================================================================
+# # or equivalently:
+#
+# IrisDataFrame = create_namedtuple('IrisDataFrame', [('sepal_length', List[float]),
+#                                                     ('sepal_width', List[float]),
+#                                                     ('petal_length', List[float]),
+#                                                     ('petal_width', List[float])])
+# ==================================================================================
 
 def classify_iris(df: IrisDataFrame) -> List[int]:
     '''Returns an array of iris classifications'''

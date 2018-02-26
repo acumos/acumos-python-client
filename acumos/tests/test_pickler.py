@@ -3,17 +3,46 @@
 Tests custom pickling logic
 """
 import os
+import sys
 import tempfile
+from os.path import join as path_join, abspath, dirname
 
 import pytest
+import numpy as np
 import pandas as pd
 from sklearn.datasets import load_iris
 from sklearn.svm import SVC
 from keras.models import Sequential
 from keras.layers import Dense
+from keras_contrib.layers.advanced_activations import PELU
 
 from acumos.pickler import dump_model, load_model, AcumosContextManager, get_context
 from acumos.exc import AcumosError
+
+from utils import run_command
+
+
+_TEST_DIR = dirname(abspath(__file__))
+_UNPICKLER_HELPER = path_join(_TEST_DIR, 'unpickler_helper.py')
+
+
+def test_keras_contrib():
+    '''Tests keras_contrib layer is saved correctly'''
+    model = Sequential()
+    model.add(Dense(10, input_shape=(10,)))
+    model.add(PELU())
+
+    model.compile(loss='mse', optimizer='adam')
+    model.fit(x=np.random.random((10, 10)), y=np.random.random((10, 10)), epochs=1, verbose=0)
+
+    with AcumosContextManager() as context:
+        model_path = context.build_path('model.pkl')
+        with open(model_path, 'wb') as f:
+            dump_model(model, f)
+            assert {'keras', 'dill', 'acumos', 'h5py', 'tensorflow', 'keras_contrib'} == context.modules
+
+        # verify that the contrib layers don't cause a load error
+        run_command([sys.executable, _UNPICKLER_HELPER, context.abspath])
 
 
 def test_function_import():
@@ -55,7 +84,7 @@ def test_pickler_keras():
             with open(model_path, 'wb') as f:
                 dump_model(model, f)
 
-            assert {'keras', 'dill', 'acumos', 'h5py'} == context.modules
+            assert {'keras', 'dill', 'acumos', 'h5py', 'tensorflow'} == context.modules
 
         with AcumosContextManager(root) as context:
             with open(model_path, 'rb') as f:
@@ -116,7 +145,7 @@ def test_nested_model():
             with open(model_path, 'wb') as f:
                 dump_model(crazy_good_model, f)
 
-            assert {'sklearn', 'keras', 'dill', 'acumos', 'numpy', 'h5py'} == context.modules
+            assert {'sklearn', 'keras', 'dill', 'acumos', 'numpy', 'h5py', 'tensorflow'} == context.modules
 
         with AcumosContextManager(root) as context:
             with open(model_path, 'rb') as f:
