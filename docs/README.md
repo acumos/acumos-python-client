@@ -15,7 +15,15 @@ git clone <acumos-python-client repo url>
 pip install ./acumos-python-client
 ```
 
-**Note:** This version of `acumos` uses protocol buffers and assumes you have the protobuf compiler `protoc` installed. Please visit the [protobuf repository](https://github.com/google/protobuf/releases/tag/v3.4.0) and install the appropriate `protoc` for your operating system. This is a temporary requirement that will be removed in a future version of `acumos`.
+### Protocol Buffers
+
+This version of `acumos` uses protocol buffers and **assumes you have the protobuf compiler `protoc` installed**. Please visit the [protobuf repository](https://github.com/google/protobuf/releases/tag/v3.4.0) and install the appropriate `protoc` for your operating system. Installation is as easy as downloading a binary release and adding it to your system `$PATH`. This is a temporary requirement that will be removed in a future version of `acumos`.
+
+**Anaconda Users**: You can easily install `protoc` from [an Anaconda package](https://anaconda.org/anaconda/libprotobuf) via:
+
+```
+conda install -c anaconda libprotobuf 
+```
 
 ## Usage
 

@@ -76,6 +76,8 @@ def _revert_dispatch(t):
 
 def _save_keras(pickler, obj):
     '''Serializes a keras model to a context directory'''
+    from keras.backend import backend
+
     context = get_context()
     model_subdir_abspath = context.create_subdir()  # /path/to/context/root/abc123
 
@@ -85,10 +87,19 @@ def _save_keras(pickler, obj):
 
     obj.save(model_abspath)
     context.add_module('h5py')  # needed for keras model serialization
-    pickler.save_reduce(_load_keras, (model_subpath, ), obj=obj)  # store subpath because context root can change
+    context.add_module(backend())  # adds name of active keras backend
+
+    # check for custom or contrib layer modules
+    layer_modules = (_get_top_module(l)[1] for l in obj.layers)
+    special_layers = tuple((l.__class__, m) for l, m in zip(obj.layers, layer_modules) if m != 'keras')
+    for _, module in special_layers:
+        context.add_module(module)
+
+    # store subpath because context root can change, and special layer classes to have them imported before load
+    pickler.save_reduce(_load_keras, (model_subpath, special_layers), obj=obj)
 
 
-def _load_keras(model_subpath):
+def _load_keras(model_subpath, special_classes):
     '''Loads a keras model from a context subdirectory'''
     from keras.models import load_model as load_keras_model
 
