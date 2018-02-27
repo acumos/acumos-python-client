@@ -128,6 +128,18 @@ like an ordinary ``tuple`` but with field accessors. We can then use
 
     model = Model(get_format=get_format, get_shape=get_shape)
 
+**Note:** Starting in Python 3.6, you can alternatively use this simpler
+syntax:
+
+.. code:: python
+
+    from acumos.modeling import NamedTuple
+
+    class ImageShape(NamedTuple):
+        '''Type representing the shape of an image'''
+        width: int
+        height: int
+
 Using DataFrames With scikit-learn
 ----------------------------------
 
@@ -164,10 +176,18 @@ this as ``List[int]`` in the signature return.
     clf = RandomForestClassifier(random_state=0)
     clf.fit(X, y)
 
-    columns = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
-    X_df = pd.DataFrame(X, columns=columns)
-
+    # here, an appropriate NamedTuple type is inferred from a pandas DataFrame
+    X_df = pd.DataFrame(X, columns=['sepal_length', 'sepal_width', 'petal_length', 'petal_width'])
     IrisDataFrame = create_dataframe('IrisDataFrame', X_df)
+
+    # ==================================================================================
+    # # or equivalently:
+    #
+    # IrisDataFrame = create_namedtuple('IrisDataFrame', [('sepal_length', List[float]),
+    #                                                     ('sepal_width', List[float]),
+    #                                                     ('petal_length', List[float]),
+    #                                                     ('petal_width', List[float])])
+    # ==================================================================================
 
     def classify_iris(df: IrisDataFrame) -> List[int]:
         '''Returns an array of iris classifications'''
@@ -181,6 +201,9 @@ runnable scripts.
 
 Declaring Requirements
 ----------------------
+
+Custom Packages
+~~~~~~~~~~~~~~~
 
 If your model depends on another Python package that you wrote, you can
 declare the package via the ``Requirements`` class. Note that only pure
@@ -212,6 +235,29 @@ then you can bundle ``my_pkg`` with your model like so:
     # using the AcumosSession created earlier:
     session.push(model, 'my-model', reqs)
     session.dump(model, 'my-model', '~/', reqs)  # creates ~/my-model
+
+Requirement Mapping
+~~~~~~~~~~~~~~~~~~~
+
+Python packaging and `PyPI <https://pypi.python.org/pypi>`__ aren’t
+perfect, and sometimes the name of the Python package you import in your
+code is different than the package name used to install it. One example
+of this is the ``PIL`` package, which is commonly installed using a fork
+called ```pillow`` <https://pillow.readthedocs.io>`__ (i.e.
+``pip install pillow`` will provide the ``PIL`` package).
+
+To address this inconsistency, the ``acumos.modeling.Requirements``
+class allows you to map Python package names to PyPI package names. When
+your model is analyzed for dependencies by ``acumos``, this mapping is
+used to ensure the correct PyPI packages will be used.
+
+In the example below, the ``req_map`` parameter is used to declare a
+requirements mapping from the ``PIL`` Python package to the ``pillow``
+PyPI package:
+
+.. code:: python
+
+    reqs = Requirements(req_map={'PIL': 'pillow'})
 
 TensorFlow
 ----------
