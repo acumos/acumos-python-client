@@ -28,18 +28,23 @@ pip:
     git clone <acumos-python-client repo url>
     pip install ./acumos-python-client
 
-**Note:** This version of ``acumos`` uses protocol buffers and assumes
-you have the protobuf compiler ``protoc`` installed. Please visit the
-`protobuf
+Protocol Buffers
+~~~~~~~~~~~~~~~~
+
+This version of ``acumos`` uses protocol buffers and **assumes you have
+the protobuf compiler ``protoc`` installed**. Please visit the `protobuf
 repository <https://github.com/google/protobuf/releases/tag/v3.4.0>`__
-and install the appropriate ``protoc`` for your operating system. This
-is a temporary requirement that will be removed in a future version of
-``acumos``.
+and install the appropriate ``protoc`` for your operating system.
+Installation is as easy as downloading a binary release and adding it to
+your system ``$PATH``. This is a temporary requirement that will be
+removed in a future version of ``acumos``.
 
-Usage
------
+**Anaconda Users**: You can easily install ``protoc`` from `an Anaconda
+package <https://anaconda.org/anaconda/libprotobuf>`__ via:
 
-See our `tutorial <tutorial.md>`__ to learn how to use ``acumos``.
+::
 
-.. |Build Status| image:: http://cognita-dev1-jenkins.eastus.cloudapp.azure.com:8080/job/acumos-python-client/badge/icon
-   :target: http://cognita-dev1-jenkins.eastus.cloudapp.azure.com:8080/job/acumos-python-client/
+    conda install -c anaconda libprotobuf 
+
+.. |Build Status| image:: https://jenkins.acumos.org/buildStatus/icon?job=acumos-python-client-tox-verify-master
+   :target: https://jenkins.acumos.org/job/acumos-python-client-tox-verify-master/

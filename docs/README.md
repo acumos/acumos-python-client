@@ -1,4 +1,5 @@
 # acumos-python-client
+
 [![Build Status](https://jenkins.acumos.org/buildStatus/icon?job=acumos-python-client-tox-verify-master)](https://jenkins.acumos.org/job/acumos-python-client-tox-verify-master/)
 
 A client library that allows developers to push their Python models to Acumos.
@@ -24,7 +25,3 @@ This version of `acumos` uses protocol buffers and **assumes you have the protob
 ```
 conda install -c anaconda libprotobuf 
 ```
-
-## Usage
-
-See our [tutorial](tutorial.md) to learn how to use `acumos`.
