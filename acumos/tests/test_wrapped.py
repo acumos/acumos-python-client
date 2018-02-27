@@ -121,9 +121,10 @@ def test_wrapped_prim_type():
 
     for func, in_, out in ((f1, f1_in, f1_out), (f2, f2_in, f2_out), (f3, f3_in, f3_out),
                            (f4, f4_in, f4_out), (f5, f5_in, f5_out), (f6, f6_in, f6_out),
-                           (f7, f7_in, f7_out), (f8, f8_in, f8_out)):
-
+                           (f8, f8_in, f8_out)):
         _generic_test(func, in_, out)
+
+    _generic_test(f7, f7_in, f7_out, skip=_dict_skips)
 
 
 @pytest.mark.flaky(reruns=5)
@@ -157,14 +158,12 @@ def test_wrapped_nested_type():
     f2_out = N2(n1s=[n1_out, n1_out])
 
     _generic_test(f1, f1_in, f1_out)
+    _generic_test(f2, f2_in, f2_out, skip=_dict_skips)
 
-    f2_skip_set = {'as_pb_bytes', 'as_json'}
 
-    def f2_skip(as_, from_):
-        '''Skips protobuf byte output comparison due to odd failures, perhaps related to dict ordering'''
-        return as_ in f2_skip_set
-
-    _generic_test(f2, f2_in, f2_out, skip=f2_skip)
+def _dict_skips(as_, from_):
+    '''Skips byte and json str output comparison due to odd failures, perhaps related to dict ordering'''
+    return as_ in {'as_pb_bytes', 'as_json'}
 
 
 @pytest.mark.flaky(reruns=5)
