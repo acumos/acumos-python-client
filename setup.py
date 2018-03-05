@@ -3,7 +3,6 @@ from os.path import dirname, abspath, join as path_join
 from setuptools import setup, find_packages
 
 
-# extract __version__ from version file. importing will lead to install failures
 SETUP_DIR = abspath(dirname(__file__))
 DOCS_DIR = path_join(SETUP_DIR, 'docs')
 
@@ -22,24 +21,8 @@ def _long_descr():
 
 
 setup(
-    name='acumos',
-    version=__version__,
-    packages=find_packages(),
     author='Paul Triantafyllou',
     author_email='trianta@research.att.com',
-    description='Acumos client library for building and pushing Python models',
-    long_description='\n'.join(_long_descr()),
-    setup_requires=['pytest-runner'],
-    install_requires=['typing',
-                      'protobuf',
-                      'requests',
-                      'numpy',
-                      'dill<0.2.8',
-                      'appdirs',
-                      'filelock'],
-    python_requires='>=3.4',
-    license='Apache License 2.0',
-    url='https://www.acumos.org/',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -50,5 +33,20 @@ setup(
         'Programming Language :: Python :: 3.6',
         'License :: OSI Approved :: Apache Software License',
     ],
+    description='Acumos client library for building and pushing Python models',
+    install_requires=['typing',
+                      'protobuf',
+                      'requests',
+                      'numpy',
+                      'dill<0.2.8',
+                      'appdirs',
+                      'filelock'],
     keywords='acumos machine learning model modeling artificial intelligence ml ai',
+    license='Apache License 2.0',
+    long_description='\n'.join(_long_descr()),
+    name='acumos',
+    packages=find_packages(),
+    python_requires='>=3.4',
+    url='https://gerrit.acumos.org/r/gitweb?p=acumos-python-client.git',
+    version=__version__,
 )
