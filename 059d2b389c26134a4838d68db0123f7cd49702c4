@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b663ab41_c418cccb",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2018-03-06T20:38:55Z",
+      "side": 1,
+      "message": "Suggest adding a date for each release.  No release manager is going to edit your RST file.",
+      "revId": "059d2b389c26134a4838d68db0123f7cd49702c4",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
