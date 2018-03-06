@@ -24,6 +24,6 @@ acumos-python-client
        :maxdepth: 2
 
        README
-       tutorial
+       tutorial/index
        release-notes
        contributing
