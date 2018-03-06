@@ -1,16 +1,33 @@
-.. THIS FILE WAS GENERATED. DO NOT EDIT.
+.. ===============LICENSE_START=======================================================
+.. Acumos CC-BY-4.0
+.. ===================================================================================
+.. Copyright (C) 2017-2018 AT&T Intellectual Property & Tech Mahindra. All rights reserved.
+.. ===================================================================================
+.. This Acumos documentation file is distributed by AT&T and Tech Mahindra
+.. under the Creative Commons Attribution 4.0 International License (the "License");
+.. you may not use this file except in compliance with the License.
+.. You may obtain a copy of the License at
+..
+..      http://creativecommons.org/licenses/by/4.0
+..
+.. This file is distributed on an "AS IS" BASIS,
+.. WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+.. See the License for the specific language governing permissions and
+.. limitations under the License.
+.. ===============LICENSE_END=========================================================
 
+=======================
 Contributing Guidelines
 =======================
 
 Branching Model
----------------
+===============
 
 Follow the workflow described in `A successful Git branching
 model <http://nvie.com/posts/a-successful-git-branching-model/>`__.
 
 Versioning
-----------
+==========
 
 Use the `bumpversion <https://github.com/peritus/bumpversion>`__ tool to
 bump the ``acumos`` version. See the `bumpversion config
@@ -25,7 +42,7 @@ cases:
     bumpversion release_version  # 0.1.0.dev1 --> 0.1.0.dev2
 
 Testing
--------
+=======
 
 We use a combination of ``tox``, ``pytest``, and ``flake8`` to test
 ``acumos``. Code which is not PEP8 compliant (aside from E501) will be

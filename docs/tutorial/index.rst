@@ -1,5 +1,22 @@
-.. THIS FILE WAS GENERATED. DO NOT EDIT.
+.. ===============LICENSE_START=======================================================
+.. Acumos CC-BY-4.0
+.. ===================================================================================
+.. Copyright (C) 2017-2018 AT&T Intellectual Property & Tech Mahindra. All rights reserved.
+.. ===================================================================================
+.. This Acumos documentation file is distributed by AT&T and Tech Mahindra
+.. under the Creative Commons Attribution 4.0 International License (the "License");
+.. you may not use this file except in compliance with the License.
+.. You may obtain a copy of the License at
+..
+..      http://creativecommons.org/licenses/by/4.0
+..
+.. This file is distributed on an "AS IS" BASIS,
+.. WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+.. See the License for the specific language governing permissions and
+.. limitations under the License.
+.. ===============LICENSE_END=========================================================
 
+========
 Tutorial
 ========
 
@@ -20,7 +37,7 @@ available in the examples directory.
 10. More Examples
 
 Importing Acumos
-----------------
+================
 
 First import the modeling and session packages:
 
@@ -30,7 +47,7 @@ First import the modeling and session packages:
     from acumos.session import AcumosSession, Requirements
 
 Creating A Session
-------------------
+==================
 
 An ``AcumosSession`` allows you to export your models to Acumos. You can
 either dump a model to disk locally, so that you can upload it via the
@@ -53,7 +70,7 @@ aren’t needed:
     session = AcumosSession()
 
 A Simple Model
---------------
+==============
 
 Any Python function can be used to define an Acumos model using `Python
 type hints <https://docs.python.org/3/library/typing.html>`__.
@@ -80,7 +97,7 @@ with your model and used for documentation, so be sure to include one!
     model = Model(add=add_numbers)
 
 Exporting Models
-----------------
+================
 
 We can now export our model using the ``AcumosSession`` object created
 earlier. The ``push`` and ``dump`` APIs are shown below.
@@ -95,7 +112,7 @@ and password. You can also set the ``ACUMOS_USERNAME`` and
     session.dump(model, 'my-model', '~/')  # creates ~/my-model
 
 Defining Types
---------------
+==============
 
 In this example, we make a model that can read binary images and output
 some metadata about them. This model makes use of a custom type
@@ -141,7 +158,7 @@ syntax:
         height: int
 
 Using DataFrames With scikit-learn
-----------------------------------
+==================================
 
 In this example, we train a ``RandomForestClassifier`` using
 ``scikit-learn`` and use it to create an Acumos model.
@@ -200,10 +217,10 @@ Check out the ``sklearn`` examples in the examples directory for full
 runnable scripts.
 
 Declaring Requirements
-----------------------
+======================
 
 Custom Packages
-~~~~~~~~~~~~~~~
+---------------
 
 If your model depends on another Python package that you wrote, you can
 declare the package via the ``Requirements`` class. Note that only pure
@@ -237,7 +254,7 @@ then you can bundle ``my_pkg`` with your model like so:
     session.dump(model, 'my-model', '~/', reqs)  # creates ~/my-model
 
 Requirement Mapping
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 Python packaging and `PyPI <https://pypi.python.org/pypi>`__ aren’t
 perfect, and sometimes the name of the Python package you import in your
@@ -260,12 +277,12 @@ PyPI package:
     reqs = Requirements(req_map={'PIL': 'pillow'})
 
 TensorFlow
-----------
+==========
 
 Check out the TensorFlow example in the examples directory.
 
 Testing Models
---------------
+==============
 
 The ``acumos.modeling.Model`` class wraps your custom functions and
 produces corresponding input and output types. This section shows how to
@@ -310,7 +327,7 @@ that the function works as expected:
     model.add.wrapped(add_in) == add_out  # True
 
 More Examples
--------------
+=============
 
 Below are some additional function examples. Note how ``numpy`` types
 can even be used in type hints, as shown in the ``numpy_sum`` function.
