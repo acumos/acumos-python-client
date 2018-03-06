@@ -16,14 +16,16 @@
 .. limitations under the License.
 .. ===============LICENSE_END=========================================================
 
-=====================
+====================
 acumos-python-client
-=====================
+====================
 
-.. toctree::
-       :maxdepth: 2
+|Build Status|
 
-       README
-       tutorial
-       release-notes
-       contributing
+A client library that allows developers to push their Python models to
+Acumos.
+
+See our `documentation <docs/readme.md>`__ to get started.
+
+.. |Build Status| image:: https://jenkins.acumos.org/buildStatus/icon?job=acumos-python-client-tox-verify-master
+   :target: https://jenkins.acumos.org/job/acumos-python-client-tox-verify-master/
