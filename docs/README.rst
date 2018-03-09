@@ -17,7 +17,7 @@
 .. ===============LICENSE_END=========================================================
 
 ====================
-acumos-python-client
+Acumos Python Client
 ====================
 
 |Build Status|
@@ -37,18 +37,16 @@ If you’re new to Python and need an IDE to start developing, we
 recommend using `Spyder <https://github.com/spyder-ide/spyder>`__ which
 can easily be installed with Anaconda.
 
-To install ``acumos-python-client`` just clone this repository and use
-pip:
+The ``acumos`` package can be installed with pip:
 
-::
+.. code:: bash
 
-    git clone <acumos-python-client repo url>
-    pip install ./acumos-python-client
+    pip install acumos
 
 Protocol Buffers
 ----------------
 
-This version of ``acumos`` uses protocol buffers and **assumes you have
+The ``acumos`` package uses protocol buffers and **assumes you have
 the protobuf compiler ``protoc`` installed**. Please visit the `protobuf
 repository <https://github.com/google/protobuf/releases/tag/v3.4.0>`__
 and install the appropriate ``protoc`` for your operating system.
@@ -59,9 +57,9 @@ removed in a future version of ``acumos``.
 **Anaconda Users**: You can easily install ``protoc`` from `an Anaconda
 package <https://anaconda.org/anaconda/libprotobuf>`__ via:
 
-::
+.. code:: bash
 
-    conda install -c anaconda libprotobuf 
+    conda install -c anaconda libprotobuf
 
 .. |Build Status| image:: https://jenkins.acumos.org/buildStatus/icon?job=acumos-python-client-tox-verify-master
    :target: https://jenkins.acumos.org/job/acumos-python-client-tox-verify-master/
