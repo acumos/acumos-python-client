@@ -16,9 +16,16 @@
 .. limitations under the License.
 .. ===============LICENSE_END=========================================================
 
-=======================
-Contributing Guidelines
-=======================
+=============================
+Python Client Developer Guide
+=============================
+
+|Build Status|
+
+
+If you’re new to Python and need an IDE to start developing, we
+recommend using `Spyder <https://github.com/spyder-ide/spyder>`__ which
+can easily be installed with Anaconda.
 
 Testing
 =======
@@ -48,3 +55,7 @@ You can also specify certain tox environments to test:
 
     $ tox -e py34  # only test against Python 3.4
     $ tox -e flake8  # only lint code
+
+
+.. |Build Status| image:: https://jenkins.acumos.org/buildStatus/icon?job=acumos-python-client-tox-verify-master
+   :target: https://jenkins.acumos.org/job/acumos-python-client-tox-verify-master/
