@@ -31,7 +31,7 @@ with open(path_join(SETUP_DIR, 'acumos', '_version.py')) as file:
 
 def _long_descr():
     '''Yields the content of documentation files for the long description'''
-    for file in ('README.rst', 'tutorial/index.rst', 'release-notes.rst', 'contributing.rst'):
+    for file in ('user-guide.rst', 'tutorial/index.rst', 'release-notes.rst', 'developer-guide.rst'):
         doc_path = path_join(DOCS_DIR, file)
         with open(doc_path) as f:
             yield f.read()
