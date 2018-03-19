@@ -16,14 +16,14 @@
 .. limitations under the License.
 .. ===============LICENSE_END=========================================================
 
-=====================
-acumos-python-client
-=====================
+=============
+Python Client
+=============
 
 .. toctree::
        :maxdepth: 2
 
-       README
-       tutorial/index
        release-notes
-       contributing
+       user-guide
+       tutorial/index
+       developer-guide
