@@ -92,7 +92,7 @@ if __name__ == '__main__':
     parser.add_argument("--port", type=int, default=3330)
     parser.add_argument("--modeldir", type=str, default='model', help='specify the model directory to load')
     parser.add_argument("--json_io", action='store_true', help='input+output rich JSON instead of protobuf')
-    parser.add_argument("--return_output", action='store_true', help='return output in response instae of just downstream')
+    parser.add_argument("--no_output", action='store_false', help='do not return output in response, only send downstream')
     pargs = parser.parse_args()
 
     downstream = []
@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
     app = Flask(__name__)
     app.json_io = pargs.json_io  # store io flag
-    app.return_output = pargs.return_output  # store output
+    app.return_output = not pargs.no_output  # store output
 
     # dynamically add handlers depending on model capabilities
     for method_name, method in model.methods.items():
@@ -129,4 +129,4 @@ if __name__ == '__main__':
         print("Adding route {} [input:{:}, output:{:}]".format(url, typeInput, typeOutput))
 
     print("Running Flask server on port {}".format(pargs.port))
-    app.run(port=pargs.port)
+    app.run(port=pargs.port, host='0.0.0.0')
