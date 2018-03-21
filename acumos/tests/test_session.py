@@ -40,7 +40,7 @@ from acumos.modeling import Model, List, create_namedtuple, create_dataframe
 from acumos.session import AcumosSession, _dump_model, Requirements
 from acumos.exc import AcumosError
 from acumos.utils import load_artifact
-from acumos.auth import clear_jwt, _USERNAME_VAR, _PASSWORD_VAR
+from acumos.auth import clear_jwt, _USERNAME_VAR, _PASSWORD_VAR, _TOKEN_VAR
 from acumos.metadata import SCHEMA_VERSION
 from mock_server import MockServer
 
@@ -50,6 +50,7 @@ _REQ_FILES = ('model.zip', 'model.proto', 'metadata.json')
 _CUSTOM_PACKAGE_DIR = path_join(_TEST_DIR, 'custom_package')
 _FAKE_USERNAME = 'foo'
 _FAKE_PASSWORD = 'bar'
+_FAKE_TOKEN = 'secrettoken'
 
 
 def test_auth_envvar():
@@ -57,6 +58,25 @@ def test_auth_envvar():
     clear_jwt()
     with _patch_environ(**{_USERNAME_VAR: _FAKE_USERNAME, _PASSWORD_VAR: _FAKE_PASSWORD}):
         _push_dummy_model()
+
+    clear_jwt()
+    with _patch_environ(**{_TOKEN_VAR: _FAKE_TOKEN}):
+        _push_dummy_model()
+
+
+def test_extra_header():
+    '''Tests that extra headers are correctly sent to the onboarding server'''
+    clear_jwt()
+    # in the mock onboarding server, this extra test header acts as another auth header
+    with _patch_environ(**{_TOKEN_VAR: 'wrongtoken'}):
+        extra_headers = {'X-Test-Header': _FAKE_TOKEN}
+        _push_dummy_model(extra_headers)
+
+    clear_jwt()
+    with pytest.raises(AcumosError):
+        with _patch_environ(**{_TOKEN_VAR: 'wrongtoken'}):
+            extra_headers = {'X-Test-Header': 'wrongtoken'}
+            _push_dummy_model(extra_headers)
 
 
 def test_custom_package():
@@ -207,7 +227,7 @@ def test_session_push_keras():
             s.push(model, name='keras_iris_push')
 
 
-def _push_dummy_model():
+def _push_dummy_model(extra_headers=None):
     '''Generic dummy model push routine'''
 
     def my_transform(x: int, y: int) -> int:
@@ -218,7 +238,7 @@ def _push_dummy_model():
     with MockServer() as server:
         model_uri, auth_uri, _, _ = server.config
         s = AcumosSession(model_uri, auth_uri)
-        s.push(model, name='my-model')
+        s.push(model, name='my-model', extra_headers=extra_headers)
 
 
 @contextlib.contextmanager
@@ -234,11 +254,13 @@ def _patch_auth():
 def _patch_environ(**kwargs):
     '''Temporarily adds kwargs to os.environ'''
     try:
+        orig_vars = {k: environ[k] for k in kwargs.keys() if k in environ}
         environ.update(kwargs)
         yield
     finally:
-        for k in kwargs.keys():
-            del environ[k]
+        environ.update(orig_vars)
+        for extra_key in (kwargs.keys() - orig_vars.keys()):
+            del environ[extra_key]
 
 
 def _mock_assert_valid_apis(**kwargs):

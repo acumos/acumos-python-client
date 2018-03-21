@@ -31,8 +31,9 @@ USERS = {'foo': 'bar'}
 
 def upload(model, metadata, schema):
     '''Mock upload endpoint'''
+    test_header = request.headers.get('X-Test-Header')  # made up header to test extra_headers feature
     jwt = request.headers.get('Authorization')
-    if jwt != TOKEN:
+    if not any(token == TOKEN for token in (jwt, test_header)):
         return {'status': 'Unauthorized'}, 401
     else:
         print("Received model: {}".format(model))
