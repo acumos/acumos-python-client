@@ -40,6 +40,7 @@ _LOCK_PATH = path_join(_CONFIG_DIR, extsep.join(('config', 'lock')))
 
 _USERNAME_VAR = 'ACUMOS_USERNAME'
 _PASSWORD_VAR = 'ACUMOS_PASSWORD'
+_TOKEN_VAR = 'ACUMOS_TOKEN'
 
 logger = get_logger(__name__)
 
@@ -48,11 +49,14 @@ getuser = input
 
 def get_jwt(auth_api):
     '''Returns the jwt string from config or authentication'''
-    config = _configuration()
-    jwt = config.get('jwt')
-    if jwt is None:
-        jwt = _authenticate(auth_api)
-        _configuration(jwt=jwt)
+    if _TOKEN_VAR in environ:
+        jwt = environ[_TOKEN_VAR]
+    else:
+        config = _configuration()
+        jwt = config.get('jwt')
+        if jwt is None:
+            jwt = _authenticate(auth_api)
+            _configuration(jwt=jwt)
     return jwt
 
 
