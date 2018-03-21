@@ -16,9 +16,9 @@
 .. limitations under the License.
 .. ===============LICENSE_END=========================================================
 
-=======================
-Contributing Guidelines
-=======================
+====================================
+Acumos Python Client Developer Guide
+====================================
 
 Testing
 =======

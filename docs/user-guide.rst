@@ -16,13 +16,14 @@
 .. limitations under the License.
 .. ===============LICENSE_END=========================================================
 
-====================
-Acumos Python Client
-====================
+===============================
+Acumos Python Client User Guide
+===============================
+
 
 |Build Status|
 
-A client library that allows developers to push their Python models to
+A client library that allows modelers to push their Python models to
 Acumos.
 
 Installation
@@ -43,6 +44,7 @@ The ``acumos`` package can be installed with pip:
 
     pip install acumos
 
+
 Protocol Buffers
 ----------------
 
@@ -60,6 +62,7 @@ package <https://anaconda.org/anaconda/libprotobuf>`__ via:
 .. code:: bash
 
     conda install -c anaconda libprotobuf
+
 
 .. |Build Status| image:: https://jenkins.acumos.org/buildStatus/icon?job=acumos-python-client-tox-verify-master
    :target: https://jenkins.acumos.org/job/acumos-python-client-tox-verify-master/

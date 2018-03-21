@@ -16,9 +16,9 @@
 .. limitations under the License.
 .. ===============LICENSE_END=========================================================
 
-========
-Tutorial
-========
+=============================
+Acumos Python Client Tutorial
+=============================
 
 This tutorial provides a brief overview of ``acumos`` for creating
 Acumos models. The tutorial is meant to be followed linearly, and some
