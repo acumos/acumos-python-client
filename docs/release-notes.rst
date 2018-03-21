@@ -20,8 +20,23 @@
 Acumos Python Client Release Notes
 ==================================
 
-v0.5
-====
+v0.6.0
+======
+
+-  Authentication token
+
+   -  A new environment variable ``ACUMOS_TOKEN`` can be used to short-circuit
+      the authentication process
+
+-  Extra headers
+
+   -  ``AcumosSession.push`` now accepts an optional ``extra_headers`` argument,
+      which will allow users and systems to include additional information when
+      pushing models to the onboarding server
+
+
+v0.5.0
+======
 
 -  Modeling
 
@@ -45,8 +60,8 @@ v0.5
    -  The active keras backend is now included as a tracked module
    -  keras_contrib layers are now supported
 
-v0.4
-====
+v0.4.0
+======
 
 -  Replaced library-specific onboarding functions with “new-style”
    models

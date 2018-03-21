@@ -25,16 +25,16 @@ Acumos models. The tutorial is meant to be followed linearly, and some
 code snippets depend on earlier imports and objects. Full examples are
 available in the examples directory.
 
-1.  Importing Acumos
-2.  Creating A Session
-3.  A Simple Model
-4.  Exporting Models
-5.  Defining Types
-6.  Using DataFrames With ``scikit-learn``
-7.  Declaring Requirements
-8.  TensorFlow
-9.  Testing Models
-10. More Examples
+1.  `Importing Acumos`_
+2.  `Creating A Session`_
+3.  `A Simple Model`_
+4.  `Exporting Models`_
+5.  `Defining Types`_
+6.  `Using DataFrames with scikit-learn`_
+7.  `Declaring Requirements`_
+8.  `TensorFlow`_
+9.  `Testing Models`_
+10. `More Examples`_
 
 Importing Acumos
 ================
@@ -100,16 +100,24 @@ Exporting Models
 ================
 
 We can now export our model using the ``AcumosSession`` object created
-earlier. The ``push`` and ``dump`` APIs are shown below.
-
-**Note:** Pushing a model to Acumos will prompt you for your username
-and password. You can also set the ``ACUMOS_USERNAME`` and
-``ACUMOS_PASSWORD`` environment variables to avoid being prompted.
+earlier. The ``push`` and ``dump`` APIs are shown below. The ``dump`` method will
+save the model to disk so that it can be onboarded via the Acumos web UI. The
+``push`` method pushes the model directly to Acumos.
 
 .. code:: python
 
     session.push(model, 'my-model')
     session.dump(model, 'my-model', '~/')  # creates ~/my-model
+
+**Note:** Pushing a model to Acumos will prompt you for your username
+and password if you have not previously authenticated. There are two ways to
+avoid the interactive prompt:
+
+#. Export the ``ACUMOS_USERNAME`` and ``ACUMOS_PASSWORD`` environment variables,
+   which correspond to your username and password used to log into Acumos website.
+#. Export the ``ACUMOS_TOKEN`` environment variable, which corresponds to an
+   authentication token that can be found in your account settings on the Acumos
+   website.
 
 Defining Types
 ==============
@@ -157,7 +165,7 @@ syntax:
         width: int
         height: int
 
-Using DataFrames With scikit-learn
+Using DataFrames with scikit-learn
 ==================================
 
 In this example, we train a ``RandomForestClassifier`` using
@@ -279,7 +287,8 @@ PyPI package:
 TensorFlow
 ==========
 
-Check out the TensorFlow example in the examples directory.
+Check out the TensorFlow example in the ``examples/`` directory of the Acumos Python
+client repository.
 
 Testing Models
 ==============

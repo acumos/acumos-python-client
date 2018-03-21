@@ -60,38 +60,40 @@ class AcumosSession(object):
         self.push_api = push_api
         self.auth_api = auth_api
 
-    def push(self, model, name, requirements=None):
+    def push(self, model, name, requirements=None, extra_headers=None):
         '''
         Pushes a model to Acumos
 
         Parameters
         ----------
-        model : acumos.modeling.Model
-            A Acumos model instance
+        model : ``acumos.modeling.Model``
+            An Acumos model instance
         name : str
             The name of your model
-        requirements : acumos.session.Requirements
+        requirements : ``acumos.session.Requirements``, optional
             Additional Python dependencies that you can optionally specify
+        extra_headers : dict, optional
+            Additonal HTTP headers included in the POST to the Acumos onboarding server
         '''
         _assert_valid_input(model, requirements)
         _assert_valid_apis(push_api=self.push_api, auth_api=self.auth_api)
 
         with _dump_model(model, name, requirements) as dump_dir:
-            _push_model(dump_dir, self.push_api, self.auth_api)
+            _push_model(dump_dir, self.push_api, self.auth_api, extra_headers=extra_headers)
 
     def dump(self, model, name, outdir, requirements=None):
         '''
-        Creates a Acumos model .zip on the local file system
+        Creates a directory located at ``outdir/name`` containing Acumos model artifacts
 
         Parameters
         ----------
-        model : acumos.modeling.Model
-            A Acumos model instance
+        model : ``acumos.modeling.Model``
+            An Acumos model instance
         name : str
             The name of your model
         outdir : str
             The directory or folder to save your model .zip to
-        requirements : acumos.session.Requirements
+        requirements : ``acumos.session.Requirements``, optional
             Additional Python dependencies that you can optionally specify
         '''
         _assert_valid_input(model, requirements)
@@ -112,14 +114,14 @@ def _assert_valid_apis(**apis):
     '''Raises AcumosError if api are invalid'''
     for param, api in apis.items():
         if api is None:
-            raise AcumosError("An API for `{}` must be provided".format(param))
+            raise AcumosError("AcumosSession.push requires that the API for `{}` be provided".format(param))
 
         if not api.startswith('https'):
             logger.warning("Provided `{}` API {} does not begin with 'https'. Your password and token are visible in plaintext!".format(param, api))
 
 
-def _push_model(dump_dir, push_api, auth_api, max_tries=2):
-    '''Pushes a model to the acumos server'''
+def _push_model(dump_dir, push_api, auth_api, max_tries=2, extra_headers=None):
+    '''Pushes a model to the Acumos server'''
     with open(path_join(dump_dir, 'model.zip'), 'rb') as model, \
             open(path_join(dump_dir, 'metadata.json')) as meta, \
             open(path_join(dump_dir, 'model.proto')) as proto:
@@ -128,12 +130,15 @@ def _push_model(dump_dir, push_api, auth_api, max_tries=2):
                  'metadata': ('metadata.json', meta, 'application/json'),
                  'schema': ('model.proto', proto, 'application/text')}
 
-        _post_model(files, push_api, auth_api, 1, max_tries)
+        _post_model(files, push_api, auth_api, 1, max_tries, extra_headers)
 
 
-def _post_model(files, push_api, auth_api, tries, max_tries):
+def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers):
     '''Attempts to post the model to Acumos'''
     headers = {'Authorization': get_jwt(auth_api)}
+    if extra_headers is not None:
+        headers.update(extra_headers)
+
     r = requests.post(push_api, files=files, headers=headers)
 
     if r.status_code == 201:
@@ -144,7 +149,7 @@ def _post_model(files, push_api, auth_api, tries, max_tries):
             raise AcumosError("Authentication succeeded but authorization failed: {}".format(r.text))
         else:
             logger.warning('Authorization failed. Trying again')
-            _post_model(files, push_api, auth_api, tries + 1, max_tries)
+            _post_model(files, push_api, auth_api, tries + 1, max_tries, extra_headers)
     else:
         raise AcumosError("Model upload failed: {}".format(r.text))
 
