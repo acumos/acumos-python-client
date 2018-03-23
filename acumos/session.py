@@ -30,6 +30,7 @@ from tempfile import TemporaryDirectory
 from os import walk, mkdir
 from os.path import dirname, isdir, expanduser, relpath, basename, join as path_join
 from pathlib import Path
+from collections import namedtuple
 
 from acumos.pickler import AcumosContextManager, dump_model
 from acumos.metadata import create_model_meta, Requirements
@@ -42,6 +43,9 @@ from acumos.auth import get_jwt, clear_jwt
 
 
 logger = get_logger(__name__)
+
+
+_ServerResponse = namedtuple('ServerResponse', 'status_code reason text')
 
 
 class AcumosSession(object):
@@ -143,15 +147,13 @@ def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers):
 
     if r.status_code == 201:
         logger.info("Model successfully pushed to {}".format(push_api))
-    elif r.status_code == 401:
-        clear_jwt()
-        if tries == max_tries:
-            raise AcumosError("Authentication succeeded but authorization failed: {}".format(r.text))
-        else:
-            logger.warning('Authorization failed. Trying again')
-            _post_model(files, push_api, auth_api, tries + 1, max_tries, extra_headers)
     else:
-        raise AcumosError("Model upload failed: {}".format(r.text))
+        clear_jwt()
+        if r.status_code == 401 and tries != max_tries:
+            logger.warning('Model failed to upload due to authorization failure. Clearing credentials and trying again')
+            _post_model(files, push_api, auth_api, tries + 1, max_tries, extra_headers)
+        else:
+            raise AcumosError("Model failed to upload: {}".format(_ServerResponse(r.status_code, r.reason, r.text)))
 
 
 @contextlib.contextmanager

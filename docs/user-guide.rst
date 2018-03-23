@@ -23,8 +23,8 @@ Acumos Python Client User Guide
 
 |Build Status|
 
-A client library that allows modelers to push their Python models to
-Acumos.
+``acumos`` is a client library that allows modelers to push their Python models
+to the `Acumos platform <https://www.acumos.org/>`__.
 
 Installation
 ============
@@ -49,7 +49,7 @@ Protocol Buffers
 ----------------
 
 The ``acumos`` package uses protocol buffers and **assumes you have
-the protobuf compiler ``protoc`` installed**. Please visit the `protobuf
+the protobuf compiler** ``protoc`` **installed**. Please visit the `protobuf
 repository <https://github.com/google/protobuf/releases/tag/v3.4.0>`__
 and install the appropriate ``protoc`` for your operating system.
 Installation is as easy as downloading a binary release and adding it to
