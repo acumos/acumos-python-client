@@ -20,6 +20,15 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.6.1
+======
+
+-  Model upload
+
+   - The JWT is now cleared immediately after a failed upload
+   - Additional HTTP information is now included in the error message
+
+
 v0.6.0
 ======
 
