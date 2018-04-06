@@ -20,6 +20,14 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.6.2
+======
+
+-  TensorFlow
+
+   - Fixed a serialization issue that occurred when using a frozen graph
+
+
 v0.6.1
 ======
 

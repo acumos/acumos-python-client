@@ -153,33 +153,30 @@ def _save_tf_session(pickler, session):
     import tensorflow as tf
 
     context = get_context()
-    model_subdir_abspath = context.create_subdir()  # /path/to/context/root/abc123
+    model_subdir_abspath = context.create_subdir()
 
-    model_name = 'model.ckpt'
-    model_subpath = path_join(basename(model_subdir_abspath), model_name)  # abc123/model.ckpt
-    model_abspath = path_join(context.abspath, model_subpath)  # /path/to/context/root/abc123/model.ckpt
+    model_name = 'model'
+    model_subpath = path_join(basename(model_subdir_abspath), model_name)
+    model_abspath = path_join(context.abspath, model_subpath)
 
-    interactive = isinstance(session, tf.InteractiveSession)
-
-    # graph is included in save_reduce in order to make sure that it is restored before trying
-    # to restore the session, which would result in an error due to missing tensors / operations
     graph = session.graph
+    with graph.as_default():
+        saver = tf.train.Saver(allow_empty=True)
+        saver.save(session, model_abspath, write_meta_graph=False)  # don't export meta graph twice
 
-    saver = tf.train.Saver()
-    saver.save(session, model_abspath)
-    pickler.save_reduce(_load_tf_session, (model_subpath, interactive, graph), obj=session)
+    pickler.save_reduce(_load_tf_session, (model_subpath, session.__class__, graph), obj=session)
 
 
-def _load_tf_session(model_subpath, interactive, graph):
+def _load_tf_session(model_subpath, session_cls, graph):
     '''Loads a TensorFlow session'''
     import tensorflow as tf
 
     context = get_context()
-    model_path = context.build_path(model_subpath)  # /different/path/to/context/root/abc123/model.ckpt
+    model_path = context.build_path(model_subpath)
 
     with graph.as_default():
-        sess = tf.InteractiveSession() if interactive else tf.Session()
-        saver = tf.train.Saver()
+        sess = session_cls()
+        saver = tf.train.Saver(allow_empty=True)
         saver.restore(sess, model_path)
     return sess
 
@@ -189,14 +186,14 @@ def _save_tf_graph(pickler, graph):
     import tensorflow as tf
 
     context = get_context()
-    model_subdir_abspath = context.create_subdir()  # /path/to/context/root/abc123
+    model_subdir_abspath = context.create_subdir()
 
     graph_name = 'graph.meta'
     graph_subpath = path_join(basename(model_subdir_abspath), graph_name)
     graph_abspath = path_join(context.abspath, graph_subpath)
 
     with graph.as_default():
-        tf.train.export_meta_graph(graph_abspath)  # exports default graph
+        tf.train.export_meta_graph(graph_abspath)
     pickler.save_reduce(_load_tf_graph, (graph_subpath, ), obj=graph)
 
 
