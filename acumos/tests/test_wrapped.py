@@ -19,13 +19,13 @@
 """
 Provides wrapped model tests
 """
-import tempfile
 import io
 import sys
 import logging
 from os.path import join as path_join, abspath, dirname
 from collections import Counter
 from operator import eq
+from tempfile import TemporaryDirectory
 
 import pytest
 import PIL
@@ -40,6 +40,7 @@ from acumos.wrapped import load_model, _pack_pb_msg
 from acumos.modeling import Model, create_dataframe, List, Dict, create_namedtuple
 from acumos.session import _dump_model, _copy_dir, Requirements
 
+from test_pickler import _build_tf_model
 from utils import run_command
 
 
@@ -272,34 +273,13 @@ def test_wrapped_tensorflow():
     _generic_test(f2, in_, out, wrapped_eq=lambda a, b: (a[0] == b[0]).all(), preload=tf.reset_default_graph)
 
 
-def _build_tf_model(session, data, target):
-    '''Builds and iris tensorflow model and returns the prediction tensor'''
-    x = tf.placeholder(shape=[None, 4], dtype=tf.float32)
-    y = tf.placeholder(shape=[None, 3], dtype=tf.float32)
-
-    layer1 = tf.layers.dense(x, 3, activation=tf.nn.relu)
-    logits = tf.layers.dense(layer1, 3)
-
-    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y))
-    optimizer = tf.train.GradientDescentOptimizer(0.075).minimize(cost)
-
-    init = tf.global_variables_initializer()
-    session.run(init)
-
-    for epoch in range(3):
-        _, loss = session.run([optimizer, cost], feed_dict={x: data, y: target})
-
-    prediction = tf.argmax(logits, 1)
-    return x, y, prediction
-
-
 def _generic_test(func, in_, out, wrapped_eq=eq, pb_mg_eq=eq, pb_bytes_eq=eq, dict_eq=eq, json_eq=eq, preload=None, reqs=None, skip=None):
     '''Reusable wrap test routine with swappable equality functions'''
 
     model = Model(transform=func)
     model_name = 'my-model'
 
-    with tempfile.TemporaryDirectory() as tdir:
+    with TemporaryDirectory() as tdir:
         with _dump_model(model, model_name, reqs) as dump_dir:
             _copy_dir(dump_dir, tdir, model_name)
 

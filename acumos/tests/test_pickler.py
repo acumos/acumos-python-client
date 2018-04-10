@@ -21,12 +21,13 @@ Tests custom pickling logic
 """
 import os
 import sys
-import tempfile
+from tempfile import TemporaryDirectory
 from os.path import join as path_join, abspath, dirname
 
 import pytest
 import numpy as np
 import pandas as pd
+import tensorflow as tf
 from sklearn.datasets import load_iris
 from sklearn.svm import SVC
 from keras.models import Sequential
@@ -94,7 +95,7 @@ def test_pickler_keras():
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     model.fit(X, y_onehot, verbose=0)
 
-    with tempfile.TemporaryDirectory() as root:
+    with TemporaryDirectory() as root:
 
         with AcumosContextManager(root) as context:
             model_path = context.build_path('model.pkl')
@@ -119,7 +120,7 @@ def test_pickler_sklearn():
     model = SVC()
     model.fit(X, y)
 
-    with tempfile.TemporaryDirectory() as root:
+    with TemporaryDirectory() as root:
 
         with AcumosContextManager(root) as context:
             model_path = context.build_path('model.pkl')
@@ -133,6 +134,126 @@ def test_pickler_sklearn():
                 loaded_model = load_model(f)
 
     assert (model.predict(X) == loaded_model.predict(X)).all()
+
+
+def test_pickler_tensorflow():
+    '''Tests tensorflow session and graph serialization'''
+    tf.set_random_seed(0)
+
+    iris = load_iris()
+    data = iris.data
+    target = iris.target
+    target_onehot = pd.get_dummies(target).values.astype(float)
+
+    with tf.Graph().as_default():
+
+        # test pickling a session with trained weights
+
+        session = tf.Session()
+        x, y, prediction = _build_tf_model(session, data, target_onehot)
+        yhat = session.run([prediction], {x: data})[0]
+
+        with TemporaryDirectory() as model_root:
+            with AcumosContextManager(model_root) as context:
+                model_path = context.build_path('model.pkl')
+                with open(model_path, 'wb') as f:
+                    dump_model(session, f)
+
+                assert {'acumos', 'dill', 'tensorflow'} == context.modules
+
+            with AcumosContextManager(model_root) as context:
+                with open(model_path, 'rb') as f:
+                    loaded_session = load_model(f)
+
+            loaded_graph = loaded_session.graph
+            loaded_prediction = loaded_graph.get_tensor_by_name(prediction.name)
+            loaded_x = loaded_graph.get_tensor_by_name(x.name)
+            loaded_yhat = loaded_session.run([loaded_prediction], {loaded_x: data})[0]
+
+            assert loaded_session is not session
+            assert loaded_graph is not session.graph
+            assert (yhat == loaded_yhat).all()
+
+        # tests pickling a session with a frozen graph
+
+        with TemporaryDirectory() as frozen_root:
+            save_path = path_join(frozen_root, 'model')
+
+            with loaded_session.graph.as_default():
+                saver = tf.train.Saver()
+                saver.save(loaded_session, save_path)
+
+            frozen_path = _freeze_graph(frozen_root, ['prediction'])
+            frozen_graph = _unfreeze_graph(frozen_path)
+            frozen_session = tf.Session(graph=frozen_graph)
+
+        with TemporaryDirectory() as model_root:
+            with AcumosContextManager(model_root) as context:
+                model_path = context.build_path('model.pkl')
+                with open(model_path, 'wb') as f:
+                    dump_model(frozen_session, f)
+
+            with AcumosContextManager(model_root) as context:
+                with open(model_path, 'rb') as f:
+                    loaded_frozen_session = load_model(f)
+
+            loaded_frozen_graph = loaded_frozen_session.graph
+            loaded_frozen_prediction = loaded_frozen_graph.get_tensor_by_name(prediction.name)
+            loaded_frozen_x = loaded_frozen_graph.get_tensor_by_name(x.name)
+            loaded_frozen_yhat = loaded_frozen_session.run([loaded_frozen_prediction], {loaded_frozen_x: data})[0]
+
+            assert loaded_frozen_session is not frozen_session
+            assert loaded_frozen_graph is not frozen_session.graph
+            assert (yhat == loaded_frozen_yhat).all()
+
+
+def _build_tf_model(session, data, target):
+    '''Builds and iris tensorflow model and returns the prediction tensor'''
+    x = tf.placeholder(shape=[None, 4], dtype=tf.float32)
+    y = tf.placeholder(shape=[None, 3], dtype=tf.float32)
+
+    layer1 = tf.layers.dense(x, 3, activation=tf.nn.relu)
+    logits = tf.layers.dense(layer1, 3)
+
+    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=y))
+    optimizer = tf.train.GradientDescentOptimizer(0.075).minimize(cost)
+
+    init = tf.global_variables_initializer()
+    session.run(init)
+
+    for epoch in range(3):
+        _, loss = session.run([optimizer, cost], feed_dict={x: data, y: target})
+
+    prediction = tf.argmax(logits, 1, name='prediction')
+    return x, y, prediction
+
+
+def _freeze_graph(model_dir, output_node_names):
+    '''Modified from https://blog.metaflow.fr/tensorflow-how-to-freeze-a-model-and-serve-it-with-a-python-api-d4f3596b3adc'''
+    input_checkpoint = tf.train.get_checkpoint_state(model_dir).model_checkpoint_path
+    graph_path = "{}.meta".format(input_checkpoint)
+    output_graph = path_join(model_dir, 'frozen_model.pb')
+
+    with tf.Session(graph=tf.Graph()) as session:
+        saver = tf.train.import_meta_graph(graph_path, clear_devices=True)
+        saver.restore(session, input_checkpoint)
+        output_graph_def = tf.graph_util.convert_variables_to_constants(session,
+                                                                        session.graph.as_graph_def(),
+                                                                        output_node_names)
+        with tf.gfile.GFile(output_graph, 'wb') as f:
+            f.write(output_graph_def.SerializeToString())
+    return output_graph
+
+
+def _unfreeze_graph(frozen_graph_path):
+    '''Modified from https://blog.metaflow.fr/tensorflow-how-to-freeze-a-model-and-serve-it-with-a-python-api-d4f3596b3adc'''
+    with tf.gfile.GFile(frozen_graph_path, 'rb') as f:
+        graph_def = tf.GraphDef()
+        graph_def.ParseFromString(f.read())
+
+    with tf.Graph().as_default() as graph:
+        tf.import_graph_def(graph_def, name='')
+    return graph
 
 
 def test_nested_model():
@@ -155,7 +276,7 @@ def test_nested_model():
     crazy_good_model = lambda x: m1.predict_classes(x) + m2.predict(x)  # noqa
     out1 = crazy_good_model(X)
 
-    with tempfile.TemporaryDirectory() as root:
+    with TemporaryDirectory() as root:
 
         with AcumosContextManager(root) as context:
             model_path = context.build_path('model.pkl')
@@ -199,7 +320,7 @@ def test_context():
 
 def test_context_provided_root():
     '''Tests AcumosContextManager with a provided root directory'''
-    with tempfile.TemporaryDirectory() as root:
+    with TemporaryDirectory() as root:
         with AcumosContextManager(root) as c1:
             abspath = c1.create_subdir()
             assert os.path.isdir(abspath)
