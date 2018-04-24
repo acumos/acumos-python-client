@@ -46,7 +46,7 @@ IrisDataFrame = create_dataframe('IrisDataFrame', X_df)
 def classify_iris(df: IrisDataFrame) -> List[int]:
     '''Returns an array of iris classifications'''
     X = np.column_stack(df)
-    return clf.predict(X)
+    return clf.predict_classes(X)
 
 
 model = Model(classify=classify_iris)

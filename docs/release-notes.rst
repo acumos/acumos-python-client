@@ -20,6 +20,16 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.6.3
+======
+
+-  Bug fixes
+
+   - Improved dependency inspection when using a virtualenv
+   - Removed custom packages from model metadata, as it caused image build failures
+   - Fixed Python 3.5.2 ordering bug in wrapped model usage
+
+
 v0.6.2
 ======
 

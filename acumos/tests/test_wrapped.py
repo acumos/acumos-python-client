@@ -138,10 +138,10 @@ def test_wrapped_prim_type():
     f8_out = (6, )
 
     for func, in_, out in ((f1, f1_in, f1_out), (f2, f2_in, f2_out), (f3, f3_in, f3_out),
-                           (f4, f4_in, f4_out), (f5, f5_in, f5_out), (f6, f6_in, f6_out),
-                           (f8, f8_in, f8_out)):
+                           (f4, f4_in, f4_out), (f6, f6_in, f6_out), (f8, f8_in, f8_out)):
         _generic_test(func, in_, out)
 
+    _generic_test(f5, f5_in, f5_out, reqs=Requirements(req_map={'PIL': 'pillow'}))
     _generic_test(f7, f7_in, f7_out, skip=_dict_skips)
 
 

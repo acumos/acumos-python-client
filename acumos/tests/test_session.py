@@ -42,6 +42,7 @@ from acumos.exc import AcumosError
 from acumos.utils import load_artifact
 from acumos.auth import clear_jwt, _USERNAME_VAR, _PASSWORD_VAR, _TOKEN_VAR
 from acumos.metadata import SCHEMA_VERSION
+
 from mock_server import MockServer
 
 
