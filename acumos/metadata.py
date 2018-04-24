@@ -36,7 +36,6 @@ _SCHEMA = "acumos.schema.model:{}".format(SCHEMA_VERSION)
 # known package mappings because Python packaging is madness
 _REQ_MAP = {
     'sklearn': 'scikit-learn',
-    'PIL': 'Pillow'
 }
 
 
@@ -66,7 +65,7 @@ class Requirements(object):
 
     @property
     def package_names(self):
-        return set(map(basename, self.packages))
+        return set(basename(p.rstrip(pathsep)) for p in self.packages)
 
 
 def _safe_set(input_):
@@ -87,7 +86,7 @@ def create_model_meta(model, name, requirements, encoding='protobuf'):
 def _create_runtime(requirements, encoding='protobuf'):
     '''Returns a runtime dict'''
     req_set = _create_requirement_set(requirements)
-    req_tuples = _req_iter(req_set, requirements.package_names)
+    req_tuples = _req_iter(req_set)
     return {'name': 'python',
             'encoding': encoding,
             'version': '.'.join(map(str, sys.version_info[:3])),
@@ -96,10 +95,17 @@ def _create_runtime(requirements, encoding='protobuf'):
 
 def _create_requirement_set(requirements):
     '''Returns a set of requirement names'''
+    # first get all non-stdlib requirement names
     req_names = (n for n in map(_get_requirement_name, requirements.reqs) if not _in_stdlib(n))
+
+    # then apply any user-provided requirement mappings
     req_map = {_get_requirement_name(k): v for k, v in requirements.req_map.items()}
     mapped_reqs = {req_map.get(r, r) for r in req_names}
-    return mapped_reqs
+
+    # finally remove user-provided custom package names, as they won't exist in pip
+    pkg_names = requirements.package_names
+    filtered_reqs = {req for req in mapped_reqs if req not in pkg_names}
+    return filtered_reqs
 
 
 def _get_requirement_name(req):
@@ -113,14 +119,13 @@ def _get_requirement_name(req):
     return name
 
 
-def _req_iter(req_names, package_names):
+def _req_iter(req_names):
     '''Yields (package, version) tuples'''
     for req_name in req_names:
         try:
             yield str(get_distribution(req_name).as_requirement()).split('==')
         except DistributionNotFound:
-            if req_name not in package_names:
-                raise AcumosError("Module {} was detected as a dependency, but not found as a pip installed package. Use acumos.session.Requirements to declare custom packages or map module names to pip-installable names (e.g. Requirements(req_map=dict(cv2='opencv-python')) )".format(req_name))
+            raise AcumosError("Module {} was detected as a dependency, but not found as a pip installed package. Use acumos.session.Requirements to declare custom packages or map module names to pip-installable names (e.g. Requirements(req_map=dict(cv2='opencv-python')) )".format(req_name))
 
 
 def _in_stdlib(module_name):
@@ -133,7 +138,7 @@ def _in_stdlib(module_name):
     except ImportError:
         return False
 
-    if not install_path.startswith(sys.prefix):
+    if not install_path.startswith(sys.base_prefix):
         return False
 
     dirs = set(normpath(install_path).split(pathsep))

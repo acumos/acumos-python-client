@@ -33,6 +33,7 @@ import dill
 
 from acumos.modeling import _is_namedtuple, create_namedtuple, Empty
 from acumos.exc import AcumosError
+from acumos.utils import namedtuple_field_types
 
 
 _BLACKLIST = {'builtins', '__main__'}
@@ -73,7 +74,8 @@ def _load_annotation(t, args):
 
 def _save_namedtuple(pickler, obj):
     '''Workaround for dill NamedTuple serialization bug'''
-    pickler.save_reduce(_load_namedtuple, (obj.__name__, obj._field_types), obj=obj)
+    field_types = namedtuple_field_types(obj)
+    pickler.save_reduce(_load_namedtuple, (obj.__name__, field_types), obj=obj)
 
 
 def _load_namedtuple(name, field_types):

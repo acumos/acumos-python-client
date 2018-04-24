@@ -31,6 +31,7 @@ import numpy as np
 
 from acumos.exc import AcumosError
 from acumos.modeling import List, Dict, Enum, _is_namedtuple
+from acumos.utils import namedtuple_field_types
 
 
 _PROTO_SYNTAX = 'syntax = "proto3";'
@@ -153,7 +154,7 @@ def _types_equal(t1, t2):
     '''Returns True if t1 and t2 types are equal. Can't override __eq__ on NamedTuple unfortunately.'''
     if _is_namedtuple(t1) and _is_namedtuple(t2):
         names_match = t1.__name__ == t2.__name__
-        ft1, ft2 = t1._field_types, t2._field_types
+        ft1, ft2 = namedtuple_field_types(t1), namedtuple_field_types(t2)
         keys_match = ft1.keys() == ft2.keys()
         values_match = all(_types_equal(v1, v2) for v1, v2 in zip(ft1.values(), ft2.values()))
         return names_match and keys_match and values_match
@@ -170,7 +171,7 @@ def _types_equal(t1, t2):
 def _nt2proto(nt, type_names):
     '''Converts a NamedTuple definition to a protobuf schema str'''
     msg_def = '\n'.join(_field2proto(field, type_, index, type_names)
-                        for index, (field, type_) in enumerate(nt._field_types.items(), 1))
+                        for index, (field, type_) in enumerate(namedtuple_field_types(nt).items(), 1))
     return _message_template.format(name=nt.__name__, msg_def=msg_def)
 
 

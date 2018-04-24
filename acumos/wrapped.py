@@ -176,9 +176,9 @@ class WrappedResponse(object):
 def _pack_pb_msg(wrapped_in, module):
     '''Returns a protobuf message object from a NamedTuple instance'''
     wrapped_type = type(wrapped_in)
+    field_types = wrapped_type._field_types
     pb_type = getattr(module, wrapped_type.__name__)
-    return pb_type(**{f: _set_pb_value(t, v, module)
-                      for (f, t), v in zip(wrapped_in._field_types.items(), wrapped_in)})
+    return pb_type(**{f: _set_pb_value(field_types[f], v, module) for f, v in zip(wrapped_in._fields, wrapped_in)})
 
 
 def _set_pb_value(wrapped_type, value, module):
@@ -201,8 +201,8 @@ def _set_pb_value(wrapped_type, value, module):
 
 def _unpack_pb_msg(input_type, pb_msg):
     '''Returns a NamedTuple from protobuf message'''
-    values = (_get_pb_value(t, getattr(pb_msg, f)) for f, t in input_type._field_types.items())
-    return input_type(*values)
+    values = {f: _get_pb_value(t, getattr(pb_msg, f)) for f, t in input_type._field_types.items()}
+    return input_type(**values)
 
 
 def _get_pb_value(wrapped_type, pb_value):

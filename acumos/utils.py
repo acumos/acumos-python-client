@@ -21,11 +21,17 @@ Provides model wrapping utilities
 """
 import sys
 import os
-import re
 import inspect
 import contextlib
+from collections import OrderedDict
 
 from acumos.exc import AcumosError
+
+
+def namedtuple_field_types(nt):
+    '''Returns an OrderedDict corresponding to NamedTuple field types'''
+    field_types = nt._field_types
+    return OrderedDict((field, field_types[field]) for field in nt._fields)
 
 
 def _load_module_py33(fullname, path):
@@ -68,10 +74,6 @@ def dump_artifact(*path, data, module, mode):
             f.write(data)
         else:
             module.dump(data, f)
-
-
-def sanitize_field(name):
-    return re.sub(r"\W+", '_', name)
 
 
 def get_qualname(o):
