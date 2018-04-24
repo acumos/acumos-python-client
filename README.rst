@@ -24,7 +24,7 @@ acumos-python-client
 
 A client library that allows developers to push their Python models to Acumos.
 
-See our `documentation <docs/README.rst>`__ to get started.
+See our `documentation <docs/user-guide.rst>`__ to get started.
 
 .. |Build Status| image:: https://jenkins.acumos.org/buildStatus/icon?job=acumos-python-client-tox-verify-master
    :target: https://jenkins.acumos.org/job/acumos-python-client-tox-verify-master/
