@@ -22,7 +22,7 @@ Provides wrapped model tests
 import io
 import sys
 import logging
-from os.path import join as path_join, abspath, dirname
+from os.path import join as path_join
 from collections import Counter
 from operator import eq
 from tempfile import TemporaryDirectory
@@ -41,16 +41,15 @@ from acumos.modeling import Model, create_dataframe, List, Dict, create_namedtup
 from acumos.session import _dump_model, _copy_dir, Requirements
 
 from test_pickler import _build_tf_model
-from utils import run_command
+from utils import run_command, TEST_DIR
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-_TEST_DIR = dirname(abspath(__file__))
-_IMG_PATH = path_join(_TEST_DIR, 'att.png')
-_CUSTOM_PACKAGE_DIR = path_join(_TEST_DIR, 'custom_package')
-_CUSTOM_PACKAGE_HELPER = path_join(_TEST_DIR, 'custom_package_test_helper.py')
+_IMG_PATH = path_join(TEST_DIR, 'att.png')
+_CUSTOM_PACKAGE_DIR = path_join(TEST_DIR, 'custom_package')
+_CUSTOM_PACKAGE_HELPER = path_join(TEST_DIR, 'custom_package_test_helper.py')
 
 
 @pytest.mark.skipif(sys.version_info < (3, 6), reason='Requires python3.6')

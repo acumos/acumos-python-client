@@ -27,7 +27,7 @@ from collections import namedtuple
 import requests
 from requests import ConnectionError
 
-from utils import get_workspace
+from utils import TEST_DIR
 
 
 _EXPECT_RE = r'.*Running on (?P<server>http://.*:\d+).*'
@@ -65,8 +65,7 @@ class MockServer(object):
         port = _find_port() if port is None else port
         self.config = _Config(port)
 
-        workspace = get_workspace()
-        app_path = os.path.join(workspace, 'testing', 'upload', 'app.py')
+        app_path = os.path.join(TEST_DIR, 'connexion_server.py')
 
         cmd = ['python', app_path, '--port', port]
         if https:
