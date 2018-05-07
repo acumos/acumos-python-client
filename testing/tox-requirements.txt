@@ -1,5 +1,6 @@
 pytest
 pytest-rerunfailures
+pytest-cov
 connexion
 pandas<0.21.0
 scikit-learn
