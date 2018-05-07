@@ -16,7 +16,7 @@ paths:
       tags:
       - "Model"
       summary: "Upload a new model"
-      operationId: "app.upload"
+      operationId: "connexion_server.upload"
       consumes:
         - multipart/form-data
       produces:
@@ -65,7 +65,7 @@ paths:
       tags:
       - "Auth"
       summary: "Authenticate"
-      operationId: "app.authenticate"
+      operationId: "connexion_server.authenticate"
       consumes:
         - application/json
       produces:

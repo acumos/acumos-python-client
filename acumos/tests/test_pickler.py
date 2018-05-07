@@ -22,7 +22,7 @@ Tests custom pickling logic
 import os
 import sys
 from tempfile import TemporaryDirectory
-from os.path import join as path_join, abspath, dirname
+from os.path import join as path_join
 
 import pytest
 import numpy as np
@@ -37,11 +37,10 @@ from keras_contrib.layers.advanced_activations import PELU
 from acumos.pickler import dump_model, load_model, AcumosContextManager, get_context
 from acumos.exc import AcumosError
 
-from utils import run_command
+from utils import run_command, TEST_DIR
 
 
-_TEST_DIR = dirname(abspath(__file__))
-_UNPICKLER_HELPER = path_join(_TEST_DIR, 'unpickler_helper.py')
+_UNPICKLER_HELPER = path_join(TEST_DIR, 'unpickler_helper.py')
 
 
 def test_keras_contrib():
