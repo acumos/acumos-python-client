@@ -20,24 +20,17 @@
 """
 Provides testing utils
 """
-import os
 import subprocess
+import os
+from os.path import abspath, dirname
 
-from acumos.exc import AcumosError
 
-
-def get_workspace():
-    '''Returns WORKSPACE environment variable'''
-    workspace = os.environ.get('WORKSPACE')
-    if workspace is None:
-        raise AcumosError('Jenkins WORKSPACE environment variable is required and must point to root acumos-python-client repository directory.')
-    return workspace
+TEST_DIR = dirname(abspath(__file__))
 
 
 def run_command(cmd):
     '''Runs a given command and raises AcumosError on process failure'''
-    workspace = get_workspace()
-    env = {'PYTHONPATH': workspace, 'PATH': os.environ['PATH']}  # workspace includes acumos/, needed by helpers
+    env = {'PATH': os.environ['PATH']}
     proc = subprocess.Popen(cmd, stderr=subprocess.PIPE, env=env)
     _, stderr = proc.communicate()
     assert proc.returncode == 0, stderr.decode()
