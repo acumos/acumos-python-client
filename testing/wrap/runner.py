@@ -69,13 +69,20 @@ def invoke_method(model_method, downstream):
         resp = make_response(str_reply, 400)
 
     if bytes_out is not None:
+        resp = None
         for url in downstream:
             try:
-                requests.post(url, data=bytes_out)
+                req_response = requests.post(url, data=bytes_out)
+                if resp is None:  # save only first response from downstream list
+                    resp = make_response(req_response.content, req_response.status_code)
+                    for header_test in ['Content-Type', 'content-type']:  # test for content type to copy from downstream
+                        if header_test in req_response:
+                            content_type = req_response[header_test]
             except Exception as e:
                 print("Failed to publish to downstream url {} : {}".format(url, e))
         if app.return_output:
-            resp = make_response(bytes_out, 201)
+            if resp is None:  # only if not received from downstream
+                resp = make_response(bytes_out, 201)
         else:
             resp = make_response('OK', 201)
 
@@ -108,7 +115,9 @@ def build_app(pargs):
     if path.exists('runtime.json'):
         with open('runtime.json') as f:
             runtime = json.load(f)  # ad-hoc way of giving the app runtime parameters
-            downstream = runtime['downstream']  # list of IP:port/path urls
+            if not pargs.no_downstream:
+                downstream = runtime['downstream']  # list of IP:port/path urls
+                print("Found downstream forward routes {}".format(downstream))
     else:
         pargs.return_output = True
 
@@ -145,6 +154,7 @@ if __name__ == '__main__':
     parser.add_argument("--modeldir", type=str, default='model', help='specify the model directory to load')
     parser.add_argument("--json_io", action='store_true', help='input+output rich JSON instead of protobuf')
     parser.add_argument("--no_output", action='store_true', help='do not return output in response, only send downstream')
+    parser.add_argument("--no_downstream", action='store_true', help='ignore downstream arguments even if in runtime')
 
     pargs = parser.parse_args()
 

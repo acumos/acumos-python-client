@@ -20,6 +20,17 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.6.4
+======
+
+-  Bug fixes
+
+   - Switched to more robust example of model runner using `gunicorn <http://gunicorn.org/>`
+   - Update example model runner code to allow forward (and return) of downstream
+     responses for cascade model emulation.  Also allow skip of downstream
+     forward from runtime JSON configuration.
+
+
 v0.6.3
 ======
 
