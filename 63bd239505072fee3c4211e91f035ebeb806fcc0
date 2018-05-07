@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9bf57afc_fc4afdc9",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 94
+      },
+      "writtenOn": "2018-05-07T16:33:15Z",
+      "side": 1,
+      "message": "Inline hyperlinks should have an \u0027_\u0027 at the end: `gunicorn \u003chttp://gunicorn.org/\u003e`_  if you want the link to actually be a link\nhttp://docutils.sourceforge.net/docs/user/rst/quickref.html#hyperlink-targets",
+      "range": {
+        "startLine": 28,
+        "startChar": 59,
+        "endLine": 28,
+        "endChar": 92
+      },
+      "revId": "63bd239505072fee3c4211e91f035ebeb806fcc0",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
