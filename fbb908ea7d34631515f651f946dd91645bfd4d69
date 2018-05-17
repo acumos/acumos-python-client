@@ -1,0 +1,7 @@
+Code-Review+2: Eric Z <ezavesky@research.att.com>
+Verified+1: Acumos Jobbuilder <acumos-jobbuilder@jenkins.acumos.org>
+Submitted-by: Paul Triantafyllou <trianta@research.att.com>
+Submitted-at: Thu, 17 May 2018 20:29:18 +0000
+Reviewed-on: https://gerrit.acumos.org/r/1902
+Project: acumos-python-client
+Branch: refs/heads/master
