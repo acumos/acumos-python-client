@@ -24,7 +24,7 @@ import mock
 import tempfile
 import json
 from os import environ, listdir
-from os.path import isfile, dirname, abspath, join as path_join
+from os.path import isfile, join as path_join
 
 import pytest
 import numpy as np
@@ -44,11 +44,11 @@ from acumos.auth import clear_jwt, _USERNAME_VAR, _PASSWORD_VAR, _TOKEN_VAR
 from acumos.metadata import SCHEMA_VERSION
 
 from mock_server import MockServer
+from utils import TEST_DIR
 
 
-_TEST_DIR = dirname(abspath(__file__))
 _REQ_FILES = ('model.zip', 'model.proto', 'metadata.json')
-_CUSTOM_PACKAGE_DIR = path_join(_TEST_DIR, 'custom_package')
+_CUSTOM_PACKAGE_DIR = path_join(TEST_DIR, 'custom_package')
 _FAKE_USERNAME = 'foo'
 _FAKE_PASSWORD = 'bar'
 _FAKE_TOKEN = 'secrettoken'
@@ -153,7 +153,7 @@ def test_dump_model():
 
 def _load_schema(version):
     '''Returns a jsonschema dict from the model-schema submodule'''
-    path = path_join(_TEST_DIR, 'schemas', "schema-{}.json".format(version))
+    path = path_join(TEST_DIR, 'schemas', "schema-{}.json".format(version))
     with open(path) as f:
         schema = json.load(f)
     return schema
