@@ -141,7 +141,7 @@ def _in_stdlib(module_name):
     except ImportError:
         return False
 
-    if not install_path.startswith(sys.base_prefix):
+    if not install_path.startswith(normpath(sys.base_prefix)):
         return False
 
     dirs = set(normpath(install_path).split(pathsep))

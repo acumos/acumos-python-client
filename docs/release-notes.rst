@@ -20,6 +20,14 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.6.4
+======
+
+-  Bug fixes
+
+   - The normalized path of the system base prefix is now used for identifying stdlib packages
+
+
 v0.6.3
 ======
 
