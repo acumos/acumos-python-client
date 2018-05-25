@@ -23,7 +23,7 @@ import importlib
 import sys
 from types import ModuleType
 from pkg_resources import get_distribution, DistributionNotFound
-from os.path import basename, normpath, sep as pathsep
+from os.path import abspath, basename, normpath, sep as pathsep
 
 from acumos.exc import AcumosError
 
@@ -141,7 +141,7 @@ def _in_stdlib(module_name):
     except ImportError:
         return False
 
-    if not install_path.startswith(sys.base_prefix):
+    if not install_path.startswith(abspath(sys.base_prefix)):
         return False
 
     dirs = set(normpath(install_path).split(pathsep))
