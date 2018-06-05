@@ -96,7 +96,7 @@ class StandaloneApplication(BaseApplication):
 
     def __init__(self, pargs):
         self.parsed_args = pargs
-        self.options = {'bind': "{}:{}".format(pargs.host, pargs.port), 'workers': pargs.workers}
+        self.options = {'bind': "{}:{}".format(pargs.host, pargs.port), 'workers': pargs.workers, 'timeout': pargs.timeout}
         super().__init__()
 
     def load_config(self):
@@ -150,6 +150,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", type=str, default='0.0.0.0')
     parser.add_argument("--port", type=int, default=3330)
+    parser.add_argument("--timeout", type=int, default=120)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--modeldir", type=str, default='model', help='specify the model directory to load')
     parser.add_argument("--json_io", action='store_true', help='input+output rich JSON instead of protobuf')
