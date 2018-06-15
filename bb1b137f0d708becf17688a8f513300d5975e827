@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "17f5a96c_5651a63f",
+        "filename": "acumos/auth.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2018-06-15T20:08:48Z",
+      "side": 1,
+      "message": "Since we\u0027re now checking for a null env jwt, it may be more clear (and correct) to have:\n\n```\n    jwt \u003d environ.get(_TOKEN_VAR)\n    if not jwt:\n        config \u003d _configuration()\n        jwt \u003d config.get(\u0027jwt\u0027)\n        if not jwt:\n            jwt \u003d _authenticate(auth_api)\n            _configuration(jwt\u003djwt)\n```",
+      "revId": "bb1b137f0d708becf17688a8f513300d5975e827",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "13eeba47_4589da29",
+        "filename": "acumos/auth.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2018-06-15T20:08:48Z",
+      "side": 1,
+      "message": "This is susceptible to the same empty string issue - right?",
+      "revId": "bb1b137f0d708becf17688a8f513300d5975e827",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
