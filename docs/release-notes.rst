@@ -20,6 +20,14 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.6.5
+======
+
+-  Bug fixes
+
+   - Don't attempt to use an empty auth token (avoids blank strings to be set in environment)
+
+
 v0.6.4
 ======
 

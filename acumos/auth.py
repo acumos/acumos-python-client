@@ -49,12 +49,11 @@ getuser = input
 
 def get_jwt(auth_api):
     '''Returns the jwt string from config or authentication'''
-    if _TOKEN_VAR in environ:
-        jwt = environ[_TOKEN_VAR]
-    else:
+    jwt = environ.get(_TOKEN_VAR)
+    if not jwt:
         config = _configuration()
         jwt = config.get('jwt')
-        if jwt is None:
+        if not jwt:
             jwt = _authenticate(auth_api)
             _configuration(jwt=jwt)
     return jwt
