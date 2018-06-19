@@ -22,15 +22,18 @@ Provides testing utils
 """
 import subprocess
 import os
-from os.path import abspath, dirname
+from os.path import dirname
+
+import acumos
 
 
-TEST_DIR = dirname(abspath(__file__))
+TEST_DIR = dirname(__file__)
+ACUMOS_DIR = dirname(dirname(acumos.__file__))
 
 
 def run_command(cmd):
     '''Runs a given command and raises AcumosError on process failure'''
-    env = {'PATH': os.environ['PATH']}
+    env = {'PATH': os.environ['PATH'], 'PYTHONPATH': ACUMOS_DIR}
     proc = subprocess.Popen(cmd, stderr=subprocess.PIPE, env=env)
     _, stderr = proc.communicate()
     assert proc.returncode == 0, stderr.decode()

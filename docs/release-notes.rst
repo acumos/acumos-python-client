@@ -20,6 +20,15 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.7.0
+======
+
+-  Requirements
+
+   - Python script dependencies can now be specified using a Requirements object
+   - Python script dependencies found during the introspection stage are now included with the model
+
+
 v0.6.5
 ======
 

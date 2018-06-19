@@ -41,15 +41,13 @@ from acumos.modeling import Model, create_dataframe, List, Dict, create_namedtup
 from acumos.session import _dump_model, _copy_dir, Requirements
 
 from test_pickler import _build_tf_model
-from utils import run_command, TEST_DIR
+from utils import TEST_DIR
 
+
+_IMG_PATH = path_join(TEST_DIR, 'att.png')
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
-_IMG_PATH = path_join(TEST_DIR, 'att.png')
-_CUSTOM_PACKAGE_DIR = path_join(TEST_DIR, 'custom_package')
-_CUSTOM_PACKAGE_HELPER = path_join(TEST_DIR, 'custom_package_test_helper.py')
 
 
 @pytest.mark.skipif(sys.version_info < (3, 6), reason='Requires python3.6')
@@ -61,22 +59,6 @@ def test_py36_namedtuple():
         return Output(data.x + data.y)
 
     _generic_test(adder, Input(1, 2), Output(3))
-
-
-def test_custom_package():
-    '''Tests that custom packages can be included, wrapped, and loaded'''
-    from custom_package import custom_module  # local to tests/ directory
-
-    def my_transform(x: int, y: int) -> int:
-        return custom_module.add_numbers(x, y)
-
-    model = Model(transform=my_transform)
-    model_name = 'my-model'
-
-    reqs = Requirements(packages=[_CUSTOM_PACKAGE_DIR])
-
-    with _dump_model(model, model_name, reqs) as dump_dir:
-        run_command([sys.executable, _CUSTOM_PACKAGE_HELPER, dump_dir])
 
 
 @pytest.mark.flaky(reruns=5)

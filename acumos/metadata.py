@@ -51,21 +51,27 @@ class Requirements(object):
         A corrective mapping of Python modules to pip-installable package names. For example
         `req_map={'sklearn': 'scikit-learn'}` or `import sklearn; req_map={sklearn: 'scikit-learn'}`.
     packages : Sequence[str]
-        A sequence of paths to directories containing Python packages (i.e. Python packages). The
-        directories will be copied along with your model and added to the PYTHONPATH at runtime.
+        A sequence of paths to Python packages (i.e. directories with an __init__.py). Provided Python
+        packages will be copied along with your model and added to the PYTHONPATH at runtime.
+    scripts : Sequence[str]
+        A sequence of paths to Python scripts. A path can point to a Python script, or directory
+        containing Python scripts. If a directory is provided, all Python scripts within the directory
+        will be included. Provided Python scripts will be copied along with your model and added to the
+        PYTHONPATH at runtime.
     '''
 
-    __slots__ = ('reqs', 'req_map', 'packages')
+    __slots__ = ('reqs', 'req_map', 'packages', 'scripts')
 
-    def __init__(self, reqs=None, req_map=None, packages=None):
+    def __init__(self, reqs=None, req_map=None, packages=None, scripts=None):
         self.reqs = set() if reqs is None else _safe_set(reqs)
         self.req_map = dict() if req_map is None else req_map.copy()
         self.req_map.update(_REQ_MAP)
         self.packages = set() if packages is None else _safe_set(packages)
+        self.scripts = set() if scripts is None else _safe_set(scripts)
 
     @property
     def package_names(self):
-        return set(basename(p.rstrip(pathsep)) for p in self.packages)
+        return frozenset(basename(p.rstrip(pathsep)) for p in self.packages)
 
 
 def _safe_set(input_):

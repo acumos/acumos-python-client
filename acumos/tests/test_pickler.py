@@ -36,11 +36,33 @@ from keras_contrib.layers.advanced_activations import PELU
 
 from acumos.pickler import dump_model, load_model, AcumosContextManager, get_context
 from acumos.exc import AcumosError
+from acumos.modeling import Model
 
 from utils import run_command, TEST_DIR
+from user_module import user_function
 
 
 _UNPICKLER_HELPER = path_join(TEST_DIR, 'unpickler_helper.py')
+
+
+def test_user_script():
+    '''Tests that user scripts are identified as dependencies'''
+
+    def predict(x: int) -> int:
+        return user_function(x)
+
+    model = Model(predict=predict)
+
+    with AcumosContextManager() as context:
+        model_path = context.build_path('model.pkl')
+        with open(model_path, 'wb') as f:
+            dump_model(model, f)
+
+            assert 'user_module' in context.script_names
+
+        # unpickling should fail because `user_module` is not available
+        with pytest.raises(Exception, match="No module named 'user_module'"):
+            run_command([sys.executable, _UNPICKLER_HELPER, context.abspath])
 
 
 def test_keras_contrib():
@@ -56,7 +78,7 @@ def test_keras_contrib():
         model_path = context.build_path('model.pkl')
         with open(model_path, 'wb') as f:
             dump_model(model, f)
-            assert {'keras', 'dill', 'acumos', 'h5py', 'tensorflow', 'keras_contrib'} == context.modules
+            assert {'keras', 'dill', 'acumos', 'h5py', 'tensorflow', 'keras_contrib'} == context.package_names
 
         # verify that the contrib layers don't cause a load error
         run_command([sys.executable, _UNPICKLER_HELPER, context.abspath])
@@ -74,7 +96,7 @@ def test_function_import():
         with open(model_path, 'wb') as f:
             dump_model(foo, f)
 
-        assert {'dill', 'acumos', 'numpy'} == context.modules
+        assert {'dill', 'acumos', 'numpy'} == context.package_names
 
         with open(model_path, 'rb') as f:
             loaded_model = load_model(f)
@@ -101,7 +123,7 @@ def test_pickler_keras():
             with open(model_path, 'wb') as f:
                 dump_model(model, f)
 
-            assert {'keras', 'dill', 'acumos', 'h5py', 'tensorflow'} == context.modules
+            assert {'keras', 'dill', 'acumos', 'h5py', 'tensorflow'} == context.package_names
 
         with AcumosContextManager(root) as context:
             with open(model_path, 'rb') as f:
@@ -126,7 +148,7 @@ def test_pickler_sklearn():
             with open(model_path, 'wb') as f:
                 dump_model(model, f)
 
-            assert {'sklearn', 'dill', 'acumos', 'numpy'} == context.modules
+            assert {'sklearn', 'dill', 'acumos', 'numpy'} == context.package_names
 
         with AcumosContextManager(root) as context:
             with open(model_path, 'rb') as f:
@@ -158,7 +180,7 @@ def test_pickler_tensorflow():
                 with open(model_path, 'wb') as f:
                     dump_model(session, f)
 
-                assert {'acumos', 'dill', 'tensorflow'} == context.modules
+                assert {'acumos', 'dill', 'tensorflow'} == context.package_names
 
             with AcumosContextManager(model_root) as context:
                 with open(model_path, 'rb') as f:
@@ -282,7 +304,7 @@ def test_nested_model():
             with open(model_path, 'wb') as f:
                 dump_model(crazy_good_model, f)
 
-            assert {'sklearn', 'keras', 'dill', 'acumos', 'numpy', 'h5py', 'tensorflow'} == context.modules
+            assert {'sklearn', 'keras', 'dill', 'acumos', 'numpy', 'h5py', 'tensorflow'} == context.package_names
 
         with AcumosContextManager(root) as context:
             with open(model_path, 'rb') as f:
@@ -297,7 +319,7 @@ def test_context():
     with AcumosContextManager() as c1:
         c2 = get_context()
         assert c1 is c2
-        assert {'dill', 'acumos'} == c1.modules
+        assert {'dill', 'acumos'} == c1.package_names
 
         # default context already exists
         with pytest.raises(AcumosError):

@@ -28,9 +28,10 @@ import requests
 import fnmatch
 from tempfile import TemporaryDirectory
 from os import walk, mkdir
-from os.path import dirname, isdir, expanduser, relpath, basename, join as path_join
+from os.path import extsep, exists, abspath, dirname, isdir, isfile, expanduser, relpath, basename, join as path_join
 from pathlib import Path
 from collections import namedtuple
+from glob import glob
 
 from acumos.pickler import AcumosContextManager, dump_model
 from acumos.metadata import create_model_meta, Requirements
@@ -44,6 +45,8 @@ from acumos.auth import get_jwt, clear_jwt
 
 logger = get_logger(__name__)
 
+_PYEXT = "{}py".format(extsep)
+_PYGLOB = "*{}".format(_PYEXT)
 
 _ServerResponse = namedtuple('ServerResponse', 'status_code reason text')
 
@@ -166,32 +169,36 @@ def _dump_model(model, name, requirements=None):
         model_dir = path_join(rootdir, 'model')
         mkdir(model_dir)
 
-        with AcumosContextManager(model_dir) as c:
+        with AcumosContextManager(model_dir) as context:
 
-            with open(c.build_path('model.pkl'), 'wb') as f:
+            with open(context.build_path('model.pkl'), 'wb') as f:
                 dump_model(model, f)
 
             # generate protobuf definition
-            proto_pkg = c.parameters['protobuf_package'] = _random_string()
+            proto_pkg = context.parameters['protobuf_package'] = _random_string()
             protostr = model2proto(model, proto_pkg)
             dump_artifact(rootdir, 'model.proto', data=protostr, module=None, mode='w')
 
             # generate protobuf source code
             module_name = 'model'
-            proto_dir = c.create_subdir(path_join('scripts', 'acumos_gen', proto_pkg))
+            proto_dir = context.create_subdir('scripts', 'acumos_gen', proto_pkg)
             compile_protostr(protostr, proto_pkg, module_name, proto_dir)
 
             # generate model metadata
-            requirements.reqs.update(c.modules)
+            requirements.reqs.update(context.package_names)
             metadata = create_model_meta(model, name, requirements)
             dump_artifact(rootdir, 'metadata.json', data=metadata, module=json, mode='w')
 
-            # bundle user-provided scripts
-            user_provided = c.create_subdir(path_join('scripts', 'user_provided'))
-            Path(user_provided, '.keep').touch()  # may resolve pruning issues when unzipping
+            # bundle user-provided code
+            code_dir = context.create_subdir('scripts', 'user_provided')
+            Path(code_dir, '.keep').touch()  # may resolve pruning issues when unzipping
 
-            scripts = _gather_scripts(requirements.packages)
-            _copy_scripts(c, scripts)
+            # copy packages and modules
+            pkg_scripts = _gather_package_scripts(requirements.packages)
+            _copy_package_scripts(context, pkg_scripts, code_dir)
+
+            scripts = set(_gather_scripts(context, requirements))
+            _copy_scripts(scripts, code_dir)
 
         shutil.make_archive(model_dir, 'zip', model_dir)  # create zip at same level as parent
         shutil.rmtree(model_dir)  # clean up model directory
@@ -207,16 +214,16 @@ def _copy_dir(src_dir, outdir, name):
     shutil.copytree(src_dir, dst_path)
 
 
-def _copy_scripts(context, scripts, prefix=path_join('scripts', 'user_provided')):
-    '''Moves all gathered scripts to the context directory'''
+def _copy_package_scripts(context, scripts, code_dir):
+    '''Moves all gathered package scripts to the context code directory'''
     for script_relpath, script_abspath in scripts:
-        context_subdir = path_join(prefix, dirname(script_relpath))
-        context_absdir = context.create_subdir(context_subdir, exist_ok=True)
+        script_dirname = dirname(script_relpath)
+        context_absdir = context.create_subdir(code_dir, script_dirname, exist_ok=True)
         shutil.copy(script_abspath, context_absdir)
 
 
-def _gather_scripts(packages):
-    '''Yields (relpath, abspath) tuples of Python from a sequence of directories'''
+def _gather_package_scripts(packages):
+    '''Yields (relpath, abspath) tuples of Python scripts from a sequence of packages'''
     for path in packages:
         path = expanduser(path)
         if not isdir(path):
@@ -227,6 +234,35 @@ def _gather_scripts(packages):
                 script_abspath = path_join(root, filename)
                 script_relpath = path_join(basename(path), relpath(script_abspath, path))
                 yield script_relpath, script_abspath
+
+
+def _gather_scripts(context, reqs):
+    '''Yields absolute paths of Python script dependencies'''
+    for script in context.scripts:
+        yield script.__file__
+
+    for script_path in reqs.scripts:
+        script_abspath = abspath(expanduser(script_path))
+
+        if not exists(script_abspath):
+            raise AcumosError("Provided script requirement {} does not exist".format(script_path))
+
+        if isdir(script_abspath):
+            globbed_scripts = glob(path_join(script_abspath, _PYGLOB))
+            if not globbed_scripts:
+                raise AcumosError("Provided script requirement directory {} does not contain Python scripts".format(script_path))
+            else:
+                yield from globbed_scripts
+        elif isfile(script_abspath) and script_abspath.endswith(_PYEXT):
+            yield script_abspath
+        else:
+            raise AcumosError("Provided script requirement {} is invalid. See acumos.metadata.Requirements for documentation".format(script_path))
+
+
+def _copy_scripts(script_paths, code_dir):
+    '''Copies individual scripts to a user-provided code directory'''
+    for path in script_paths:
+        shutil.copy(path, code_dir)
 
 
 def _random_string(length=32):

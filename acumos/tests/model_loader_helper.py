@@ -18,20 +18,20 @@
 # ===============LICENSE_END=========================================================
 # -*- coding: utf-8 -*-
 """
-Unpickles a model, given a context directory
+Loads a dumped model
 """
 import sys
 
-from acumos.pickler import load_model, AcumosContextManager
+from acumos.wrapped import load_model
 
 
 if __name__ == '__main__':
     '''Main'''
     del sys.path[0]  # remove acumos/tests dir from python path
 
-    context_dir = sys.argv[1]
+    model_dir = sys.argv[1]
+    module_name = sys.argv[2]
 
-    with AcumosContextManager(context_dir) as c:
-        model_path = c.build_path('model.pkl')
-        with open(model_path, 'rb') as f:
-            model = load_model(f)  # success if this doesn't explode
+    model = load_model(model_dir)
+
+    custom_package = sys.modules[module_name]  # `module_name` should be imported, else KeyError

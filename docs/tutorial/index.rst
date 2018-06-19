@@ -23,7 +23,9 @@ Acumos Python Client Tutorial
 This tutorial provides a brief overview of ``acumos`` for creating
 Acumos models. The tutorial is meant to be followed linearly, and some
 code snippets depend on earlier imports and objects. Full examples are
-available in the examples directory.
+available in the ``examples/`` directory of the `Acumos Python client repository <https://gerrit.acumos.org/r/gitweb?p=acumos-python-client.git;a=summary>`__.
+
+
 
 1.  `Importing Acumos`_
 2.  `Creating A Session`_
@@ -32,7 +34,7 @@ available in the examples directory.
 5.  `Defining Types`_
 6.  `Using DataFrames with scikit-learn`_
 7.  `Declaring Requirements`_
-8.  `TensorFlow`_
+8.  `Keras and TensorFlow`_
 9.  `Testing Models`_
 10. `More Examples`_
 
@@ -44,7 +46,7 @@ First import the modeling and session packages:
 .. code:: python
 
     from acumos.modeling import Model, List, Dict, create_namedtuple, create_dataframe
-    from acumos.session import AcumosSession, Requirements
+    from acumos.session import AcumosSession
 
 Creating A Session
 ==================
@@ -227,14 +229,60 @@ runnable scripts.
 Declaring Requirements
 ======================
 
+If your model depends on another Python script or package that you wrote, you can
+declare the dependency via the ``acumos.metadata.Requirements`` class:
+
+.. code:: python
+
+    from acumos.metadata import Requirements
+
+Note that only pure Python is supported at this time.
+
+Custom Scripts
+--------------
+
+Custom scripts can be included by giving ``Requirements`` a sequence of paths
+to Python scripts, or directories containing Python scripts. For example, if the
+model defined in ``model.py`` depended on ``helper1.py``:
+
+::
+
+    model_workspace/
+    ├── model.py
+    ├── helper1.py
+    └── helper2.py
+
+this dependency could be declared like so:
+
+.. code:: python
+
+    from helper1 import do_thing
+
+    def transform(x: int) -> int:
+        '''Does the thing'''
+        return do_thing(x)
+
+    model = Model(transform=transform)
+
+    reqs = Requirements(scripts=['./helper1.py'])
+
+    # using the AcumosSession created earlier:
+    session.push(model, 'my-model', reqs)
+    session.dump(model, 'my-model', '~/', reqs)  # creates ~/my-model
+
+Alternatively, all Python scripts within ``model_workspace/`` could be included
+using:
+
+.. code:: python
+
+    reqs = Requirements(scripts=['.'])
+
 Custom Packages
 ---------------
 
-If your model depends on another Python package that you wrote, you can
-declare the package via the ``Requirements`` class. Note that only pure
-Python packages are supported at this time.
-
-Assuming that the package ``~/repos/my_pkg`` contains:
+Custom packages can be included by giving ``Requirements`` a sequence of paths to
+Python packages, i.e. directories with an ``__init__.py`` file. Assuming that the
+package ``~/repos/my_pkg`` contains:
 
 ::
 
@@ -264,14 +312,14 @@ then you can bundle ``my_pkg`` with your model like so:
 Requirement Mapping
 -------------------
 
-Python packaging and `PyPI <https://pypi.python.org/pypi>`__ aren’t
+Python packaging and `PyPI <https://pypi.org/>`__ aren’t
 perfect, and sometimes the name of the Python package you import in your
 code is different than the package name used to install it. One example
 of this is the ``PIL`` package, which is commonly installed using `a fork
 called pillow <https://pillow.readthedocs.io>`_ (i.e.
 ``pip install pillow`` will provide the ``PIL`` package).
 
-To address this inconsistency, the ``acumos.modeling.Requirements``
+To address this inconsistency, the ``Requirements``
 class allows you to map Python package names to PyPI package names. When
 your model is analyzed for dependencies by ``acumos``, this mapping is
 used to ensure the correct PyPI packages will be used.
@@ -284,11 +332,11 @@ PyPI package:
 
     reqs = Requirements(req_map={'PIL': 'pillow'})
 
-TensorFlow
-==========
+Keras and TensorFlow
+====================
 
-Check out the TensorFlow example in the ``examples/`` directory of the Acumos Python
-client repository.
+Check out the Keras and TensorFlow examples in the ``examples/`` directory of
+the `Acumos Python client repository <https://gerrit.acumos.org/r/gitweb?p=acumos-python-client.git;a=summary>`__.
 
 Testing Models
 ==============

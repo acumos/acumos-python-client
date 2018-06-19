@@ -19,6 +19,7 @@
 """
 Provides custom pickle utilities
 """
+import sys
 import json
 import inspect
 import contextlib
@@ -28,6 +29,8 @@ from os.path import basename, isdir, isfile, join as path_join
 from copy import deepcopy
 from functools import partial
 from typing import GenericMeta, Dict, List
+from types import ModuleType
+from importlib import import_module
 
 import dill
 
@@ -36,7 +39,8 @@ from acumos.exc import AcumosError
 from acumos.utils import namedtuple_field_types
 
 
-_BLACKLIST = {'builtins', '__main__'}
+_DEFAULT_MODULES = ('acumos', 'dill')
+_BLACKLIST = {'builtins', }
 _DEFAULT = 'default'
 
 _contexts = dict()
@@ -109,8 +113,8 @@ def _save_keras(pickler, obj):
     context.add_module(backend())  # adds name of active keras backend
 
     # check for custom or contrib layer modules
-    layer_modules = (_get_top_module(l)[1] for l in obj.layers)
-    special_layers = tuple((l.__class__, m) for l, m in zip(obj.layers, layer_modules) if m != 'keras')
+    layer_modules = (_get_base_module(l) for l in obj.layers)
+    special_layers = tuple((l.__class__, m) for l, m in zip(obj.layers, layer_modules) if m.__name__ != 'keras')
     for _, module in special_layers:
         context.add_module(module)
 
@@ -259,26 +263,25 @@ def _catch_object(obj):
             if path in _CUSTOM_DISPATCH:
                 dill.Pickler.dispatch[obj_type] = _CUSTOM_DISPATCH[path]
 
-    mod, name = _get_top_module(obj)
-    if name is not None and name not in _BLACKLIST:
-        # this check is the current solution for discarding unwanted scripts like __main__
-        if mod.__package__:
-            context = get_context()
-            context.add_module(name)
+    base_module = _get_base_module(obj)
+    if base_module is not None and base_module.__name__ not in _BLACKLIST:
+        context = get_context()
+        context.add_module(base_module)
 
 
-def _get_top_module(obj):
-    '''Returns the top-level module for a given object'''
-    mod = inspect.getmodule(obj)
-    if mod is not None:
-        base, _, _ = mod.__name__.partition('.')
+def _get_base_module(obj):
+    '''Returns the base module for a given object'''
+    module = inspect.getmodule(obj)
+    if module is not None:
+        base_name, _, _ = module.__name__.partition('.')
+        base_module = sys.modules[base_name]
     else:
-        base = None
-    return mod, base
+        base_module = None
+    return base_module
 
 
 def _get_mro_paths(type_):
-    '''Yields import path string for each entry in `getmro`'''
+    '''Yields import path string for each entry in `inspect.getmro`'''
     for t in inspect.getmro(type_):
         yield "{}.{}".format(t.__module__, t.__name__)
 
@@ -289,40 +292,73 @@ class AcumosContext(object):
     def __init__(self, root_dir):
         if not isdir(root_dir):
             raise AcumosError("AcumosContext root directory {} does not exist".format(root_dir))
-
+        self._modules = set()
         self._root_dir = root_dir
-        self._modules = {'acumos', 'dill'}
         self._params_path = path_join(root_dir, 'context.json')
         self.parameters = self._load_params()
 
-    def create_subdir(self, name=None, exist_ok=False):
+        for mod in _DEFAULT_MODULES:
+            self.add_module(mod)
+
+    def create_subdir(self, *paths, exist_ok=False):
         '''Creates a new directory within the context root and returns the absolute path'''
-        if name is None:
+        if not paths:
             tdir = tempfile.mkdtemp(dir=self._root_dir)
         else:
-            tdir = path_join(self._root_dir, name)
+            tdir = path_join(self._root_dir, *paths)
             makedirs(tdir, exist_ok=exist_ok)
         return tdir
 
-    def build_path(self, *args):
+    def build_path(self, *paths):
         '''Returns an absolute path starting from the context root'''
-        return path_join(self._root_dir, *args)
+        return path_join(self._root_dir, *paths)
 
     def add_module(self, module):
         '''Adds a module to the context module set'''
+        if isinstance(module, str):
+            try:
+                module = import_module(module)
+            except ImportError:
+                raise AcumosError("Module '{}' was identified as a dependency, but cannot be imported. Ensure that it is installed and available".format(module))
+        elif not isinstance(module, ModuleType):
+            raise AcumosError("Module must be of type str or types.ModuleType, not {}".format(type(module)))
+
         self._modules.add(module)
 
     @property
     def abspath(self):
+        '''Absolute path of the context root directory'''
         return self._root_dir
 
     @property
     def basename(self):
+        '''Base name of the context root directory'''
         return basename(self._root_dir)
 
     @property
     def modules(self):
-        return set(self._modules)
+        '''The set of all modules (i.e. typing.ModuleType) identified as dependencies'''
+        return frozenset(self._modules)
+
+    @property
+    def packages(self):
+        '''The set of all base packages (i.e. typing.ModuleType with a package) identified as dependencies'''
+        return frozenset(mod for mod in self._modules if mod.__package__)
+
+    @property
+    def package_names(self):
+        '''The set of all base package names identified as dependencies'''
+        return frozenset(mod.__name__ for mod in self.packages)
+
+    @property
+    def scripts(self):
+        '''The set of all scripts (i.e. typing.ModuleType with no package) identified as dependencies'''
+        return frozenset(script for script in (mod for mod in self._modules if not mod.__package__) if script.__name__ != '__main__')
+
+    @property
+    def script_names(self):
+        '''The set of all script names identified as dependencies'''
+        return frozenset(mod.__name__ for mod in self.scripts)
 
     def _load_params(self):
         '''Returns a parameters dict'''
