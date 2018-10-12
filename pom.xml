@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- This file is used only for Sonar scans -->
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.acumos.acumos-python-client</groupId>
     <artifactId>acumos-python-client</artifactId>
     <version>0.7.1</version> <!-- REPEATED IN acumos/_version.py MUST MATCH -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.sources>.</sonar.sources>
+        <sonar.junit.reportsPath>xunit-results.xml</sonar.junit.reportsPath>
+        <sonar.python.coverage.reportPath>coverage.xml</sonar.python.coverage.reportPath>
+        <sonar.language>py</sonar.language>
+        <sonar.pluginname>python</sonar.pluginname>
+        <sonar.inclusions>**/**.py</sonar.inclusions>
+        <sonar.exclusions>**/tests/**.py,**/test*.py</sonar.exclusions>
+    </properties>
 </project>
