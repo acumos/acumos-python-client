@@ -70,6 +70,30 @@
       "revId": "e93f9f6b135201a0d476e5b1a9c35aff37cda939",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "77800bc1_fc5610fd",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2018-10-15T19:19:31Z",
+      "side": 1,
+      "message": "I don\u0027t think this relative URL would be usable in PyPI then. \n\nPyPI expects an RST-formatted document to be included in the long text description of a Python package\u0027s setup.py file.",
+      "parentUuid": "8a17ff33_dd054d4f",
+      "range": {
+        "startLine": 114,
+        "startChar": 8,
+        "endLine": 114,
+        "endChar": 124
+      },
+      "revId": "e93f9f6b135201a0d476e5b1a9c35aff37cda939",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
     }
   ]
 }
