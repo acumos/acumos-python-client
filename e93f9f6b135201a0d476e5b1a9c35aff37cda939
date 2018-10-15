@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f77e9382_bec2d0bc",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 94
+      },
+      "writtenOn": "2018-10-15T18:11:56Z",
+      "side": 1,
+      "message": "Please update this to:\nsee the :doc:`web onboarding guide \u003c../../../AcumosUser/portal-user/portal/portal-onboarding-web\u003e.\n\nOtherwise this Athena-release doc will point to the onboarding guide in the master branch.",
+      "range": {
+        "startLine": 114,
+        "startChar": 8,
+        "endLine": 114,
+        "endChar": 124
+      },
+      "revId": "e93f9f6b135201a0d476e5b1a9c35aff37cda939",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
