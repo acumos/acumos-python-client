@@ -43,8 +43,7 @@ _PASSWORD_VAR = 'ACUMOS_PASSWORD'
 _TOKEN_VAR = 'ACUMOS_TOKEN'
 
 logger = get_logger(__name__)
-
-getuser = input
+gettoken = getpass
 
 
 def get_jwt(auth_api):
@@ -61,17 +60,22 @@ def get_jwt(auth_api):
 
 def _authenticate(auth_api):
     '''Authenticates and returns the jwt string'''
-    username = environ[_USERNAME_VAR] if _USERNAME_VAR in environ else getuser('Enter username: ')
-    password = environ[_PASSWORD_VAR] if _PASSWORD_VAR in environ else getpass('Enter password: ')
+    username = environ.get(_USERNAME_VAR)
+    password = environ.get(_PASSWORD_VAR)
 
-    headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
-    request_body = {'request_body': {'username': username, 'password': password}}
-    r = requests.post(auth_api, json=request_body, headers=headers)
+    # user/pass supported for now. use if explicitly provided instead of prompting for token
+    if username and password:
+        headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
+        request_body = {'request_body': {'username': username, 'password': password}}
+        r = requests.post(auth_api, json=request_body, headers=headers)
 
-    if r.status_code != 200:
-        raise AcumosError("Authentication failure: {}".format(r.text))
+        if r.status_code != 200:
+            raise AcumosError("Authentication failure: {}".format(r.text))
 
-    jwt = r.json()['jwtToken']
+        jwt = r.json()['jwtToken']
+    else:
+        jwt = gettoken('Enter onboarding token: ')
+
     return jwt
 
 

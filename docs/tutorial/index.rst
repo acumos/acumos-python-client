@@ -53,19 +53,18 @@ Creating A Session
 
 An ``AcumosSession`` allows you to export your models to Acumos. You can
 either dump a model to disk locally, so that you can upload it via the
-Acumos GUI, or push the model to Acumos directly.
+Acumos website, or push the model to Acumos directly.
 
-If you’d like to push to Acumos, create a session with the ``push_api``
-and ``auth_api`` arguments:
+If you’d like to push directly to Acumos, create a session with the ``push_api`` argument:
 
 .. code:: python
 
-    # replace these fake APIs with ones appropriate for your instance!
-    session = AcumosSession(push_api="https://my.acumos.instance.com/upload",
-                            auth_api="https://my.acumos.instance.com/auth")
+    session = AcumosSession(push_api="https://my.acumos.instance.com/push")
 
-If you’re only interested in dumping a model to disk, the API arguments
-aren’t needed:
+See the onboarding page of your Acumos instance website to find the correct
+``push_api`` URL to use.
+
+If you’re only interested in dumping a model to disk, arguments aren’t needed:
 
 .. code:: python
 
@@ -103,7 +102,7 @@ Exporting Models
 
 We can now export our model using the ``AcumosSession`` object created
 earlier. The ``push`` and ``dump`` APIs are shown below. The ``dump`` method will
-save the model to disk so that it can be onboarded via the Acumos web UI. The
+save the model to disk so that it can be onboarded via the Acumos website. The
 ``push`` method pushes the model directly to Acumos.
 
 .. code:: python
@@ -111,15 +110,14 @@ save the model to disk so that it can be onboarded via the Acumos web UI. The
     session.push(model, 'my-model')
     session.dump(model, 'my-model', '~/')  # creates ~/my-model
 
-**Note:** Pushing a model to Acumos will prompt you for your username
-and password if you have not previously authenticated. There are two ways to
-avoid the interactive prompt:
+For more information on how to onboard a dumped model via the Acumos website,
+see the `web onboarding guide <https://docs.acumos.org/en/latest/AcumosUser/portal-user/portal/portal-onboarding-web.html>`__.
 
-#. Export the ``ACUMOS_USERNAME`` and ``ACUMOS_PASSWORD`` environment variables,
-   which correspond to your username and password used to log into Acumos website.
-#. Export the ``ACUMOS_TOKEN`` environment variable, which corresponds to an
-   authentication token that can be found in your account settings on the Acumos
-   website.
+**Note:** Pushing a model to Acumos will prompt you for an onboarding token if
+you have not previously provided one. The interactive prompt can be avoided by
+exporting the ``ACUMOS_TOKEN`` environment variable, which corresponds to an
+authentication token that can be found in your account settings on the Acumos
+website.
 
 Defining Types
 ==============

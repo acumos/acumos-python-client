@@ -302,10 +302,9 @@ def _push_dummy_model(extra_headers=None):
 @contextlib.contextmanager
 def _patch_auth():
     '''Convenience CM to patch session and auth modules for automated testing'''
-    with mock.patch('acumos.auth.getuser', lambda x: _FAKE_USERNAME):
-        with mock.patch('acumos.auth.getpass', lambda x: _FAKE_PASSWORD):
-            with mock.patch('acumos.session._assert_valid_apis', _mock_assert_valid_apis):
-                yield
+    with mock.patch('acumos.auth.gettoken', lambda x: _FAKE_TOKEN):
+        with mock.patch('acumos.session._assert_valid_apis', _mock_assert_valid_apis):
+            yield
 
 
 @contextlib.contextmanager

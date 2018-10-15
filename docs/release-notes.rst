@@ -20,6 +20,14 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.7.1
+======
+
+-  Authentication
+
+   - Username and password authentication has been deprecated
+   - Users are now interactively prompted for an onboarding token, as opposed to a username and password
+
 v0.7.0
 ======
 
@@ -28,7 +36,6 @@ v0.7.0
    - Python script dependencies can now be specified using a Requirements object
    - Python script dependencies found during the introspection stage are now included with the model
 
-
 v0.6.5
 ======
 
@@ -36,14 +43,12 @@ v0.6.5
 
    - Don't attempt to use an empty auth token (avoids blank strings to be set in environment)
 
-
 v0.6.4
 ======
 
 -  Bug fixes
 
    - The normalized path of the system base prefix is now used for identifying stdlib packages
-
 
 v0.6.3
 ======
@@ -54,14 +59,12 @@ v0.6.3
    - Removed custom packages from model metadata, as it caused image build failures
    - Fixed Python 3.5.2 ordering bug in wrapped model usage
 
-
 v0.6.2
 ======
 
 -  TensorFlow
 
    - Fixed a serialization issue that occurred when using a frozen graph
-
 
 v0.6.1
 ======
@@ -70,7 +73,6 @@ v0.6.1
 
    - The JWT is now cleared immediately after a failed upload
    - Additional HTTP information is now included in the error message
-
 
 v0.6.0
 ======
@@ -85,7 +87,6 @@ v0.6.0
    -  ``AcumosSession.push`` now accepts an optional ``extra_headers`` argument,
       which will allow users and systems to include additional information when
       pushing models to the onboarding server
-
 
 v0.5.0
 ======

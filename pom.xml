@@ -4,5 +4,5 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.acumos.acumos-python-client</groupId>
     <artifactId>acumos-python-client</artifactId>
-    <version>0.7.0</version> <!-- REPEATED IN acumos/_version.py MUST MATCH -->
+    <version>0.7.1</version> <!-- REPEATED IN acumos/_version.py MUST MATCH -->
 </project>

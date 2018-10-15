@@ -26,6 +26,7 @@ import json
 import contextlib
 import requests
 import fnmatch
+import warnings
 from tempfile import TemporaryDirectory
 from os import walk, mkdir
 from os.path import extsep, exists, abspath, dirname, isdir, isfile, expanduser, relpath, basename, join as path_join
@@ -49,23 +50,31 @@ _PYEXT = "{}py".format(extsep)
 _PYGLOB = "*{}".format(_PYEXT)
 
 _ServerResponse = namedtuple('ServerResponse', 'status_code reason text')
+_DEPR_MSG = ('Usage of `auth_api` is deprecated; provide an onboarding token instead. '
+             'See https://pypi.org/project/acumos/ for more information.')
 
 
 class AcumosSession(object):
     '''
-    A session that enables on-boarding models to Acumos
+    A session that enables onboarding models to Acumos
 
     Parameters
     ----------
     push_api : str
-        The full URL to the Acumos on-boarding server upload API
+        The full URL to the Acumos onboarding server upload API
     auth_api : str
-        The full URL to the Acumos on-boarding server authentication API
+        The full URL to the Acumos onboarding server authentication API.
+
+        .. deprecated:: 0.7.1
+            Users should provide an onboarding token instead of username and password credentials.
     '''
 
     def __init__(self, push_api=None, auth_api=None):
         self.push_api = push_api
         self.auth_api = auth_api
+
+        if auth_api is not None:
+            warnings.warn(_DEPR_MSG, DeprecationWarning, stacklevel=2)
 
     def push(self, model, name, requirements=None, extra_headers=None):
         '''
