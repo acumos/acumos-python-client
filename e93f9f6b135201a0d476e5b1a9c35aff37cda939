@@ -46,6 +46,30 @@
       "revId": "e93f9f6b135201a0d476e5b1a9c35aff37cda939",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8a17ff33_dd054d4f",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 94
+      },
+      "writtenOn": "2018-10-15T18:51:46Z",
+      "side": 1,
+      "message": "The better way to link would be to use the :doc: directive\n:doc:`web onboarding guide \u003c../../../../../AcumosUser/portal-user/portal/portal-onboarding-web\u003e`.\n(I forgot a ../ in my first comment)",
+      "parentUuid": "548add06_97738b94",
+      "range": {
+        "startLine": 114,
+        "startChar": 8,
+        "endLine": 114,
+        "endChar": 124
+      },
+      "revId": "e93f9f6b135201a0d476e5b1a9c35aff37cda939",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
     }
   ]
 }
