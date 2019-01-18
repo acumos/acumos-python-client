@@ -102,13 +102,10 @@ def _save_keras(pickler, obj):
     from keras.backend import backend
 
     context = get_context()
-    model_subdir_abspath = context.create_subdir()  # /path/to/context/root/abc123
+    model_subdir = context.create_subdir()
+    model_abspath, model_relpath = _add_file(model_subdir, 'model.h5')
 
-    model_name = 'model.h5'
-    model_subpath = path_join(basename(model_subdir_abspath), model_name)  # abc123/model.h5
-    model_abspath = path_join(context.abspath, model_subpath)  # /path/to/context/root/abc123/model.h5
-
-    obj.save(model_abspath)
+    obj.save(model_abspath)  # /path/to/context/root/abc123/model.h5
     context.add_module('h5py')  # needed for keras model serialization
     context.add_module(backend())  # adds name of active keras backend
 
@@ -119,15 +116,15 @@ def _save_keras(pickler, obj):
         context.add_module(module)
 
     # store subpath because context root can change, and special layer classes to have them imported before load
-    pickler.save_reduce(_load_keras, (model_subpath, special_layers), obj=obj)
+    pickler.save_reduce(_load_keras, (model_relpath, special_layers), obj=obj)
 
 
-def _load_keras(model_subpath, special_classes):
+def _load_keras(model_relpath, special_classes):
     '''Loads a keras model from a context subdirectory'''
     from keras.models import load_model as load_keras_model
 
     context = get_context()
-    model_path = context.build_path(model_subpath)  # /different/path/to/context/root/abc123/model.h5
+    model_path = context.build_path(*model_relpath)  # /different/path/to/context/root/abc123/model.h5
     model = load_keras_model(model_path)
     return model
 
@@ -159,18 +156,15 @@ def _save_tf_session(pickler, session):
     import tensorflow as tf
 
     context = get_context()
-    model_subdir_abspath = context.create_subdir()
-
-    model_name = 'model'
-    model_subpath = path_join(basename(model_subdir_abspath), model_name)
-    model_abspath = path_join(context.abspath, model_subpath)
+    model_subdir = context.create_subdir()
+    model_abspath, model_relpath = _add_file(model_subdir, 'model')
 
     graph = session.graph
     with graph.as_default():
         saver = tf.train.Saver(allow_empty=True)
         saver.save(session, model_abspath, write_meta_graph=False)  # don't export meta graph twice
 
-    pickler.save_reduce(_load_tf_session, (model_subpath, session.__class__, graph), obj=session)
+    pickler.save_reduce(_load_tf_session, (model_relpath, session.__class__, graph), obj=session)
 
 
 def _load_tf_session(model_subpath, session_cls, graph):
@@ -178,7 +172,7 @@ def _load_tf_session(model_subpath, session_cls, graph):
     import tensorflow as tf
 
     context = get_context()
-    model_path = context.build_path(model_subpath)
+    model_path = context.build_path(*model_subpath)
 
     with graph.as_default():
         sess = session_cls()
@@ -192,28 +186,32 @@ def _save_tf_graph(pickler, graph):
     import tensorflow as tf
 
     context = get_context()
-    model_subdir_abspath = context.create_subdir()
-
-    graph_name = 'graph.meta'
-    graph_subpath = path_join(basename(model_subdir_abspath), graph_name)
-    graph_abspath = path_join(context.abspath, graph_subpath)
+    model_subdir = context.create_subdir()
+    graph_abspath, graph_relpath = _add_file(model_subdir, 'graph.meta')
 
     with graph.as_default():
         tf.train.export_meta_graph(graph_abspath)
-    pickler.save_reduce(_load_tf_graph, (graph_subpath, ), obj=graph)
+    pickler.save_reduce(_load_tf_graph, (graph_relpath, ), obj=graph)
 
 
-def _load_tf_graph(graph_subpath):
+def _load_tf_graph(graph_relpath):
     '''Loads a TensorFlow graph'''
     import tensorflow as tf
 
     context = get_context()
-    graph_path = context.build_path(graph_subpath)
+    graph_abspath = context.build_path(*graph_relpath)
 
     graph = tf.Graph()
     with graph.as_default():
-        tf.train.import_meta_graph(graph_path)
+        tf.train.import_meta_graph(graph_abspath)
     return graph
+
+
+def _add_file(subdir, name):
+    '''Helper function which returns the absolute and context-relative path of a file to be added'''
+    file_abspath = path_join(subdir, name)
+    file_relpath = (basename(subdir), name)
+    return file_abspath, file_relpath
 
 
 dill.Pickler.dispatch[GenericMeta] = _save_annotation

@@ -41,7 +41,7 @@ from acumos.modeling import Model, List, create_namedtuple, create_dataframe
 from acumos.session import AcumosSession, _dump_model
 from acumos.exc import AcumosError
 from acumos.utils import load_artifact
-from acumos.auth import clear_jwt, _USERNAME_VAR, _PASSWORD_VAR, _TOKEN_VAR
+from acumos.auth import clear_jwt, _USERNAME_VAR, _PASSWORD_VAR, _TOKEN_VAR, _set_jwt
 from acumos.metadata import SCHEMA_VERSION, Requirements
 
 from mock_server import MockServer
@@ -58,14 +58,32 @@ _FAKE_PASSWORD = 'bar'
 _FAKE_TOKEN = 'secrettoken'
 
 
-def test_auth_envvar():
-    '''Tests that environment variables can be used in place of interactive input'''
+def test_session_push():
+    '''Tests various session push scenarios'''
+    # allow users to push using username and password env vars
     clear_jwt()
     with _patch_environ(**{_USERNAME_VAR: _FAKE_USERNAME, _PASSWORD_VAR: _FAKE_PASSWORD}):
-        _push_dummy_model()
+        _push_dummy_model(use_auth_url=True)
 
+    # verify auth url is required for username and password auth
+    clear_jwt()
+    with _patch_environ(**{_USERNAME_VAR: _FAKE_USERNAME, _PASSWORD_VAR: _FAKE_PASSWORD}):
+        with pytest.raises(AcumosError):
+            _push_dummy_model(use_auth_url=False)
+
+    # allow users to push using a token env var
     clear_jwt()
     with _patch_environ(**{_TOKEN_VAR: _FAKE_TOKEN}):
+        _push_dummy_model()
+
+    # allow users to push by providing a token via interactive prompt
+    clear_jwt()
+    with _patch_auth():
+        _push_dummy_model()
+
+    # verify we can recover from a stale token
+    _set_jwt('invalidtoken')
+    with _patch_auth():
         _push_dummy_model()
 
 
@@ -285,7 +303,7 @@ def test_session_push_keras():
             s.push(model, name='keras_iris_push')
 
 
-def _push_dummy_model(extra_headers=None):
+def _push_dummy_model(extra_headers=None, use_model_url=True, use_auth_url=False):
     '''Generic dummy model push routine'''
 
     def my_transform(x: int, y: int) -> int:
@@ -294,17 +312,19 @@ def _push_dummy_model(extra_headers=None):
     model = Model(transform=my_transform)
 
     with MockServer() as server:
-        model_url, auth_url, _, _ = server.config
+        _model_url, _auth_url, _, _ = server.config
+        model_url = _model_url if use_model_url else None
+        auth_url = _auth_url if use_auth_url else None
+
         s = AcumosSession(model_url, auth_url)
         s.push(model, name='my-model', extra_headers=extra_headers)
 
 
 @contextlib.contextmanager
 def _patch_auth():
-    '''Convenience CM to patch session and auth modules for automated testing'''
+    '''Convenience CM to patch interactive prompts used for authentication'''
     with mock.patch('acumos.auth.gettoken', lambda x: _FAKE_TOKEN):
-        with mock.patch('acumos.session._assert_valid_apis', _mock_assert_valid_apis):
-            yield
+        yield
 
 
 @contextlib.contextmanager
@@ -318,10 +338,6 @@ def _patch_environ(**kwargs):
         environ.update(orig_vars)
         for extra_key in (kwargs.keys() - orig_vars.keys()):
             del environ[extra_key]
-
-
-def _mock_assert_valid_apis(**kwargs):
-    '''Mock _assert_valid_apis function that doesn't raise'''
 
 
 if __name__ == '__main__':

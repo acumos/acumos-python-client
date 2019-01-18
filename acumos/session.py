@@ -92,7 +92,8 @@ class AcumosSession(object):
             Additonal HTTP headers included in the POST to the Acumos onboarding server
         '''
         _assert_valid_input(model, requirements)
-        _assert_valid_apis(push_api=self.push_api, auth_api=self.auth_api)
+        _assert_valid_api('push_api', self.push_api, True)
+        _assert_valid_api('auth_api', self.auth_api, False)
 
         with _dump_model(model, name, requirements) as dump_dir:
             _push_model(dump_dir, self.push_api, self.auth_api, extra_headers=extra_headers)
@@ -126,12 +127,12 @@ def _assert_valid_input(model, requirements):
         raise AcumosError("Input `requirements` must be of type {}".format(get_qualname(Requirements)))
 
 
-def _assert_valid_apis(**apis):
-    '''Raises AcumosError if api are invalid'''
-    for param, api in apis.items():
-        if api is None:
+def _assert_valid_api(param, api, required):
+    '''Raises AcumosError if an api is invalid'''
+    if api is None:
+        if required:
             raise AcumosError("AcumosSession.push requires that the API for `{}` be provided".format(param))
-
+    else:
         if not api.startswith('https'):
             logger.warning("Provided `{}` API {} does not begin with 'https'. Your password and token are visible in plaintext!".format(param, api))
 

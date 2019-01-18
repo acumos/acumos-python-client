@@ -20,6 +20,15 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.7.2
+======
+
+-  Bug fixes
+
+   - The deprecated authentication API is now considered optional
+   - A more portable path solution is now used when saving models, to avoid issues with models developed in Windows
+
+
 v0.7.1
 ======
 

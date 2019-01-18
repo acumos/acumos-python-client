@@ -50,11 +50,10 @@ def get_jwt(auth_api):
     '''Returns the jwt string from config or authentication'''
     jwt = environ.get(_TOKEN_VAR)
     if not jwt:
-        config = _configuration()
-        jwt = config.get('jwt')
+        jwt = _get_jwt()
         if not jwt:
             jwt = _authenticate(auth_api)
-            _configuration(jwt=jwt)
+            _set_jwt(jwt)
     return jwt
 
 
@@ -65,6 +64,9 @@ def _authenticate(auth_api):
 
     # user/pass supported for now. use if explicitly provided instead of prompting for token
     if username and password:
+        if auth_api is None:
+            raise AcumosError('An authentication API is required if using username & password credentials')
+
         headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
         request_body = {'request_body': {'username': username, 'password': password}}
         r = requests.post(auth_api, json=request_body, headers=headers)
@@ -81,7 +83,17 @@ def _authenticate(auth_api):
 
 def clear_jwt():
     '''Clears the jwt from config'''
-    _configuration(jwt=None)
+    _set_jwt(None)
+
+
+def _set_jwt(token):
+    '''Sets the jwt in config'''
+    _configuration(jwt=token)
+
+
+def _get_jwt():
+    '''Gets the jwt from config'''
+    _configuration().get('jwt')
 
 
 def _configuration(**kwargs):
