@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "499faf1e_1a55d024",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2019-04-17T14:30:18Z",
+      "side": 1,
+      "message": "Dumb question, why not let RST do the numbering for you automagically?  I use #. with some success.",
+      "range": {
+        "startLine": 38,
+        "startChar": 1,
+        "endLine": 38,
+        "endChar": 3
+      },
+      "revId": "3bc1e83dba15df90643f87293ee51a84f163444f",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
