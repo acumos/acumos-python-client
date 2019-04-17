@@ -99,7 +99,15 @@ def _revert_dispatch(t):
 
 def _save_keras(pickler, obj):
     '''Serializes a keras model to a context directory'''
-    from keras.backend import backend
+    base_mod_name = _get_base_module(obj).__name__
+    if base_mod_name == 'keras':
+        import keras
+    else:
+        from tensorflow import keras
+
+    backend = keras.backend.backend
+    load_func = keras.models.load_model
+    model_cls = keras.models.Model
 
     context = get_context()
     model_subdir = context.create_subdir()
@@ -110,22 +118,32 @@ def _save_keras(pickler, obj):
     context.add_module(backend())  # adds name of active keras backend
 
     # check for custom or contrib layer modules
-    layer_modules = (_get_base_module(l) for l in obj.layers)
-    special_layers = tuple((l.__class__, m) for l, m in zip(obj.layers, layer_modules) if m.__name__ != 'keras')
-    for _, module in special_layers:
-        context.add_module(module)
+    custom_objects = {}
+    for layer in _get_keras_layers(obj, model_cls):
+        module = _get_base_module(layer)
+        if module.__name__ != base_mod_name:
+            context.add_module(module)
+            layer_cls = layer.__class__
+            custom_objects[layer_cls.__name__] = layer_cls
 
     # store subpath because context root can change, and special layer classes to have them imported before load
-    pickler.save_reduce(_load_keras, (model_relpath, special_layers), obj=obj)
+    pickler.save_reduce(_load_keras, (model_relpath, custom_objects, load_func), obj=obj)
 
 
-def _load_keras(model_relpath, special_classes):
+def _get_keras_layers(model, model_cls):
+    '''Recursively walks a keras model and returns its layers'''
+    for layer in model.layers:
+        if isinstance(layer, model_cls):
+            yield from _get_keras_layers(layer, model_cls)
+        else:
+            yield layer
+
+
+def _load_keras(model_relpath, custom_objects, load_func):
     '''Loads a keras model from a context subdirectory'''
-    from keras.models import load_model as load_keras_model
-
     context = get_context()
     model_path = context.build_path(*model_relpath)  # /different/path/to/context/root/abc123/model.h5
-    model = load_keras_model(model_path)
+    model = load_func(model_path, custom_objects=custom_objects)
     return model
 
 
@@ -223,6 +241,7 @@ _CUSTOM_DISPATCH = {
     'tensorflow.python.framework.ops.Operation': _save_tf_operation,
     'tensorflow.python.client.session.BaseSession': _save_tf_session,
     'tensorflow.python.framework.ops.Graph': _save_tf_graph,
+    'tensorflow.python.keras.engine.training.Model': _save_keras,
 }
 
 

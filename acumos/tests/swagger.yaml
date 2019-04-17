@@ -43,6 +43,16 @@ paths:
           required: true
           description: The model schema definitions (e.g. proto file, etc.)
         - in: formData
+          name: license
+          type: file
+          description: The model license
+          required: false
+        - in: header
+          name: isCreateMicroservice
+          type: boolean
+          description: Creates microservice if true
+          required: false
+        - in: formData
           name: docker
           type: file
           description: The serialized docker file archive (e.g. a zip file)
