@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "73ca4b45_3ebceda7",
+        "filename": "acumos/metadata.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2019-04-17T21:00:17Z",
+      "side": 1,
+      "message": "Not sure what will appear in generated docs, but is it typical/helpful to list what the default arguments are (or are they auto recognized)?",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1682174e_a5f53968",
+        "filename": "acumos/session.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2019-04-17T21:00:17Z",
+      "side": 1,
+      "message": "I wasn\u0027t part of license creation committee, but this seems atypical.  Shouldn\u0027t a license be a plaintext document?",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3bda2aae_b81c5427",
+        "filename": "acumos/tests/mock_server.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2019-04-17T21:00:17Z",
+      "side": 1,
+      "message": "Would it be fruitful to mark this API as deprecated now?  The other end (backend) is already throwing a similar error.",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3cbe2784_09c84336",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2019-04-17T21:00:17Z",
+      "side": 1,
+      "message": "Yay, having the extra example is good.",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd7a0676_aa58e17e",
+        "filename": "tox.ini",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2019-04-17T21:00:17Z",
+      "side": 1,
+      "message": "Acceptable, ack that py37 was coming in subsequent push.",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
