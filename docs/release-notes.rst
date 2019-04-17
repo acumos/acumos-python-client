@@ -20,6 +20,18 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.8.0
+======
+
+-  Options
+
+   - Users may now specify additional options when pushing their Acumos model. See the options section in the tutorial for more information.
+
+-  Enhancements
+
+   - ``acumos`` now supports Keras models built with ``tensorflow.keras``
+
+
 v0.7.2
 ======
 
