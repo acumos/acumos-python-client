@@ -89,3 +89,4 @@ ENV/
 .ropeproject
 
 .pytest_cache/
+.spyproject/

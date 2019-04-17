@@ -42,14 +42,14 @@ def _find_port():
     return port
 
 
-class _Config(namedtuple('_Config', ['model_uri', 'auth_uri', 'ui_uri', 'port'])):
+class _Config(namedtuple('_Config', ['model_url', 'auth_url', 'ui_url', 'port'])):
 
     def __new__(cls, port):
-        base_uri = "http://localhost:{}/v2".format(port)
-        ui_uri = "{}/ui".format(base_uri)
-        model_uri = "{}/models".format(base_uri)
-        auth_uri = "{}/auth".format(base_uri)
-        return super().__new__(cls, model_uri, auth_uri, ui_uri, port)
+        base_url = "http://localhost:{}/v2".format(port)
+        ui_url = "{}/ui".format(base_url)
+        model_url = "{}/models".format(base_url)
+        auth_url = "{}/auth".format(base_url)
+        return super().__new__(cls, model_url, auth_url, ui_url, port)
 
 
 class MockServer(object):
@@ -74,7 +74,7 @@ class MockServer(object):
 
     def __enter__(self):
         '''Spawns the child process and waits for server to start until `timeout`'''
-        assert not _server_running(self.config.ui_uri), 'A mock server is already running'
+        assert not _server_running(self.config.ui_url), 'A mock server is already running'
 
         self._child = pexpect.spawn(self._cmd, env=os.environ)
         self._child.expect(_EXPECT_RE, timeout=self._timeout)
@@ -97,10 +97,10 @@ class MockServer(object):
         return cmd
 
 
-def _server_running(ui_uri):
+def _server_running(ui_url):
     '''Returns False if test server is not available'''
     try:
-        requests.get(ui_uri)
+        requests.get(ui_url)
     except ConnectionError:
         return False
     else:
