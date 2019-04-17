@@ -19,6 +19,7 @@
 '''
 Provides mock server for unit testing
 '''
+import json
 import argparse
 
 import connexion
@@ -29,17 +30,28 @@ TOKEN = 'secrettoken'
 USERS = {'foo': 'bar'}
 
 
-def upload(model, metadata, schema):
+def upload(model, metadata, schema, license=None):
     '''Mock upload endpoint'''
+    # test extra headers
     test_header = request.headers.get('X-Test-Header')  # made up header to test extra_headers feature
     jwt = request.headers.get('Authorization')
     if not any(token == TOKEN for token in (jwt, test_header)):
         return {'status': 'Unauthorized'}, 401
-    else:
-        print("Received model: {}".format(model))
-        print("Received metadata: {}".format(metadata))
-        print("Received schema: {}".format(schema))
-        return {'status': 'OK'}, 201
+
+    # test license file
+    license_header = request.headers.get('X-Test-License')  # made up header to test license content
+    if license_header is not None:
+        if not json.loads(license.read().decode())['license'] == license_header:
+            return 'File license does not match test value', 400
+
+    # test microservice creation parameter
+    create_header = request.headers.get('X-Test-Create')
+    if create_header is not None:
+        is_create = request.headers['isCreateMicroservice']
+        if is_create != create_header:
+            return "Header isCreateMicroservice ({}) does not match test value ({})".format(is_create, create_header), 400
+
+    return {'status': 'OK'}, 201
 
 
 def authenticate(auth_request):

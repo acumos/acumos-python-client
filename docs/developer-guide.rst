@@ -46,5 +46,5 @@ You can also specify certain tox environments to test:
 
 .. code:: bash
 
-    $ tox -e py34  # only test against Python 3.4
+    $ tox -e py36  # only test against Python 3.6
     $ tox -e flake8  # only lint code

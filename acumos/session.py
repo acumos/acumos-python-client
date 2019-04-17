@@ -23,10 +23,10 @@ import random
 import string
 import shutil
 import json
-import contextlib
 import requests
 import fnmatch
 import warnings
+from contextlib import contextmanager, ExitStack
 from tempfile import TemporaryDirectory
 from os import walk, mkdir
 from os.path import extsep, exists, abspath, dirname, isdir, isfile, expanduser, relpath, basename, join as path_join
@@ -35,7 +35,7 @@ from collections import namedtuple
 from glob import glob
 
 from acumos.pickler import AcumosContextManager, dump_model
-from acumos.metadata import create_model_meta, Requirements
+from acumos.metadata import create_model_meta, Requirements, Options
 from acumos.utils import dump_artifact, get_qualname
 from acumos.exc import AcumosError
 from acumos.protogen import model2proto, compile_protostr
@@ -46,6 +46,7 @@ from acumos.auth import get_jwt, clear_jwt
 
 logger = get_logger(__name__)
 
+_LICENSE_NAME = 'license.json'
 _PYEXT = "{}py".format(extsep)
 _PYGLOB = "*{}".format(_PYEXT)
 
@@ -76,7 +77,7 @@ class AcumosSession(object):
         if auth_api is not None:
             warnings.warn(_DEPR_MSG, DeprecationWarning, stacklevel=2)
 
-    def push(self, model, name, requirements=None, extra_headers=None):
+    def push(self, model, name, requirements=None, extra_headers=None, options=None):
         '''
         Pushes a model to Acumos
 
@@ -86,17 +87,20 @@ class AcumosSession(object):
             An Acumos model instance
         name : str
             The name of your model
-        requirements : ``acumos.session.Requirements``, optional
+        requirements : ``acumos.metadata.Requirements``, optional
             Additional Python dependencies that you can optionally specify
         extra_headers : dict, optional
             Additonal HTTP headers included in the POST to the Acumos onboarding server
+        options : ``acumos.metadata.Options``, optional
+            Additional Acumos options that you can optionally specify
         '''
         _assert_valid_input(model, requirements)
         _assert_valid_api('push_api', self.push_api, True)
         _assert_valid_api('auth_api', self.auth_api, False)
+        options = _validate_options(options)
 
         with _dump_model(model, name, requirements) as dump_dir:
-            _push_model(dump_dir, self.push_api, self.auth_api, extra_headers=extra_headers)
+            _push_model(dump_dir, self.push_api, self.auth_api, options, extra_headers=extra_headers)
 
     def dump(self, model, name, outdir, requirements=None):
         '''
@@ -110,12 +114,22 @@ class AcumosSession(object):
             The name of your model
         outdir : str
             The directory or folder to save your model .zip to
-        requirements : ``acumos.session.Requirements``, optional
+        requirements : ``acumos.metadata.Requirements``, optional
             Additional Python dependencies that you can optionally specify
         '''
         _assert_valid_input(model, requirements)
+
         with _dump_model(model, name, requirements) as dump_dir:
             _copy_dir(dump_dir, expanduser(outdir), name)
+
+
+def _validate_options(options):
+    '''Validates and returns an `Options` object'''
+    if options is None:
+        options = Options()
+    elif not isinstance(options, Options):
+        raise AcumosError('The `options` parameter must be of type `acumos.metadata.Options`')
+    return options
 
 
 def _assert_valid_input(model, requirements):
@@ -137,39 +151,58 @@ def _assert_valid_api(param, api, required):
             logger.warning("Provided `{}` API {} does not begin with 'https'. Your password and token are visible in plaintext!".format(param, api))
 
 
-def _push_model(dump_dir, push_api, auth_api, max_tries=2, extra_headers=None):
+def _push_model(dump_dir, push_api, auth_api, options, max_tries=2, extra_headers=None):
     '''Pushes a model to the Acumos server'''
-    with open(path_join(dump_dir, 'model.zip'), 'rb') as model, \
-            open(path_join(dump_dir, 'metadata.json')) as meta, \
-            open(path_join(dump_dir, 'model.proto')) as proto:
+    with ExitStack() as stack:
+        model = stack.enter_context(open(path_join(dump_dir, 'model.zip'), 'rb'))
+        meta = stack.enter_context(open(path_join(dump_dir, 'metadata.json')))
+        proto = stack.enter_context(open(path_join(dump_dir, 'model.proto')))
 
         files = {'model': ('model.zip', model, 'application/zip'),
                  'metadata': ('metadata.json', meta, 'application/json'),
-                 'schema': ('model.proto', proto, 'application/text')}
+                 'schema': ('model.proto', proto, 'text/plain')}
 
-        _post_model(files, push_api, auth_api, 1, max_tries, extra_headers)
+        # include a license if one is provided
+        if options.license is not None:
+            _add_license(dump_dir, options.license)
+            license = stack.enter_context(open(path_join(dump_dir, _LICENSE_NAME)))
+            files['license'] = (_LICENSE_NAME, license, 'application/json')
+
+        tries = 1
+        _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, options)
 
 
-def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers):
+def _add_license(rootdir, license_str):
+    '''Adds a license file to the model root directory'''
+    license_dst = path_join(rootdir, _LICENSE_NAME)
+    if isfile(license_str):
+        shutil.copy(license_str, license_dst)
+    else:
+        license_dict = {'license': license_str}  # the license team hasn't defined a license schema yet
+        dump_artifact(license_dst, data=license_dict, module=json, mode='w')
+
+
+def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, options):
     '''Attempts to post the model to Acumos'''
-    headers = {'Authorization': get_jwt(auth_api)}
+    headers = {'Authorization': get_jwt(auth_api),
+               'isCreateMicroservice': 'true' if options.create_microservice else 'false'}
     if extra_headers is not None:
         headers.update(extra_headers)
 
-    r = requests.post(push_api, files=files, headers=headers)
+    resp = requests.post(push_api, files=files, headers=headers)
 
-    if r.status_code == 201:
+    if resp.ok:
         logger.info("Model pushed successfully to {}".format(push_api))
     else:
         clear_jwt()
-        if r.status_code == 401 and tries != max_tries:
+        if resp.status_code == 401 and tries != max_tries:
             logger.warning('Model push failed due to an authorization failure. Clearing credentials and trying again')
-            _post_model(files, push_api, auth_api, tries + 1, max_tries, extra_headers)
+            _post_model(files, push_api, auth_api, tries + 1, max_tries, extra_headers, options)
         else:
-            raise AcumosError("Model push failed: {}".format(_ServerResponse(r.status_code, r.reason, r.text)))
+            raise AcumosError("Model push failed: {}".format(_ServerResponse(resp.status_code, resp.reason, resp.text)))
 
 
-@contextlib.contextmanager
+@contextmanager
 def _dump_model(model, name, requirements=None):
     '''Generates model artifacts and serializes the model'''
     requirements = Requirements() if requirements is None else requirements
