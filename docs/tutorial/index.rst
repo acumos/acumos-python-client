@@ -34,9 +34,10 @@ available in the ``examples/`` directory of the `Acumos Python client repository
 5.  `Defining Types`_
 6.  `Using DataFrames with scikit-learn`_
 7.  `Declaring Requirements`_
-8.  `Keras and TensorFlow`_
-9.  `Testing Models`_
-10. `More Examples`_
+8.  `Declaring Options`_
+9.  `Keras and TensorFlow`_
+10. `Testing Models`_
+11. `More Examples`_
 
 Importing Acumos
 ================
@@ -329,6 +330,30 @@ PyPI package:
 .. code:: python
 
     reqs = Requirements(req_map={'PIL': 'pillow'})
+
+Declaring Options
+=================
+
+The ``acumos.metadata.Options`` class is a collection of options that users may
+wish to specify along with their Acumos model. If an ``Options`` instance is not
+provided to ``AcumosSession.push``, then default options are applied. See the
+class docstring for more details.
+
+Below, we demonstrate how options can be used to include additional model metadata
+and influence the behavior of the Acumos platform. For example, a license can be
+included with a model via the ``license`` parameter, either by providing a license
+string or a path to a license file. Likewise, we can specify whether or not the Acumos
+platform should eagerly build the model microservice via the ``create_microservice``
+parameter.
+
+.. code:: python
+
+    from acumos.metadata import Options
+
+    opts = Options(license="Apache 2.0",       # "./path/to/license_file" also works
+                   create_microservice=False,  # don't build the microservice yet
+
+    session.push(model, 'my-model', options=opts)
 
 Keras and TensorFlow
 ====================

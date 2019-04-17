@@ -39,21 +39,40 @@ _REQ_MAP = {
 }
 
 
+class Options(object):
+    '''
+    A collection of options that users may wish to specify along with their Acumos model
+
+    Parameters
+    ----------
+    create_microservice : bool, optional
+        If True, instructs the Acumos platform to eagerly build the model microservice
+    license : str, optional
+        A license to include with the Acumos model. This parameter may either be a path to a license
+        file, or a string containing the license content.
+    '''
+    __slots__ = ('create_microservice', 'license')
+
+    def __init__(self, create_microservice=True, license=None):
+        self.create_microservice = create_microservice
+        self.license = license
+
+
 class Requirements(object):
     '''
     A collection of optional user-provided Python requirement metadata
 
     Parameters
     ----------
-    reqs : Sequence[str]
+    reqs : Sequence[str], optional
         A sequence of pip-installable Python package names
-    req_map : Dict[str, str] or Dict[module, str]
+    req_map : Dict[str, str] or Dict[module, str], optional
         A corrective mapping of Python modules to pip-installable package names. For example
         `req_map={'sklearn': 'scikit-learn'}` or `import sklearn; req_map={sklearn: 'scikit-learn'}`.
-    packages : Sequence[str]
+    packages : Sequence[str], optional
         A sequence of paths to Python packages (i.e. directories with an __init__.py). Provided Python
         packages will be copied along with your model and added to the PYTHONPATH at runtime.
-    scripts : Sequence[str]
+    scripts : Sequence[str], optional
         A sequence of paths to Python scripts. A path can point to a Python script, or directory
         containing Python scripts. If a directory is provided, all Python scripts within the directory
         will be included. Provided Python scripts will be copied along with your model and added to the
