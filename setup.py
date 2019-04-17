@@ -63,7 +63,7 @@ setup(
     long_description='\n'.join(_long_descr()),
     name='acumos',
     packages=find_packages(),
-    python_requires='>=3.4',
+    python_requires='>=3.5, <3.7',
     url='https://gerrit.acumos.org/r/gitweb?p=acumos-python-client.git',
     version=__version__,
 )

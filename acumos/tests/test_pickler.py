@@ -32,7 +32,7 @@ from sklearn.datasets import load_iris
 from sklearn.svm import SVC
 from keras.models import Sequential
 from keras.layers import Dense
-from keras_contrib.layers.advanced_activations import PELU
+from keras_contrib.layers import PELU
 
 from acumos.pickler import dump_model, load_model, AcumosContextManager, get_context
 from acumos.exc import AcumosError
@@ -110,26 +110,32 @@ def test_pickler_keras():
     X = iris.data
     y_onehot = pd.get_dummies(iris.target).values
 
-    model = Sequential()
-    model.add(Dense(3, input_dim=4, activation='relu'))
-    model.add(Dense(3, activation='softmax'))
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    model.fit(X, y_onehot, verbose=0)
+    # test both keras and tensorflow.keras packages
+    keras_pkg_names = {'keras', 'dill', 'acumos', 'h5py', 'tensorflow'}
+    tf_pkg_names = {'dill', 'acumos', 'h5py', 'tensorflow'}
 
-    with TemporaryDirectory() as root:
+    for seq_cls, dense_cls, pkg_names in ((Sequential, Dense, keras_pkg_names),
+                                          (tf.keras.Sequential, tf.keras.layers.Dense, tf_pkg_names)):
+        model = seq_cls()
+        model.add(dense_cls(3, input_dim=4, activation='relu'))
+        model.add(dense_cls(3, activation='softmax'))
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        model.fit(X, y_onehot, verbose=0)
 
-        with AcumosContextManager(root) as context:
-            model_path = context.build_path('model.pkl')
-            with open(model_path, 'wb') as f:
-                dump_model(model, f)
+        with TemporaryDirectory() as root:
 
-            assert {'keras', 'dill', 'acumos', 'h5py', 'tensorflow'} == context.package_names
+            with AcumosContextManager(root) as context:
+                model_path = context.build_path('model.pkl')
+                with open(model_path, 'wb') as f:
+                    dump_model(model, f)
 
-        with AcumosContextManager(root) as context:
-            with open(model_path, 'rb') as f:
-                loaded_model = load_model(f)
+                assert pkg_names == context.package_names
 
-    assert (model.predict_classes(X, verbose=0) == loaded_model.predict_classes(X, verbose=0)).all()
+            with AcumosContextManager(root) as context:
+                with open(model_path, 'rb') as f:
+                    loaded_model = load_model(f)
+
+        assert (model.predict_classes(X, verbose=0) == loaded_model.predict_classes(X, verbose=0)).all()
 
 
 def test_pickler_sklearn():

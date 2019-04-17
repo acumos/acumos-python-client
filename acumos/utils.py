@@ -19,7 +19,7 @@
 """
 Provides model wrapping utilities
 """
-import sys
+from importlib.util import spec_from_file_location, module_from_spec
 import os
 import inspect
 import contextlib
@@ -34,31 +34,12 @@ def namedtuple_field_types(nt):
     return OrderedDict((field, field_types[field]) for field in nt._fields)
 
 
-def _load_module_py33(fullname, path):
-    '''Imports and returns a module from path for Python 3.3-3.4'''
-    from importlib.machinery import SourceFileLoader
-    module = SourceFileLoader(fullname, path).load_module()
-    return module
-
-
-def _load_module_py35(fullname, path):
+def load_module(fullname, path):
     '''Imports and returns a module from path for Python 3.5+'''
-    import importlib.util
-    spec = importlib.util.spec_from_file_location(fullname, path)
-    module = importlib.util.module_from_spec(spec)
+    spec = spec_from_file_location(fullname, path)
+    module = module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
-
-
-def load_module(fullname, path):
-    '''Imports and returns a module from path'''
-    ver_info = sys.version_info
-    if (3, 3) <= ver_info < (3, 5):
-        return _load_module_py33(fullname, path)
-    elif (3, 5) <= ver_info:
-        return _load_module_py35(fullname, path)
-    else:
-        raise AcumosError("Attempted to import Python module from path, but Python {} is not supported".format(ver_info))
 
 
 def load_artifact(*path, module, mode):

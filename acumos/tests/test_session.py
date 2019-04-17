@@ -42,7 +42,7 @@ from acumos.session import AcumosSession, _dump_model
 from acumos.exc import AcumosError
 from acumos.utils import load_artifact
 from acumos.auth import clear_jwt, _USERNAME_VAR, _PASSWORD_VAR, _TOKEN_VAR, _set_jwt
-from acumos.metadata import SCHEMA_VERSION, Requirements
+from acumos.metadata import SCHEMA_VERSION, Requirements, Options
 
 from mock_server import MockServer
 from utils import run_command, TEST_DIR
@@ -56,6 +56,32 @@ _REQ_FILES = ('model.zip', 'model.proto', 'metadata.json')
 _FAKE_USERNAME = 'foo'
 _FAKE_PASSWORD = 'bar'
 _FAKE_TOKEN = 'secrettoken'
+_FAKE_LICENSE = path_join(TEST_DIR, 'mock-license.json')
+
+
+def test_create_microservice():
+    '''Tests that the microservice creation parameter is correctly specified'''
+    with _patch_auth():
+        extra_headers = {'X-Test-Create': 'true'}
+        opts = Options(create_microservice=True)
+        _push_dummy_model(extra_headers, options=opts)
+
+        extra_headers = {'X-Test-Create': 'false'}
+        opts = Options(create_microservice=False)
+        _push_dummy_model(extra_headers, options=opts)
+
+
+def test_license():
+    '''Tests that a user-provided license is correctly pushed'''
+    with _patch_auth():
+        license_str = load_artifact(_FAKE_LICENSE, module=json, mode='r')['license']
+        extra_headers = {'X-Test-License': license_str}
+
+        opts = Options(license=_FAKE_LICENSE)
+        _push_dummy_model(extra_headers, options=opts)
+
+        opts = Options(license=license_str)
+        _push_dummy_model(extra_headers, options=opts)
 
 
 def test_session_push():
@@ -100,6 +126,23 @@ def test_extra_header():
         with _patch_environ(**{_TOKEN_VAR: 'wrongtoken'}):
             extra_headers = {'X-Test-Header': 'wrongtoken'}
             _push_dummy_model(extra_headers)
+
+
+def _push_dummy_model(extra_headers=None, use_model_url=True, use_auth_url=False, options=None):
+    '''Generic dummy model push routine'''
+
+    def my_transform(x: int, y: int) -> int:
+        return x + y
+
+    model = Model(transform=my_transform)
+
+    with MockServer() as server:
+        _model_url, _auth_url, _, _ = server.config
+        model_url = _model_url if use_model_url else None
+        auth_url = _auth_url if use_auth_url else None
+
+        session = AcumosSession(model_url, auth_url)
+        session.push(model, name='my-model', extra_headers=extra_headers, options=options)
 
 
 def test_custom_package():
@@ -179,16 +222,16 @@ def test_session_dump():
     model = Model(transform=my_transform)
     model_name = 'my-model'
 
-    s = AcumosSession()
+    session = AcumosSession()
 
     with tempfile.TemporaryDirectory() as tdir:
 
-        s.dump(model, model_name, tdir)
+        session.dump(model, model_name, tdir)
         model_dir = path_join(tdir, model_name)
         assert set(listdir(model_dir)) == set(_REQ_FILES)
 
         with pytest.raises(AcumosError):
-            s.dump(model, model_name, tdir)  # file already exists
+            session.dump(model, model_name, tdir)  # file already exists
 
 
 def test_dump_model():
@@ -236,8 +279,6 @@ def _load_schema(version):
 
 def test_session_push_sklearn():
     '''Tests basic model pushing functionality with sklearn'''
-    clear_jwt()
-
     with _patch_auth():
         with MockServer() as server:
             iris = load_iris()
@@ -263,14 +304,12 @@ def test_session_push_sklearn():
             model = Model(predict=predict)
 
             model_url, auth_url, _, _ = server.config
-            s = AcumosSession(model_url, auth_url)
-            s.push(model, name='sklearn_iris_push')
+            session = AcumosSession(model_url, auth_url)
+            session.push(model, name='sklearn_iris_push')
 
 
 def test_session_push_keras():
     '''Tests basic model pushing functionality with keras'''
-    clear_jwt()
-
     with _patch_auth():
         with MockServer() as server:
             iris = load_iris()
@@ -299,30 +338,16 @@ def test_session_push_keras():
             model = Model(predict=predict)
 
             model_url, auth_url, _, _ = server.config
-            s = AcumosSession(model_url, auth_url)
-            s.push(model, name='keras_iris_push')
-
-
-def _push_dummy_model(extra_headers=None, use_model_url=True, use_auth_url=False):
-    '''Generic dummy model push routine'''
-
-    def my_transform(x: int, y: int) -> int:
-        return x + y
-
-    model = Model(transform=my_transform)
-
-    with MockServer() as server:
-        _model_url, _auth_url, _, _ = server.config
-        model_url = _model_url if use_model_url else None
-        auth_url = _auth_url if use_auth_url else None
-
-        s = AcumosSession(model_url, auth_url)
-        s.push(model, name='my-model', extra_headers=extra_headers)
+            session = AcumosSession(model_url, auth_url)
+            session.push(model, name='keras_iris_push')
 
 
 @contextlib.contextmanager
-def _patch_auth():
+def _patch_auth(clear_token=True):
     '''Convenience CM to patch interactive prompts used for authentication'''
+    if clear_token:
+        clear_jwt()
+
     with mock.patch('acumos.auth.gettoken', lambda x: _FAKE_TOKEN):
         yield
 
