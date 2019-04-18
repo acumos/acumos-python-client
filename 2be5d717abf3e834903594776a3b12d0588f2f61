@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "bcf99c42_bfeec075",
+        "filename": "acumos/metadata.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-04-18T15:30:25Z",
+      "side": 1,
+      "message": "numpydoc formatting doesn\u0027t require specifying the default in the docstring itself (see https://numpydoc.readthedocs.io/en/latest/format.html), as the default is in the function signature. Personally, I like to keep simple defaults out of the docstring to avoid stale documentation.",
+      "parentUuid": "73ca4b45_3ebceda7",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1682174e_a5f53968",
         "filename": "acumos/session.py",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "75503f73_3c62567e",
+        "filename": "acumos/session.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-04-18T15:30:25Z",
+      "side": 1,
+      "message": "I completely agree that the license should be plain text. \n\nThere was a very lengthy email discussion. The license team wants a JSON, so I said the clients could form the JSON. They wanted this license feature before they could give us the schema. \n\nSo their plan is that the user will just pass a license JSON file directly (hence the option to provide a path). I give the option to provide a string because it felt odd to have models being defined inclusively within a Python script, and requiring an external file for this one thing.\n\nWhen I asked how the user was supposed to know how to craft a valid license JSON, they said users will use a license maker web tool, download the JSON locally, and then re-upload the JSON with their model via the clients.\n\nI said this was a painful user experience, and the clients should just form the license JSON. The response was that if it was painful, users should \"take a pill\".\n\nSo, here we are...",
+      "parentUuid": "1682174e_a5f53968",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3bda2aae_b81c5427",
         "filename": "acumos/tests/mock_server.py",
         "patchSetId": 5
@@ -47,6 +83,24 @@
       "writtenOn": "2019-04-17T21:00:17Z",
       "side": 1,
       "message": "Would it be fruitful to mark this API as deprecated now?  The other end (backend) is already throwing a similar error.",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72205592_65d96434",
+        "filename": "acumos/tests/mock_server.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-04-18T15:30:25Z",
+      "side": 1,
+      "message": "The auth API is deprecated (see the warning in session.py added a couple of versions ago) however I keep these tests in case a new version of the client is used with an old version of the Acumos platform.",
+      "parentUuid": "3bda2aae_b81c5427",
       "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
