@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "3113871f_cd6550ef",
+        "filename": "acumos/metadata.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2019-04-22T15:12:21Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "bcf99c42_bfeec075",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1682174e_a5f53968",
         "filename": "acumos/session.py",
         "patchSetId": 5
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "8054326e_dfaf79b7",
+        "filename": "acumos/session.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2019-04-22T15:12:21Z",
+      "side": 1,
+      "message": "That makes for a really bad user experience and will keep people from using the platform -- having to download a tool to use a tool.  I propose we make an issue to drop JSON-based license support and go for plain text (a url, RST, whateveR)",
+      "parentUuid": "75503f73_3c62567e",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3bda2aae_b81c5427",
         "filename": "acumos/tests/mock_server.py",
         "patchSetId": 5
@@ -104,6 +140,24 @@
       "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2cae3e1_ae92a708",
+        "filename": "acumos/tests/mock_server.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2019-04-22T15:12:21Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "72205592_65d96434",
+      "revId": "2be5d717abf3e834903594776a3b12d0588f2f61",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
     },
     {
       "key": {
