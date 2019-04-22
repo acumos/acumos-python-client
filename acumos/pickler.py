@@ -28,11 +28,17 @@ from os import makedirs
 from os.path import basename, isdir, isfile, join as path_join
 from copy import deepcopy
 from functools import partial
-from typing import GenericMeta, Dict, List
+from typing import Dict, List
 from types import ModuleType
 from importlib import import_module
 
 import dill
+
+try:
+    from typing import GenericMeta
+except ImportError:
+    class GenericMeta(object):
+        '''Dummy class for Python 3.7+'''
 
 from acumos.modeling import _is_namedtuple, create_namedtuple, Empty
 from acumos.exc import AcumosError
