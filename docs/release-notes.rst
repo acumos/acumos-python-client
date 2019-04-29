@@ -20,21 +20,21 @@
 Acumos Python Client Release Notes
 ==================================
 
-v0.8.0
-======
+v0.8.0, 22 April 2019
+=====================
 
 -  Enhancements
 
-   - Users may now specify additional options when pushing their Acumos model. See the options section in the tutorial for more information.
-   - ``acumos`` now supports Keras models built with ``tensorflow.keras``
+   - Users may now specify additional options when pushing their Acumos model. See the options section in the tutorial for more information : `ACUMOS-2281 <https://jira.acumos.org/browse/ACUMOS-2281/>`_, `ACUMOS-2270 <https://jira.acumos.org/browse/ACUMOS-2770/>`_
+   - ``acumos`` now supports Keras models built with ``tensorflow.keras`` : `ACUMOS-2276 <https://jira.acumos.org/browse/ACUMOS-2748/>`_
 
 -  Support changes
 
-   - ``acumos`` no longer supports Python 3.4
+   - ``acumos`` no longer supports Python 3.4 : `ACUMOS-2766 <https://jira.acumos.org/browse/ACUMOS-2766/>`_
 
 
-v0.7.2
-======
+v0.7.2, 19 January 2019
+=======================
 
 -  Bug fixes
 
@@ -42,38 +42,38 @@ v0.7.2
    - A more portable path solution is now used when saving models, to avoid issues with models developed in Windows
 
 
-v0.7.1
-======
+v0.7.1, 17 October 2019
+=======================
 
 -  Authentication
 
    - Username and password authentication has been deprecated
    - Users are now interactively prompted for an onboarding token, as opposed to a username and password
 
-v0.7.0
-======
+v0.7.0, 20 June 2018
+====================
 
 -  Requirements
 
    - Python script dependencies can now be specified using a Requirements object
    - Python script dependencies found during the introspection stage are now included with the model
 
-v0.6.5
-======
+v0.6.5, 15 June 2018
+====================
 
 -  Bug fixes
 
    - Don't attempt to use an empty auth token (avoids blank strings to be set in environment)
 
-v0.6.4
-======
+v0.6.4, 31 May 2018
+===================
 
 -  Bug fixes
 
    - The normalized path of the system base prefix is now used for identifying stdlib packages
 
-v0.6.3
-======
+v0.6.3, 27 April 2018
+=====================
 
 -  Bug fixes
 
@@ -81,23 +81,23 @@ v0.6.3
    - Removed custom packages from model metadata, as it caused image build failures
    - Fixed Python 3.5.2 ordering bug in wrapped model usage
 
-v0.6.2
-======
+v0.6.2, 6 April 2018
+====================
 
 -  TensorFlow
 
    - Fixed a serialization issue that occurred when using a frozen graph
 
-v0.6.1
-======
+v0.6.1, 23 March 2018 
+=====================
 
 -  Model upload
 
    - The JWT is now cleared immediately after a failed upload
    - Additional HTTP information is now included in the error message
 
-v0.6.0
-======
+v0.6.0, 22 March 2018
+=====================
 
 -  Authentication token
 
