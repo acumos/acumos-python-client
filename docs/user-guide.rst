@@ -23,8 +23,8 @@ Acumos Python Client User Guide
 
 |Build Status|
 
-``acumos`` is a client library that allows modelers to push their Python models
-to the `Acumos platform <https://www.acumos.org/>`__.
+the acumos on-boarding Python client is a client library that allows modelers to push their
+Python models to their Acumos platform.
 
 Installation
 ============
