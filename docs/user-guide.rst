@@ -21,10 +21,22 @@ Acumos Python Client User Guide
 ===============================
 
 
-|Build Status|
+The Acumos Python Client User Guide is accessible in `Pypi <https://pypi.org/project/acumos/>`__,
+you will find explanations to create the model bundle and how to use it with CLI on-boarding. Thanks
+to this Python client you will be able to on-board most of AI models built with common AI library like
+scikit-learn but also AI models coming from Keras and Tensor Flow.
 
-``acumos`` is a client library that allows modelers to push their Python models
-to the `Acumos platform <https://www.acumos.org/>`__.
+Model licensing
+===============
+
+It is possible to on-board your model with a license file. The name of the license file must be :
+"license.json". If the license file extension is not ‘json’ the license on-boarding will not be posible
+and if the name is not ‘license’ Acumos will rename your license file as license.json and you will see
+your license file named as license.json in the artefacts table. If you upload a new version of your
+license after on-boarding, a number revision will be added to the name of your license file like :
+“license-2.json”. To help user create the license file expected by Acumos a license editor is available
+on the web : `Acumos license editor <https://acumos-license-editor.stackblitz.io/#/>`__
+
 
 Installation
 ============
