@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "00ed2d2d_8efcb3eb",
+        "filename": "docs/user-guide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-05-24T16:57:46Z",
+      "side": 1,
+      "message": "\"the acumos on-boarding Python client is a client library\" is a bit redundant - don\u0027t you think? I don\u0027t understand why the code formatting was removed from acumos; acumos is a package. Also this sentence isn\u0027t capitalized. I don\u0027t see why this change is needed.",
+      "revId": "0c26530ff74c48e33e7e73a76319cda9d71f6f5c",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
