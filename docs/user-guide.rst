@@ -1,8 +1,8 @@
-.. ===============LICENSE_START=======================================================
+.. ===============LICENSE_START============================================================
 .. Acumos CC-BY-4.0
-.. ===================================================================================
+.. ========================================================================================
 .. Copyright (C) 2017-2018 AT&T Intellectual Property & Tech Mahindra. All rights reserved.
-.. ===================================================================================
+.. ========================================================================================
 .. This Acumos documentation file is distributed by AT&T and Tech Mahindra
 .. under the Creative Commons Attribution 4.0 International License (the "License");
 .. you may not use this file except in compliance with the License.
@@ -14,55 +14,32 @@
 .. WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
-.. ===============LICENSE_END=========================================================
+.. ===============LICENSE_END==============================================================
 
 ===============================
-Acumos Python Client User Guide
+acumos Python Client User Guide
 ===============================
 
 
 |Build Status|
 
 ``acumos`` is a client library that allows modelers to push their Python models
-to the `Acumos platform <https://www.acumos.org/>`__.
+to their own Acumos instance
 
-Installation
-============
+all the needed information and prerequisites to use ``acumos`` are depicted in Pypi :
+`acumos Pypi <https://pypi.org/project/acumos/>`__
 
-You will need a Python 3.5+ environment in order to install ``acumos``.
-You can use `Anaconda <https://www.anaconda.com/download/>`__
-(preferred) or `pyenv <https://github.com/pyenv/pyenv>`__ to install and
-manage Python environments.
+On-board model with license
+===========================
 
-If you’re new to Python and need an IDE to start developing, we
-recommend using `Spyder <https://github.com/spyder-ide/spyder>`__ which
-can easily be installed with Anaconda.
+If you have a license associated with your model, you can on-board it with your model but you must
+name it as "license.json".
 
-The ``acumos`` package can be installed with pip:
-
-.. code:: bash
-
-    pip install acumos
+If the license file extension is not ‘json’ the license on-boarding will not be possible and if the
+name is not ‘license’ Acumos will rename your license file as license.json and you will see your
+license file named as license.json in the artifacts table. If you upload a new version of your
+license after on-boarding, a number revision will be added to the name of your license file like :
+“license-2.json”. To help user create the license file expected by Acumos a license editor is
+available on the web : `Acumos license editor <https://pypi.org/project/acumos/>`__
 
 
-Protocol Buffers
-----------------
-
-The ``acumos`` package uses protocol buffers and **assumes you have
-the protobuf compiler** ``protoc`` **installed**. Please visit the `protobuf
-repository <https://github.com/google/protobuf/releases/tag/v3.4.0>`__
-and install the appropriate ``protoc`` for your operating system.
-Installation is as easy as downloading a binary release and adding it to
-your system ``$PATH``. This is a temporary requirement that will be
-removed in a future version of ``acumos``.
-
-**Anaconda Users**: You can easily install ``protoc`` from `an Anaconda
-package <https://anaconda.org/anaconda/libprotobuf>`__ via:
-
-.. code:: bash
-
-    conda install -c anaconda libprotobuf
-
-
-.. |Build Status| image:: https://jenkins.acumos.org/buildStatus/icon?job=acumos-python-client-tox-verify-master
-   :target: https://jenkins.acumos.org/job/acumos-python-client-tox-verify-master/
