@@ -17,14 +17,14 @@
 .. ===============LICENSE_END==============================================================
 
 ===============================
-acumos Python Client User Guide
+Acumos Python Client User Guide
 ===============================
 
 
 |Build Status|
 
-``acumos`` is a client library that allows modelers to push their Python models
-to their own Acumos instance
+``acumos`` is a client library that allows modelers to push their Python models to their own Acumos
+instance
 
 all the needed information and prerequisites to use ``acumos`` are depicted in Pypi :
 `acumos Pypi <https://pypi.org/project/acumos/>`__
