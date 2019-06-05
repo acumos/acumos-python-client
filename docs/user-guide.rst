@@ -20,9 +20,6 @@
 Acumos Python Client User Guide
 ===============================
 
-
-|Build Status|
-
 ``acumos`` is a client library that allows modelers to push their Python models to their own Acumos
 instance
 
