@@ -26,6 +26,27 @@ instance
 all the needed information and prerequisites to use ``acumos`` are depicted in Pypi :
 `acumos Pypi <https://pypi.org/project/acumos/>`__
 
+Web-onboarding
+==============
+
+When using the session.dump(model, 'my-model', '~/') for web-onboarding, you created the following three files : 
+
+metadata.json
+model.proto
+model.zip
+
+stored in the 'my-model' folder.
+
+Now you have to zip this three file in an only one : 
+
+.. code-block:: bash
+
+   zip archive.zip metadata.json model.proto model.zip
+
+and then drag and drop this archive.zip towards your Acumos portal, in the "ON-BOARDING BY WEB" page. Or
+browse the archive.zip file from the "ON-BOARDING BY WEB" page.
+
+
 On-board model with license
 ===========================
 
