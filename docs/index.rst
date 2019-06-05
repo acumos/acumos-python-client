@@ -25,5 +25,6 @@ Acumos Python Client
 
        release-notes
        developer-guide
-       user-guide.rst
+       user-guide
+       installation-and-maintenance-Guide
 
