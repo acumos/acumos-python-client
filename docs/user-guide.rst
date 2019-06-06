@@ -29,24 +29,25 @@ all the needed information and prerequisites to use ``acumos`` are depicted in P
 Web-onboarding
 ==============
 
-When using the session.dump(model, 'my-model', '~/') for web-onboarding, you created the following three files :
+Before using web-onboarding you need to use the dump method in order to create a model bundle
+composed of the three following files : 
 
-metadata.json
+**metadata.json**
 
-model.proto
+**model.proto**
 
-model.zip
+**model.zip**
 
-stored in the 'my-model' folder.
+Please look at the Pypi link above to know how to create this model bundle.
 
-Now, you have to zip this three file in an only one :
+Once the model bundle is created, you have to zip this three files in an only one :
 
 .. code-block:: bash
 
    zip archive.zip metadata.json model.proto model.zip
 
-and then drag and drop this archive.zip towards your Acumos portal, in the "ON-BOARDING BY WEB" page. Or
-browse the archive.zip file from the "ON-BOARDING BY WEB" page.
+and then drag and drop this archive.zip towards your Acumos portal, in the "ON-BOARDING BY WEB" page.
+Or browse the archive.zip file from the "ON-BOARDING BY WEB" page.
 
 
 On-board model with license
