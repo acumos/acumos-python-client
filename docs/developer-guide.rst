@@ -20,12 +20,6 @@
 Acumos Python Client Developer Guide
 ====================================
 
-``acumos`` is a client library that allows modelers to push their Python models
-to their own Acumos instance.
-
-You can clone the code at gerrit
-`https://gerrit.acumos.org/r/#/admin/projects/acumos-python-client <https://gerrit.acumos.org/r/#/admin/projects/acumos-python-client>`__
-
 Testing
 =======
 
@@ -54,4 +48,3 @@ You can also specify certain tox environments to test:
 
     $ tox -e py36  # only test against Python 3.6
     $ tox -e flake8  # only lint code
-
