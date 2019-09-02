@@ -20,7 +20,7 @@
 Provides modeling utilities
 """
 from inspect import getfullargspec, getdoc, isclass
-from typing import NamedTuple, List, Dict
+from typing import NamedTuple, List, Dict, TypeVar, Generic, NewType
 from enum import Enum
 from collections import namedtuple, OrderedDict
 
@@ -56,6 +56,20 @@ class Empty(tuple):
 
 _RESERVED_TYPES = {Empty, }
 _RESERVED_NAMES = {t.__name__ for t in _RESERVED_TYPES}
+
+
+RawTypeVar = TypeVar('RawTypeVar', str, bytes, dict)
+
+
+class Raw(Generic[RawTypeVar]):
+    '''Represents raw types that will not result in a generated message'''
+
+    def __init__(self, rawType: RawTypeVar) -> None:
+        self._raw_type = rawType
+
+    @property
+    def raw_type(self):
+        return self._raw_type
 
 
 class Model(object):
@@ -117,6 +131,13 @@ def _wrap_function(f, name=None):
     field_types = [(a, anno[a]) for a in spec.args]
     ret_type = anno['return']
 
+    # check to see if use-defined function consumes and/or produces a raw type, and if so, skip NamedTuple generation
+    if _is_raw_type(field_types, ret_type):
+        input_type = field_types[0][1]
+        output_type = ret_type
+        wrapped_f = f
+        return wrapped_f, input_type, output_type
+
     for field_name, field_type in field_types:
         with reraise('Function {} argument {} is invalid', (name, field_name)):
             _assert_valid_type(field_type)
@@ -149,6 +170,11 @@ def _wrap_function(f, name=None):
         _assert_valid_type(output_type)
 
     return wrapped_f, input_type, output_type
+
+
+def _is_raw_type(field_types, ret_type):
+    '''Returns True if field types are one of the supported raw types and the user-defined function only consume and/or produce one raw type'''
+    return len(field_types) == 1 and callable(field_types[0][1]) and callable(ret_type)
 
 
 def _already_wrapped(field_types):
@@ -255,3 +281,8 @@ def create_dataframe(name, df):
 def create_namedtuple(name, field_types):
     '''Returns a NamedTuple type'''
     return NamedTuple(name, field_types)
+
+
+def new_type(raw_type, name):
+    '''Returns a user specified raw type'''
+    return NewType(name, Raw(raw_type))
