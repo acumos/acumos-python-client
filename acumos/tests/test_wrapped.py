@@ -21,6 +21,7 @@ Provides wrapped model tests
 """
 import io
 import sys
+import json
 import logging
 from os.path import join as path_join
 from collections import Counter
@@ -37,7 +38,7 @@ from sklearn.ensemble import RandomForestClassifier
 from google.protobuf.json_format import MessageToJson, MessageToDict
 
 from acumos.wrapped import load_model, _pack_pb_msg
-from acumos.modeling import Model, create_dataframe, List, Dict, create_namedtuple
+from acumos.modeling import Model, create_dataframe, List, Dict, create_namedtuple, Raw, new_type
 from acumos.session import _dump_model, _copy_dir, Requirements
 
 from test_pickler import _build_tf_model
@@ -166,6 +167,49 @@ def _dict_skips(as_, from_):
 
 
 @pytest.mark.flaky(reruns=5)
+def test_raw_type():
+    '''Tests to make sure that supported raw data types are unpacked correctly'''
+
+    Text = new_type(str, 'Text', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+
+    def f1(text: Text) -> Text:
+        '''Return a raw text'''
+        return Text(text)
+
+    Image = new_type(bytes, 'Image', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+
+    def f2(image: Image) -> Image:
+        '''Return an image'''
+        return Image(image)
+
+    Dictionary = new_type(dict, 'Dictionary', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+
+    def f3(dictionary: Dictionary) -> Dictionary:
+        '''Return a raw dictionary'''
+        return Dictionary(dictionary)
+
+    # input / output "answers"
+
+    f1_in = Text("test string", {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+    f1_out = Text("test string", {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+    f1_in_media_type = "text/plain"
+    f1_out_media_type = "text/plain"
+
+    f2_in = Image(Raw(b'test bytes', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description'))
+    f2_out = Image(Raw(b'test bytes', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description'))
+    f2_in_media_type = "application/octet-stream"
+    f2_out_media_type = "application/octet-stream"
+
+    f3_in = Dictionary(Raw({'a': 1, 'b': 2}, {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description'))
+    f3_out = Dictionary(Raw({'a': 1, 'b': 2}, {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description'))
+    f3_in_media_type = "application/json"
+    f3_out_media_type = "application/json"
+
+    for func, in_, out, in_media_type, out_media_type in ((f1, f1_in, f1_out, f1_in_media_type, f1_out_media_type), (f2, f2_in, f2_out, f2_in_media_type, f2_out_media_type), (f3, f3_in, f3_out, f3_in_media_type, f3_out_media_type)):
+        _raw_type_test(func, in_, out, in_media_type, out_media_type)
+
+
+@pytest.mark.flaky(reruns=5)
 def test_wrapped_sklearn():
     '''Tests model wrap and load functionality'''
 
@@ -252,6 +296,27 @@ def test_wrapped_tensorflow():
     out = (yhat, )
 
     _generic_test(f2, in_, out, wrapped_eq=lambda a, b: (a[0] == b[0]).all(), preload=tf.reset_default_graph)
+
+
+def _raw_type_test(func, in_, out, in_media_type, out_media_type, wrapped_eq=eq, dict_eq=eq, json_eq=eq, reqs=None, skip=None):
+    '''Test for model with raw type data function '''
+    model = Model(transform=func)
+    model_name = 'my-model'
+
+    with TemporaryDirectory() as tdir:
+        with _dump_model(model, model_name, reqs) as dump_dir:
+            _copy_dir(dump_dir, tdir, model_name)
+
+        copied_dump_dir = path_join(tdir, model_name)
+        metadata_file_path = path_join(copied_dump_dir, 'metadata.json')
+
+        with open(metadata_file_path) as metadata_file:
+            metadata_json = json.load(metadata_file)
+
+            assert metadata_json['methods']['transform']['input']['media_type'] == in_media_type
+            assert metadata_json['methods']['transform']['output']['media_type'] == out_media_type
+
+        wrapped_model = load_model(copied_dump_dir)
 
 
 def _generic_test(func, in_, out, wrapped_eq=eq, pb_mg_eq=eq, pb_bytes_eq=eq, dict_eq=eq, json_eq=eq, preload=None, reqs=None, skip=None):
