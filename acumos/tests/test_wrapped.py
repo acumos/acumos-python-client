@@ -21,6 +21,7 @@ Provides wrapped model tests
 """
 import io
 import sys
+import json
 import logging
 from os.path import join as path_join
 from collections import Counter
@@ -37,7 +38,7 @@ from sklearn.ensemble import RandomForestClassifier
 from google.protobuf.json_format import MessageToJson, MessageToDict
 
 from acumos.wrapped import load_model, _pack_pb_msg
-from acumos.modeling import Model, create_dataframe, List, Dict, create_namedtuple
+from acumos.modeling import Model, create_dataframe, List, Dict, create_namedtuple, Raw, new_type
 from acumos.session import _dump_model, _copy_dir, Requirements
 
 from test_pickler import _build_tf_model
@@ -166,6 +167,26 @@ def _dict_skips(as_, from_):
 
 
 @pytest.mark.flaky(reruns=5)
+def test_raw_type():
+    '''Tests to make sure that supported raw data types are unpacked correctly'''
+
+    Text = new_type(str, 'Text', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+
+    def f1(text: Text) -> Text:
+    '''Return a raw text'''
+        return Text(text)
+
+    Image = new_type(bytes, 'Image', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+
+    # input / output "answers"
+
+    f1_in = (Text("test string", {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description'))
+    f1_out = (Text("test string", {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description'))
+
+    _raw_type_test(f1, f1_in, f1_out)
+
+
+@pytest.mark.flaky(reruns=5)
 def test_wrapped_sklearn():
     '''Tests model wrap and load functionality'''
 
@@ -252,6 +273,27 @@ def test_wrapped_tensorflow():
     out = (yhat, )
 
     _generic_test(f2, in_, out, wrapped_eq=lambda a, b: (a[0] == b[0]).all(), preload=tf.reset_default_graph)
+
+
+def _raw_type_test(func, in_, out, wrapped_eq=eq, dict_eq=eq, json_eq=eq, reqs=None, skip=None):
+    '''Test for model with raw type data function '''
+    model = Model(transform=func)
+    model_name = 'my-model'
+
+    with TemporaryDirectory() as tdir:
+        with _dump_model(model, model_name, reqs) as dump_dir:
+            _copy_dir(dump_dir, tdir, model_name)
+
+        copied_dump_dir = path_join(tdir, model_name)
+        metadata_file_dir = path_join(copied_dump_dir, 'metadata.json')
+
+        with open(metadata_file_dir, 'rb') as metadata_file:
+            metadata_json = json.load(metadata_file)
+
+            assert metadata_json['methods']['transform']['input']['media_type'] == "application/octet-stream"
+            assert metadata_json['methods']['transform']['output']['media_type'] == "application/octet-stream"
+
+        wrapped_model = load_model(copied_dump_dir)
 
 
 def _generic_test(func, in_, out, wrapped_eq=eq, pb_mg_eq=eq, pb_bytes_eq=eq, dict_eq=eq, json_eq=eq, preload=None, reqs=None, skip=None):
