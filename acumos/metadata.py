@@ -26,12 +26,14 @@ from pkg_resources import get_distribution, DistributionNotFound
 from os.path import basename, normpath, sep as pathsep
 
 from acumos.exc import AcumosError
+from acumos.modeling import _is_namedtuple
 
 
 BUILTIN_MODULE_NAMES = set(sys.builtin_module_names)
 PACKAGE_DIRS = {'site-packages', 'dist-packages'}
 SCHEMA_VERSION = '0.4.0'
 _SCHEMA = "acumos.schema.model:{}".format(SCHEMA_VERSION)
+_MEDIA_TYPES = {str: 'text/plain', bytes: 'application/octet-stream', dict: 'application/json', 'protobuf': 'application/vnd.google.protobuf'}
 
 # known package mappings because Python packaging is madness
 _REQ_MAP = {
@@ -103,16 +105,23 @@ def create_model_meta(model, name, requirements, encoding='protobuf'):
     return {'schema': _SCHEMA,
             'runtime': _create_runtime(requirements, encoding),
             'name': name,
-            'methods': {name: {'input': f.input_type.__name__,
-                               'output': f.output_type.__name__,
-                               'description': f.description} for name, f in model.methods.items()}}
+            'methods': {name: {'input': { 'name': f.input_type.__name__,
+                                          'media_type': _MEDIA_TYPES[encoding if _is_namedtuple(f.input_type) else f.input_type.__supertype__._raw_type],
+                                          'metadata': {} if _is_namedtuple(f.input_type) else f.input_type.__supertype__._metadata,
+                                          'description': {} if _is_namedtuple(f.input_type) else f.input_type.__supertype__._doc},
+                               'output': { 'name': f.output_type.__name__,
+                                           'media_type': _MEDIA_TYPES[encoding if _is_namedtuple(f.output_type) else f.output_type.__supertype__._raw_type],
+                                           'metadata': {} if _is_namedtuple(f.output_type) else f.output_type.__supertype__._metadata,
+                                           'description': {} if _is_namedtuple(f.output_type) else f.output_type.__supertype__._doc},
+                               'description': f.description
+                              } for name, f in model.methods.items()}}
 
 
 def _create_runtime(requirements, encoding='protobuf'):
     '''Returns a runtime dict'''
     reqs = _gather_requirements(requirements)
     return {'name': 'python',
-            'encoding': encoding,
+            # 'encoding': encoding,
             'version': '.'.join(map(str, sys.version_info[:3])),
             'dependencies': _create_dependencies(reqs)}
 
