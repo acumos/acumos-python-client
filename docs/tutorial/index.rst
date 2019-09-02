@@ -164,6 +164,42 @@ syntax:
         width: int
         height: int
 
+Defining Unstructured Types
+===========================
+
+The `create_namedtuple` function allows us to create types with structure,
+however sometimes it's useful to work with unstructured data, such as plain
+text, dictionaries or byte strings. The `new_type` function allows for just
+that.
+
+For example, here's a model that takes in unstructured text, and returns the
+number of words in the text:
+
+.. code:: python
+
+    from acumos.modeling import new_type
+
+    Text = new_type(str, 'Text')
+
+    def count(text: Text) -> int:
+        '''Counts the number of words in the text'''
+        return len(text.split(' '))
+
+By using the `new_type` function, you inform `acumos` that `Text` is
+unstructured, and therefore `acumos` will not create any structured types or
+messages for the `count` function.
+
+You can use the `new_type` function to create dictionaries or byte string
+type unstructured data as shown below.
+
+.. code:: python
+
+   from acumos.modeling import new_type
+
+   Dict = new_type(dict, 'Dict')
+
+   Image = new_type(byte, 'Image')
+
 Using DataFrames with scikit-learn
 ==================================
 
