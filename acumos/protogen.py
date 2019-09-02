@@ -251,7 +251,7 @@ def _type2proto(t):
 
 def _gen_service(model, name='Model'):
     '''Returns a protobuf service definition string'''
-    rpc_comps = ((n, f.input_type.__name__, f.output_type.__name__) for n, f in model.methods.items())
+    rpc_comps = ((n, f.input_type.__name__, f.output_type.__name__) for n, f in model.methods.items() if _is_namedtuple(f.input_type))
     rpc_defs = '\n'.join(_gen_rpc(*comps) for comps in rpc_comps)
     return _service_template.format(name=name, service_def=rpc_defs)
 
