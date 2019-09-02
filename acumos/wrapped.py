@@ -100,8 +100,8 @@ class WrappedFunction(object):
         self._module = module
         self._input_type = func.input_type
         self._output_type = func.output_type
-        self._pb_input_type = getattr(module, func.input_type.__name__)
-        self._pb_output_type = getattr(module, func.output_type.__name__)
+        self._pb_input_type = getattr(module, func.input_type.__name__) if _is_namedtuple(self._input_type) else None
+        self._pb_output_type = getattr(module, func.output_type.__name__) if _is_namedtuple(self._output_type) else None
 
     def from_pb_bytes(self, pb_bytes_in):
         '''Consumes a binary Protobuf message and returns a WrappedResponse object'''
