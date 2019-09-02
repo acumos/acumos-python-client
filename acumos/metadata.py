@@ -26,6 +26,7 @@ from pkg_resources import get_distribution, DistributionNotFound
 from os.path import basename, normpath, sep as pathsep
 
 from acumos.exc import AcumosError
+from acumos.modeling import _is_namedtuple
 
 
 BUILTIN_MODULE_NAMES = set(sys.builtin_module_names)
@@ -105,14 +106,16 @@ def create_model_meta(model, name, requirements, encoding='protobuf'):
             'name': name,
             'methods': {name: {'input': f.input_type.__name__,
                                'output': f.output_type.__name__,
-                               'description': f.description} for name, f in model.methods.items()}}
+                               'description': f.description,
+                               'encoding': encoding if (_is_namedtuple(f.input_type) or _is_namedtuple(f.output_type)) else 'raw'
+                              } for name, f in model.methods.items()}}
 
 
 def _create_runtime(requirements, encoding='protobuf'):
     '''Returns a runtime dict'''
     reqs = _gather_requirements(requirements)
     return {'name': 'python',
-            'encoding': encoding,
+            # 'encoding': encoding,
             'version': '.'.join(map(str, sys.version_info[:3])),
             'dependencies': _create_dependencies(reqs)}
 
