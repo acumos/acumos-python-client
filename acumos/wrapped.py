@@ -100,8 +100,8 @@ class WrappedFunction(object):
         self._module = module
         self._input_type = func.input_type
         self._output_type = func.output_type
-        self._pb_input_type = getattr(module, func.input_type.__name__)
-        self._pb_output_type = getattr(module, func.output_type.__name__)
+        self._pb_input_type = getattr(module, func.input_type.__name__) if _is_namedtuple(self._input_type) else None
+        self._pb_output_type = getattr(module, func.output_type.__name__) if _is_namedtuple(self._output_type) else None
 
     def from_pb_bytes(self, pb_bytes_in):
         '''Consumes a binary Protobuf message and returns a WrappedResponse object'''
@@ -132,6 +132,11 @@ class WrappedFunction(object):
         '''Consumes a json str and returns a WrappedResponse object'''
         pb_msg_in = ParseJson(json_in, self._pb_input_type())
         return self.from_pb_msg(pb_msg_in)
+
+    def from_raw(self, raw_in):
+        '''Consumes a raw type data and returns a WrappedResponse object'''
+        raw_out = self._func.inner(raw_in)
+        return WrappedResponse(raw_out, None, None)
 
     @property
     def pb_input_type(self):
@@ -171,6 +176,10 @@ class WrappedResponse(object):
         '''Returns a json str representation of the model response'''
         pb_msg_out = self.as_pb_msg()
         return MessageToJson(pb_msg_out, self._pb_output_type(), indent=0)
+
+    def as_raw(self):
+         '''Returns a raw data type representation of the model response'''
+        return self._resp
 
 
 def _pack_pb_msg(wrapped_in, module):
