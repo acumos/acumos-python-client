@@ -2,7 +2,7 @@ pytest
 pytest-rerunfailures
 pytest-cov
 connexion==1.5.2
-pandas
+pandas<0.25 
 scikit-learn~=0.20.3
 jsonschema==2.6.0
 keras
