@@ -31,6 +31,19 @@ def test_wrap_function():
     FooIn = NamedTuple('FooIn', [('x', int), ('y', int)])
     FooOut = NamedTuple('FooOut', [('value', int)])
 
+    Image = new_type(bytes, 'Image', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+
+# =============================================================================
+#     check for both user defined raw data type
+# =============================================================================
+    def test_image_func(image: Image) -> Image:
+        return Image(image)
+
+    f, raw_in_, raw_out = _wrap_function(foo)
+
+    assert type(raw_in_.__supertype__) == Raw
+    assert type(raw_out.__supertype__) == Raw
+
 # =============================================================================
 #     both args and return need to be wrapped
 # =============================================================================
