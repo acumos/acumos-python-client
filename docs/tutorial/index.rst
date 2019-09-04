@@ -110,7 +110,7 @@ save the model to disk so that it can be onboarded via the Acumos website. The
     session.dump(model, 'my-model', '~/')  # creates ~/my-model
 
 For more information on how to onboard a dumped model via the Acumos website,
-see the `web onboarding guide <https://docs.acumos.org/en/latest/AcumosUser/portal-user/portal/portal-onboarding-web.html>`__.
+see the `web onboarding guide <https://docs.acumos.org/en/latest/submodules/portal-marketplace/docs/user-guides/portal-user/portal/portal-onboarding-intro.html#on-boarding-by-web>`__.
 
 **Note:** Pushing a model to Acumos will prompt you for an onboarding token if
 you have not previously provided one. The interactive prompt can be avoided by
