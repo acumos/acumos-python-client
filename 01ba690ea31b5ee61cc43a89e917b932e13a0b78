@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a5fc3ce7_be86afca",
+        "filename": "acumos/metadata.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-09-06T21:39:29Z",
+      "side": 1,
+      "message": "Please delete dead code if unused",
+      "revId": "01ba690ea31b5ee61cc43a89e917b932e13a0b78",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "abc1814e_4efff36f",
+        "filename": "acumos/modeling.py",
+        "patchSetId": 11
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-09-06T21:39:29Z",
+      "side": 1,
+      "message": "Please fix typo",
+      "revId": "01ba690ea31b5ee61cc43a89e917b932e13a0b78",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
