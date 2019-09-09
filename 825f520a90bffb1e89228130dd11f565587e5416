@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "80b1b7dd_1fe66185",
+        "filename": "acumos/modeling.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-09-09T14:56:54Z",
+      "side": 1,
+      "message": "For consistency with the rest of the code base and PEP8, can you rename the variable rawType to raw_type?",
+      "revId": "825f520a90bffb1e89228130dd11f565587e5416",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
