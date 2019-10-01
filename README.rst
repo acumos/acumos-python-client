@@ -28,3 +28,5 @@ See our `documentation <docs/user-guide.rst>`__ to get started.
 
 .. |Build Status| image:: https://jenkins.acumos.org/buildStatus/icon?job=acumos-python-client-tox-verify-master
    :target: https://jenkins.acumos.org/job/acumos-python-client-tox-verify-master/
+
+.. image:: docs/images/Acumos_logo_white.png
