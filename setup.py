@@ -60,6 +60,7 @@ setup(
     keywords='acumos machine learning model modeling artificial intelligence ml ai',
     license='Apache License 2.0',
     long_description='\n'.join(_long_descr()),
+    long_description_content_type="text/x-rst",
     name='acumos',
     packages=find_packages(),
     python_requires='>=3.5, <3.7',
