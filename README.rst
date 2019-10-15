@@ -20,6 +20,8 @@
 acumos-python-client
 ====================
 
+.. image:: docs/images/Acumos_logo_white.png
+
 |Build Status|
 
 A client library that allows developers to push their Python models to Acumos.
