@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe4fff5a_648726ae",
+        "filename": "tox.ini",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 123
+      },
+      "writtenOn": "2019-10-25T09:46:58Z",
+      "side": 1,
+      "message": "you can still keep the --cov-fail here",
+      "revId": "50fc3f910ad0d47f2ab779b1d1f594242a06a567",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
