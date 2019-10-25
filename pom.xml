@@ -14,6 +14,6 @@
         <sonar.language>py</sonar.language>
         <sonar.pluginname>python</sonar.pluginname>
         <sonar.inclusions>**/**.py</sonar.inclusions>
-        <sonar.exclusions>**/tests/**.py,**/test*.py</sonar.exclusions>
+        <sonar.exclusions>**/tests/**.py,**/testing/**.py,examples/**.py,setup.py</sonar.exclusions>
     </properties>
 </project>
