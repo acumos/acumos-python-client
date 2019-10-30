@@ -16,6 +16,24 @@
       "revId": "50fc3f910ad0d47f2ab779b1d1f594242a06a567",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f48173e_d0eaa060",
+        "filename": "tox.ini",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2019-10-30T12:14:30Z",
+      "side": 1,
+      "message": "Philippe please take Tommy\u0027s advice and restore \"--cov-fail\" option",
+      "parentUuid": "fe4fff5a_648726ae",
+      "revId": "50fc3f910ad0d47f2ab779b1d1f594242a06a567",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
     }
   ]
 }
