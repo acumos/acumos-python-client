@@ -20,6 +20,17 @@
 Acumos Python Client Release Notes
 ==================================
 
+
+v0.8.1, 15 Nov 2019
+===================
+
+* Broken link in PyPI `ACUMOS-3401 <https://jira.acumos.org/browse/ACUMOS-3401/>`_
+* pin pandas<3.25 keras=2.2.4 tensorflow=1.31.1 `Gerrit-5217 <https://gerrit.acumos.org/r/c/acumos-python-client/+/5217>`_
+* publish content type for long description `Gerrit-5504 <https://gerrit.acumos.org/r/c/acumos-python-client/+/5504>`_
+* code coverage for python `ACUMOS-3423 <https://jira.acumos.org/browse/ACUMOS-3423/>`_
+* add Acumos logo in README `Gerrit-5587 <https://jira.acumos.org/browse/ACUMOS-5587/>`_
+
+
 v0.8.0
 ======
 
