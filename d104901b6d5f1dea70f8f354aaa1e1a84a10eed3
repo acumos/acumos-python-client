@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec84fed1_5b257361",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2019-11-07T14:32:51Z",
+      "side": 1,
+      "message": "Please remove trailing whitespace",
+      "range": {
+        "startLine": 24,
+        "startChar": 19,
+        "endLine": 24,
+        "endChar": 20
+      },
+      "revId": "d104901b6d5f1dea70f8f354aaa1e1a84a10eed3",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56b534a5_4c61236a",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2019-11-07T14:32:51Z",
+      "side": 1,
+      "message": "Same",
+      "range": {
+        "startLine": 29,
+        "startChar": 118,
+        "endLine": 29,
+        "endChar": 119
+      },
+      "revId": "d104901b6d5f1dea70f8f354aaa1e1a84a10eed3",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
