@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "238dca81_ed7d6a42",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-11-13T15:55:09Z",
+      "side": 1,
+      "message": "Are the outer parentheses needed here?",
+      "revId": "2c4b4619acb9c9106213c9d580b9d0d55ce0294c",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee7f7dd1_efd2c002",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-11-13T15:55:09Z",
+      "side": 1,
+      "message": "This should be a path to a file, not a dir (as the name implies)",
+      "revId": "2c4b4619acb9c9106213c9d580b9d0d55ce0294c",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ce04a0f3_98f2cef4",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-11-13T15:55:09Z",
+      "side": 1,
+      "message": "I believe the mode should be \u0027r\u0027, and can be omitted entirely here",
+      "revId": "2c4b4619acb9c9106213c9d580b9d0d55ce0294c",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0485e305_237c050e",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 28
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-11-13T15:55:09Z",
+      "side": 1,
+      "message": "Will this media type of application/octect-stream be correct for your Text type defined above? \n\nPerhaps the expected input/output type should be an argument to this function? \n\nOr, perhaps you can make a dict that maps the origin type (e.g. str, bytes) to the media type, and do the check that way?",
+      "revId": "2c4b4619acb9c9106213c9d580b9d0d55ce0294c",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
