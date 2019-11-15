@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6c6988b8_5dd6b4ef",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 38
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-11-15T16:22:58Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be:\n\nf1_in \u003d Text(\u0027test string\u0027, ...)\n\nI.e. I don\u0027t see why the inner Raw is needed here",
+      "revId": "1a2af1b6dab926d12389005736ec3dc5c474725d",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "110b74fd_aadc5a1d",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 38
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-11-15T16:22:58Z",
+      "side": 1,
+      "message": "We\u0027ll need to test that the wrapped functions are working as expected. Currently, the in_ and out parameters don\u0027t seem to be used for anything. \n\nFor example, we want to do something like:\n\nwrapped_model \u003d load_model(copied_dump_dir)\nassert wrapped_model.transform.from_raw(in_).as_raw() \u003d\u003d out",
+      "revId": "1a2af1b6dab926d12389005736ec3dc5c474725d",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
