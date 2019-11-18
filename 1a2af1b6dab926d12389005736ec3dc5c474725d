@@ -33,6 +33,24 @@
       "revId": "1a2af1b6dab926d12389005736ec3dc5c474725d",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca25d29b_7ae5af07",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 38
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 210
+      },
+      "writtenOn": "2019-11-18T09:26:16Z",
+      "side": 1,
+      "message": "I am not very clear, for raw type, what should we do in the from_raw wrapper method?",
+      "parentUuid": "110b74fd_aadc5a1d",
+      "revId": "1a2af1b6dab926d12389005736ec3dc5c474725d",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
     }
   ]
 }
