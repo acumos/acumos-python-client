@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fc166098_6f5cf0d5",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 38
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 210
+      },
+      "writtenOn": "2019-11-18T10:08:12Z",
+      "side": 1,
+      "message": "this is becasue Text is actual a subclass of the Raw class. As defined in modeling.py: NewType(name, Raw(raw_type, metadata, doc))",
+      "parentUuid": "6c6988b8_5dd6b4ef",
+      "revId": "1a2af1b6dab926d12389005736ec3dc5c474725d",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "110b74fd_aadc5a1d",
         "filename": "acumos/tests/test_wrapped.py",
         "patchSetId": 38
