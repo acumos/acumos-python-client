@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "caa9da58_bcefb0a0",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 38
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-11-18T17:15:22Z",
+      "side": 1,
+      "message": "Right, however this unit test is testing that the function f1 can correctly consume Text and produce Text, as per the f1 signature. Therefore the unit test should be creating Text objects identically to how we expect the model runner to create Text objects, and identically to how users create Text objects (e.g. you have Text(text) in the f1 function above). \n\nFor example, if the input to f1 was Text(\u0027foo\u0027), and it failed for some reason (e.g. because \u0027foo\u0027 is not a Raw object), then the unit test would not catch this discrepancy, but this is exactly how the f1 function will be used. Thus the test would pass, but the realistic usage scenario would fail.",
+      "parentUuid": "fc166098_6f5cf0d5",
+      "revId": "1a2af1b6dab926d12389005736ec3dc5c474725d",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "110b74fd_aadc5a1d",
         "filename": "acumos/tests/test_wrapped.py",
         "patchSetId": 38
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "I am not very clear, for raw type, what should we do in the from_raw wrapper method?",
       "parentUuid": "110b74fd_aadc5a1d",
+      "revId": "1a2af1b6dab926d12389005736ec3dc5c474725d",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "313190c3_82fc4f7a",
+        "filename": "acumos/tests/test_wrapped.py",
+        "patchSetId": 38
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-11-18T17:15:22Z",
+      "side": 1,
+      "message": "Essentially we need to provide an API to the model runner that lets it pass in \"raw\" types, and get back raw types.\n\nThere\u0027s already a similar API in the WrappedFunction class: https://github.com/acumos/acumos-python-client/blob/master/acumos/wrapped.py#L116\n\nSo perhaps we can add a from_raw API to WrappedFunction which takes in 1 required positional argument, i.e. the raw data, e.g. dict, str, bytes. E.g. maybe something like:\n\ndef from_raw(self, raw_in):\n    raw_out \u003d self._func.inner(raw_in)\n    return WrappedResponse(raw_out, None, None)\n\nAnd in WrappedResponse we add an API:\n\ndef as_raw(self):\n    return self._resp\n\nIf a model consumed and produced dict types, the model runner would use the API like so:\n\nraw_in \u003d {\u0027foo\u0027: \u0027bar\u0027}\nraw_out \u003d model.transform.from_raw(raw_in).as_raw()\n\nAssuming the transform function just returns its input (i.e. identity), a unit test might look like:\n\nassert model.transform.from_raw(raw_in).as_raw() \u003d\u003d raw_in",
+      "parentUuid": "ca25d29b_7ae5af07",
       "revId": "1a2af1b6dab926d12389005736ec3dc5c474725d",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": false
