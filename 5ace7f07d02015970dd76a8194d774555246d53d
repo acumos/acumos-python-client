@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c509319b_251f1ea9",
+        "filename": "acumos/modeling.py",
+        "patchSetId": 42
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-11-19T15:49:35Z",
+      "side": 1,
+      "message": "I don\u0027t think every user will have `metatadata` and/or `doc` to specify. Perhaps we can default these to None?",
+      "revId": "5ace7f07d02015970dd76a8194d774555246d53d",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
