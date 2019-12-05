@@ -1,4 +1,5 @@
-bution_type: maven
+---
+distribution_type: maven
 version: 0.9.0
 project: acumos-python-client
 log_dir: acumos-python-client-pypi-merge-master/2
