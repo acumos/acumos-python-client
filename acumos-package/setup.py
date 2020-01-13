@@ -16,12 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============LICENSE_END=========================================================
-from os.path import dirname, abspath, join as path_join
+from os.path import dirname, abspath, join as path_join, split
 from setuptools import setup, find_packages
 
 
 SETUP_DIR = abspath(dirname(__file__))
-DOCS_DIR = path_join(SETUP_DIR, 'docs')
+DOCS_DIR = path_join(split(SETUP_DIR)[0],'docs')
 
 with open(path_join(SETUP_DIR, 'acumos', '_version.py')) as file:
     globals_dict = dict()
