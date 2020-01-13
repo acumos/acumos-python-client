@@ -190,9 +190,10 @@ def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, opti
         headers.update(extra_headers)
 
     resp = requests.post(push_api, files=files, headers=headers)
-
+######################### ICI ###################################################
     if resp.ok:
         logger.info("Model pushed successfully to {}".format(push_api))
+        #return r.json()['result'] => to be check
     else:
         clear_jwt()
         if resp.status_code == 401 and tries != max_tries:
