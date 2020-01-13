@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 
 
 SETUP_DIR = abspath(dirname(__file__))
-DOCS_DIR = path_join(SETUP_DIR, 'docs')
+DOCS_DIR = path_join(split(SETUP_DIR)[0],'docs')
 
 with open(path_join(SETUP_DIR, 'acumos', '_version.py')) as file:
     globals_dict = dict()
