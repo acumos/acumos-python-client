@@ -29,7 +29,7 @@ to the `Acumos platform <https://www.acumos.org/>`__.
 Installation
 ============
 
-You will need a Python 3.5+ environment in order to install ``acumos``.
+You will need a Python 3.6 environment in order to install ``acumos``.
 You can use `Anaconda <https://www.anaconda.com/download/>`__
 (preferred) or `pyenv <https://github.com/pyenv/pyenv>`__ to install and
 manage Python environments.

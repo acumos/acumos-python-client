@@ -48,3 +48,15 @@ You can also specify certain tox environments to test:
 
     $ tox -e py36  # only test against Python 3.6
     $ tox -e flake8  # only lint code
+
+Packaging
+=========
+
+The RST files in the docs/ directory are used to publish HTML pages to
+ReadTheDocs.io and to build the package long description in setup.py.
+The symlink from the subdirectory acumos-package to the docs/ directory
+is required for the Python packaging tools.  Those tools build a source
+distribution from files in the package root, the directory acumos-package.
+The MANIFEST.in file directs the tools to pull files from directory docs/,
+and the symlink makes it possible because the tools only look within the
+package root.
