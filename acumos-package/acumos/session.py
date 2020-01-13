@@ -190,7 +190,6 @@ def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, opti
         headers.update(extra_headers)
 
     resp = requests.post(push_api, files=files, headers=headers)
-
     if resp.ok:
         logger.info("Model pushed successfully to {}".format(push_api))
     else:
