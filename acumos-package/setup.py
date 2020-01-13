@@ -45,8 +45,6 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'License :: OSI Approved :: Apache Software License',
     ],
@@ -63,7 +61,7 @@ setup(
     long_description_content_type="text/x-rst",
     name='acumos',
     packages=find_packages(),
-    python_requires='>=3.5, <3.7',
+    python_requires='>=3.6, <3.7',
     url='https://gerrit.acumos.org/r/gitweb?p=acumos-python-client.git',
     version=__version__,
 )
