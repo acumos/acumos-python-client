@@ -22,6 +22,30 @@
       "revId": "4e60cae66c1c59c7bdd37bc8795079056664ea8d",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85a4cd93_5623668d",
+        "filename": "acumos-package/setup.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 212
+      },
+      "writtenOn": "2020-01-16T15:18:56Z",
+      "side": 1,
+      "message": "split is part of os.path, I forgot to add it. It is needed to contruct the docs folder. \nsplit(SETUP_DIR)[0] gives /your/local/folders/acumos-python-client\nand so DOCS_DIR\u003d/your/local/folders/acumos-python-client/docs",
+      "parentUuid": "8aae9f69_a121ed68",
+      "range": {
+        "startLine": 24,
+        "startChar": 21,
+        "endLine": 24,
+        "endChar": 26
+      },
+      "revId": "4e60cae66c1c59c7bdd37bc8795079056664ea8d",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
     }
   ]
 }
