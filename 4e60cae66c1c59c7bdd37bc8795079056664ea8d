@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8aae9f69_a121ed68",
+        "filename": "acumos-package/setup.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-01-16T15:10:43Z",
+      "side": 1,
+      "message": "Philippe you added this invocation of \"split\", but that function is not defined here, not imported, etc.  Why was split needed?",
+      "range": {
+        "startLine": 24,
+        "startChar": 21,
+        "endLine": 24,
+        "endChar": 26
+      },
+      "revId": "4e60cae66c1c59c7bdd37bc8795079056664ea8d",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
