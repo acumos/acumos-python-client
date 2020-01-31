@@ -20,15 +20,16 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.9.2, 31 Jan 2020
+===================
+
+* remove support for python 3.5 `Gerrit-6275 <https://gerrit.acumos.org/r/c/acumos-python-client/+/6275>`_
+
 v0.9.1
 ======
 
-* Broken link in PyPI `ACUMOS-3401 <https://jira.acumos.org/browse/ACUMOS-3401/>`_
 * add raw format support `ACUMOS-2712 <https://jira.acumos.org/browse/ACUMOS-2712>`_
 * publish content type for long description `Gerrit-5504 <https://gerrit.acumos.org/r/c/acumos-python-client/+/5504>`_
-* code coverage for python `ACUMOS-3423 <https://jira.acumos.org/browse/ACUMOS-3423/>`_
-* add Acumos logo in README `Gerrit-5587 <https://jira.acumos.org/browse/ACUMOS-5587/>`_
-
 
 v0.8.0
 ======
