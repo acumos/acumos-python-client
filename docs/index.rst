@@ -19,6 +19,7 @@
 ====================
 Acumos Python Client
 ====================
+
 The User Guide is located on `PyPI <https://pypi.org/project/acumos/>`_.
 
 .. toctree::
@@ -26,4 +27,5 @@ The User Guide is located on `PyPI <https://pypi.org/project/acumos/>`_.
 
        release-notes
        developer-guide
-
+       user-guide
+       tutorial/index
