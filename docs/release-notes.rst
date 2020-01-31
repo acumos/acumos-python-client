@@ -20,6 +20,13 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.9.2, 31 Jan 2020
+===================
+
+* re-arrange python client repo `Gerrit-6275 <https://gerrit.acumos.org/r/c/acumos-python-client/+/6275>`_
+* remove support for python 3.5 `Gerrit-6275 <https://gerrit.acumos.org/r/c/acumos-python-client/+/6275>`_
+
+
 v0.9.1
 ======
 
