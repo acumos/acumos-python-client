@@ -20,8 +20,15 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.9.2, 31 Jan 2020
+-------------------
+
+* re-arrange python client repo `Gerrit-6275 <https://gerrit.acumos.org/r/c/acumos-python-client/+/6275>`_
+* remove support for python 3.5 `Gerrit-6275 <https://gerrit.acumos.org/r/c/acumos-python-client/+/6275>`_
+
+
 v0.9.1
-======
+------
 
 * Broken link in PyPI `ACUMOS-3401 <https://jira.acumos.org/browse/ACUMOS-3401/>`_
 * add raw format support `ACUMOS-2712 <https://jira.acumos.org/browse/ACUMOS-2712>`_
@@ -31,7 +38,7 @@ v0.9.1
 
 
 v0.8.0
-======
+------
 
 -  Enhancements
 
@@ -44,7 +51,7 @@ v0.8.0
 
 
 v0.7.2
-======
+------
 
 -  Bug fixes
 
@@ -53,7 +60,7 @@ v0.7.2
 
 
 v0.7.1
-======
+------
 
 -  Authentication
 
@@ -61,7 +68,7 @@ v0.7.1
    - Users are now interactively prompted for an onboarding token, as opposed to a username and password
 
 v0.7.0
-======
+------
 
 -  Requirements
 
@@ -69,21 +76,21 @@ v0.7.0
    - Python script dependencies found during the introspection stage are now included with the model
 
 v0.6.5
-======
+------
 
 -  Bug fixes
 
    - Don't attempt to use an empty auth token (avoids blank strings to be set in environment)
 
 v0.6.4
-======
+------
 
 -  Bug fixes
 
    - The normalized path of the system base prefix is now used for identifying stdlib packages
 
 v0.6.3
-======
+------
 
 -  Bug fixes
 
@@ -92,14 +99,14 @@ v0.6.3
    - Fixed Python 3.5.2 ordering bug in wrapped model usage
 
 v0.6.2
-======
+------
 
 -  TensorFlow
 
    - Fixed a serialization issue that occurred when using a frozen graph
 
 v0.6.1
-======
+------
 
 -  Model upload
 
@@ -107,7 +114,7 @@ v0.6.1
    - Additional HTTP information is now included in the error message
 
 v0.6.0
-======
+------
 
 -  Authentication token
 
@@ -121,7 +128,7 @@ v0.6.0
       pushing models to the onboarding server
 
 v0.5.0
-======
+------
 
 -  Modeling
 
@@ -146,7 +153,7 @@ v0.5.0
    -  keras_contrib layers are now supported
 
 v0.4.0
-======
+------
 
 -  Replaced library-specific onboarding functions with “new-style”
    models
