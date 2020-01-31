@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4960567d_c03dafb3",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-01-31T13:36:21Z",
+      "side": 1,
+      "message": "a minor point, to make this pretty when it appears at ReadTheDocs: Double lines (equal signs) are a top-level title marking, which you have correctly used on the title above (\"Release notes\").  For proper formatting of a subhead like this, please use single lines (hyphens).  So this should be:\n\n    v0.0.9, 31 Jan 2020\n    -------------------\n\nAnd consider changing the rest of them below also.",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 19
+      },
+      "revId": "2d92f245c0d7438ca56e1f7c8799dc4aaf460cb5",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
