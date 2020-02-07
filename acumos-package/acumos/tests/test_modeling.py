@@ -44,6 +44,18 @@ def test_wrap_function():
     assert type(raw_in_.__supertype__) == Raw
     assert type(raw_out.__supertype__) == Raw
 
+#==============================================================================
+#    check unstructured input, structured output
+#==============================================================================
+
+    def test_count(text:Text) -> int:
+        return len(text.split(' '))
+
+    f, raw_in_, raw_out = _wrap_function(test_count)
+
+    assert type(raw_in_.__supertype__) == Raw
+    assert type(raw_out.__supertype__) != Raw
+
 # =============================================================================
 #     both args and return need to be wrapped
 # =============================================================================
