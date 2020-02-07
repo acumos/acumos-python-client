@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "db8159d0_b53b499b",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2020-02-07T18:27:43Z",
+      "side": 1,
+      "message": "I don\u0027t think repository organization changes warrant a spot in the release notes. This doesn\u0027t impact the API or functionality of the code. Use JIRA for tracking issues, not the release notes.",
+      "revId": "2f5b6f20384e820ba1f077dcded677121bda912a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b14894dd_34ca7a4f",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2020-02-07T18:27:43Z",
+      "side": 1,
+      "message": "Not relevant to developers, please remove",
+      "revId": "2f5b6f20384e820ba1f077dcded677121bda912a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9c1d68aa_cb9df35e",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2020-02-07T18:27:43Z",
+      "side": 1,
+      "message": "Not relevant to developers, please remove",
+      "revId": "2f5b6f20384e820ba1f077dcded677121bda912a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6c00d333_ad4a8c05",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2020-02-07T18:27:43Z",
+      "side": 1,
+      "message": "Not relevant to developers, please remove",
+      "revId": "2f5b6f20384e820ba1f077dcded677121bda912a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    }
+  ]
+}
