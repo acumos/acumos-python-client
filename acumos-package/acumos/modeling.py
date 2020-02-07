@@ -147,6 +147,18 @@ def _wrap_function(f, name=None):
         wrapped_f = f
         return wrapped_f, input_type, output_type
 
+    try:
+        assert hasattr(field_types[0][1],'__supertype__')
+        assert hasattr(ret_type,'__supertype__')==False
+    except:
+        print("Usage of unstructured type is only possible when the user define function consumes or produces unstructured type for both output and input type, your input type is structured while your output type is unstructured")
+
+    try:
+        assert hasattr(field_types[0][1],'__supertype__')==False
+        assert hasattr(ret_type,'__supertype__')
+    except:
+        print("Usage of unstructured type is only possible when the user define function consumes or produces unstructured type for both output and input type, your input type is unstructured while your output type is structured")
+
     for field_name, field_type in field_types:
         with reraise('Function {} argument {} is invalid', (name, field_name)):
             _assert_valid_type(field_type)
