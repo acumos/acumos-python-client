@@ -32,7 +32,7 @@ def test_wrap_function():
     FooOut = NamedTuple('FooOut', [('value', int)])
 
     Image = new_type(bytes, 'Image', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
-
+    
 # =============================================================================
 #     check for both user defined raw data type
 # =============================================================================
@@ -194,7 +194,6 @@ def test_nested_defs():
     for f in (f1, f2, f3, f4):
         with pytest.raises(AcumosError):
             _wrap_function(f)
-
 
 if __name__ == '__main__':
     '''Test area'''
