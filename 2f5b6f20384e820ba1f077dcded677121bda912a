@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "6c7dfef6_245d2c34",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-12T10:55:09Z",
+      "side": 1,
+      "message": "While this is irrelevant to usrs, it is relevant to the acumos-python-client developers.  I think it\u0027s entirely appropriate to track the changes made to a body of work over time, but it\u0027s too late now I guess.",
+      "parentUuid": "b14894dd_34ca7a4f",
+      "revId": "2f5b6f20384e820ba1f077dcded677121bda912a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9c1d68aa_cb9df35e",
         "filename": "docs/release-notes.rst",
         "patchSetId": 4
