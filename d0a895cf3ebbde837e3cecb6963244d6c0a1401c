@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1ec082_df7c6e43",
+        "filename": "acumos-package/setup.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-12T17:05:48Z",
+      "side": 1,
+      "message": "this seems strange to me.  I believe this is the new major release of Werkzeug that has caused so many problems.  Why would you pin to that latest version?",
+      "range": {
+        "startLine": 62,
+        "startChar": 22,
+        "endLine": 62,
+        "endChar": 40
+      },
+      "revId": "d0a895cf3ebbde837e3cecb6963244d6c0a1401c",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
