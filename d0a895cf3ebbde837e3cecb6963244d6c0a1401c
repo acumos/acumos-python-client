@@ -22,6 +22,30 @@
       "revId": "d0a895cf3ebbde837e3cecb6963244d6c0a1401c",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a104354_25786b6d",
+        "filename": "acumos-package/setup.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 212
+      },
+      "writtenOn": "2020-02-12T21:03:20Z",
+      "side": 1,
+      "message": "Because I think I don\u0027t understand what you wanted, feel free to modify setup.py",
+      "parentUuid": "7a1ec082_df7c6e43",
+      "range": {
+        "startLine": 62,
+        "startChar": 22,
+        "endLine": 62,
+        "endChar": 40
+      },
+      "revId": "d0a895cf3ebbde837e3cecb6963244d6c0a1401c",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
     }
   ]
 }
