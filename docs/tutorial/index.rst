@@ -181,13 +181,15 @@ number of words in the text:
 
     Text = new_type(str, 'Text')
 
-    def count(text: Text) -> int:
+    def count(text: Text) -> Text:
         '''Counts the number of words in the text'''
         return len(text.split(' '))
 
 By using the `new_type` function, you inform `acumos` that `Text` is
 unstructured, and therefore `acumos` will not create any structured types or
 messages for the `count` function.
+Version 0.9.x of acumos allow only the use of unstructured type in input and output of
+the user define function.
 
 You can use the `new_type` function to create dictionaries or byte string
 type unstructured data as shown below.
@@ -198,7 +200,7 @@ type unstructured data as shown below.
 
    Dict = new_type(dict, 'Dict')
 
-   Image = new_type(byte, 'Image')
+   Image = new_type(byte, 'Image'i)
 
 Using DataFrames with scikit-learn
 ==================================

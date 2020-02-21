@@ -59,7 +59,7 @@ setup(
                       'Jinja2',
                       'Markdown',
                       'mock',
-                      'Werkzeug==0.16.1',
+                      'Werkzeug<1.0',
                       'zipp'],
     keywords='acumos machine learning model modeling artificial intelligence ml ai',
     license='Apache License 2.0',
