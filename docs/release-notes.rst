@@ -22,11 +22,13 @@ Acumos Python Client Release Notes
 
 v0.9.2, 31 Jan 2020
 ===================
+(Recommended version for Clio release is 0.8.0)
 
 * remove support for python 3.5 `Gerrit-6275 <https://gerrit.acumos.org/r/c/acumos-python-client/+/6275>`_
 
 v0.9.1
 ======
+(Recommended version for Clio release is 0.8.0)
 
 * add raw format support `ACUMOS-2712 <https://jira.acumos.org/browse/ACUMOS-2712>`_
 * publish content type for long description `Gerrit-5504 <https://gerrit.acumos.org/r/c/acumos-python-client/+/5504>`_
