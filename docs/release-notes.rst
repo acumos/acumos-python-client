@@ -20,6 +20,14 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.9.3a1, 25 Feb 2020 
+=====================
+
+* Bounding Werkzeug version to 1.0 'ACUMOS-4006 <https://jira.acumos.org/browse/ACUMOS-4006>'_
+* Modify unstructured type section in pypi 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3956>'_
+* Raise an Error when using asymetric type 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3956>'_
+* Display Acumos model docker URI when onboarding with MS gen 'ACUMOS-3961 <https://jira.acumos.org/browse/ACUMOS-3961>'_
+
 v0.9.2, 31 Jan 2020
 ===================
 
@@ -33,6 +41,7 @@ v0.9.1
 
 v0.8.0
 ======
+(This is the recommended version for the Clio release)
 
 -  Enhancements
 
