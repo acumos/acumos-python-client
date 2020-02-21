@@ -182,13 +182,21 @@ def _wrap_function(f, name=None):
 
 
 def _is_raw_type(field_types, ret_type):
-    '''Returns True if field types are one of the supported raw types and the user-defined function only consume and/or produce one raw type'''
+    '''Returns True if field type and ret_type are one of the supported raw types and the user-defined function only consume and/or produce one raw type'''
     if not field_types or not ret_type:
         return False
-    elif not hasattr(field_types[0][1], '__supertype__') or not hasattr(ret_type, '__supertype__'):
+
+    if not hasattr(field_types[0][1], '__supertype__') and not hasattr(ret_type, '__supertype__'):
         return False
-    else:
-        return len(field_types) == 1 and type(field_types[0][1].__supertype__) == Raw and type(ret_type.__supertype__) == Raw
+
+    try:
+        '''check if output and input are both unstructured'''
+        assert hasattr(field_types[0][1], '__supertype__')
+        assert hasattr(ret_type, '__supertype__')
+    except AssertionError:
+        raise AcumosError("Usage of unstructured type is only possible when the user-defined function consumes or produces unstructured type for both input and output")
+
+    return len(field_types) == 1 and type(field_types[0][1].__supertype__) == Raw and type(ret_type.__supertype__) == Raw
 
 
 def _already_wrapped(field_types):
