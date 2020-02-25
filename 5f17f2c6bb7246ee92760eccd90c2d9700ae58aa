@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72d9718c_daa53b78",
+        "filename": "acumos-package/acumos/session.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T01:17:28Z",
+      "side": 1,
+      "message": "I would move this to after line 196, no sense in creating the json if you\u0027re not going to use it right?",
+      "range": {
+        "startLine": 193,
+        "startChar": 0,
+        "endLine": 193,
+        "endChar": 1
+      },
+      "revId": "5f17f2c6bb7246ee92760eccd90c2d9700ae58aa",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "788dd0c7_26079cbb",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 14
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T01:17:28Z",
+      "side": 1,
+      "message": "types",
+      "range": {
+        "startLine": 191,
+        "startChar": 59,
+        "endLine": 191,
+        "endChar": 63
+      },
+      "revId": "5f17f2c6bb7246ee92760eccd90c2d9700ae58aa",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9a57c82_58fad8d9",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 14
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T01:17:28Z",
+      "side": 1,
+      "message": "allows",
+      "range": {
+        "startLine": 191,
+        "startChar": 24,
+        "endLine": 191,
+        "endChar": 29
+      },
+      "revId": "5f17f2c6bb7246ee92760eccd90c2d9700ae58aa",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0fad99a1_d98d944c",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 14
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T01:17:28Z",
+      "side": 1,
+      "message": "defined",
+      "range": {
+        "startLine": 192,
+        "startChar": 9,
+        "endLine": 192,
+        "endChar": 15
+      },
+      "revId": "5f17f2c6bb7246ee92760eccd90c2d9700ae58aa",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9835467b_d6af1cf5",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 14
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T01:17:28Z",
+      "side": 1,
+      "message": "what is the little i here?",
+      "range": {
+        "startLine": 203,
+        "startChar": 33,
+        "endLine": 203,
+        "endChar": 34
+      },
+      "revId": "5f17f2c6bb7246ee92760eccd90c2d9700ae58aa",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
