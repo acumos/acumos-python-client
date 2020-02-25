@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "516fe7fd_02302cf2",
+        "filename": "acumos-package/acumos/modeling.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T13:40:51Z",
+      "side": 1,
+      "message": "consume*s*",
+      "range": {
+        "startLine": 185,
+        "startChar": 117,
+        "endLine": 185,
+        "endChar": 124
+      },
+      "revId": "cd9cd74fa11328417a6f2152e01702dd13ec3aa4",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86be8ab8_e956451a",
+        "filename": "acumos-package/acumos/modeling.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T13:40:51Z",
+      "side": 1,
+      "message": "produce*s*",
+      "range": {
+        "startLine": 185,
+        "startChar": 132,
+        "endLine": 185,
+        "endChar": 139
+      },
+      "revId": "cd9cd74fa11328417a6f2152e01702dd13ec3aa4",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "664a5e37_5668a1ba",
+        "filename": "acumos-package/acumos/session.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T13:40:51Z",
+      "side": 1,
+      "message": "pls move the creation of json down after line 196",
+      "range": {
+        "startLine": 193,
+        "startChar": 0,
+        "endLine": 193,
+        "endChar": 1
+      },
+      "revId": "cd9cd74fa11328417a6f2152e01702dd13ec3aa4",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "799eeddb_601a6690",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 16
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T13:40:51Z",
+      "side": 1,
+      "message": "missing note for version 0.9.3a1",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 1
+      },
+      "revId": "cd9cd74fa11328417a6f2152e01702dd13ec3aa4",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f1419e0_2dda5ba0",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 16
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T13:40:51Z",
+      "side": 1,
+      "message": "Why state this multiple times in sections where it\u0027s wrong? Why not just state this once, in the section for 0.8.0, \"This is the recommended version for the Clio release.\"",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 1
+      },
+      "revId": "cd9cd74fa11328417a6f2152e01702dd13ec3aa4",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d564275_8cd12d90",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 16
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-25T13:40:51Z",
+      "side": 1,
+      "message": "to my naive eyes this seems to return a number, not Text.  Do you need to convert the type?",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 186,
+        "endChar": 1
+      },
+      "revId": "cd9cd74fa11328417a6f2152e01702dd13ec3aa4",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
