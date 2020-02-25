@@ -137,6 +137,30 @@
       "revId": "cd9cd74fa11328417a6f2152e01702dd13ec3aa4",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9950a45e_5ab6907b",
+        "filename": "docs/tutorial/index.rst",
+        "patchSetId": 16
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 212
+      },
+      "writtenOn": "2020-02-25T16:18:55Z",
+      "side": 1,
+      "message": "If you use \"int\" rather than \"Text\" it fails because asymetric type are not taken into acount in the code. With \"Text\" it works and count\"my name is\" returns \"3\"",
+      "parentUuid": "1d564275_8cd12d90",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 186,
+        "endChar": 1
+      },
+      "revId": "cd9cd74fa11328417a6f2152e01702dd13ec3aa4",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
     }
   ]
 }
