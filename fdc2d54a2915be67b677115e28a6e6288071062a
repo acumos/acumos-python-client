@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d0821b6e_28cfed56",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 23
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-02-27T13:43:43Z",
+      "side": 1,
+      "message": "Please use a descriptive title, then a blank line, then add details about the change in the commit message body.  This snippet of almost-code is not very helpful.  Also see:\n\nhttps://wiki.acumos.org/display/AC/Acumos+Developer%27s+Guide+to+CI-CD+Resources+and+Processes+at+the+LF#AcumosDeveloper\u0027sGuidetoCICDResourcesandProcessesattheLF-Writegoodgitcommitmessages",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 29
+      },
+      "revId": "fdc2d54a2915be67b677115e28a6e6288071062a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
