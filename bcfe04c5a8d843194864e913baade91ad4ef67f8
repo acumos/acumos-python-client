@@ -107,6 +107,30 @@
       "revId": "bcfe04c5a8d843194864e913baade91ad4ef67f8",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6ff6ab9_01e146ec",
+        "filename": "docs/index.rst",
+        "patchSetId": 26
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 212
+      },
+      "writtenOn": "2020-03-10T15:26:01Z",
+      "side": 1,
+      "message": "to be consistent with the recommended version to be used",
+      "parentUuid": "467e41e6_ad3e499b",
+      "range": {
+        "startLine": 23,
+        "startChar": 67,
+        "endLine": 23,
+        "endChar": 75
+      },
+      "revId": "bcfe04c5a8d843194864e913baade91ad4ef67f8",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
     }
   ]
 }
