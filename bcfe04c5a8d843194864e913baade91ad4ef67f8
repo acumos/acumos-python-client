@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "467e41e6_ad3e499b",
+        "filename": "docs/index.rst",
+        "patchSetId": 26
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 4
+      },
+      "writtenOn": "2020-03-10T14:52:02Z",
+      "side": 1,
+      "message": "Why pin the user doc to a specific version like this?",
+      "range": {
+        "startLine": 23,
+        "startChar": 67,
+        "endLine": 23,
+        "endChar": 75
+      },
+      "revId": "bcfe04c5a8d843194864e913baade91ad4ef67f8",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
