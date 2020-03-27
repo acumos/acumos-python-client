@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f28d7f07_f5bf43d4",
+        "filename": "acumos-package/acumos/_version.py",
+        "patchSetId": 35
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2020-03-27T13:11:04Z",
+      "side": 1,
+      "message": "please revise to remove textual entrants in dotted decimal; just commit to 0.9.3; additionally we probably shouldn\u0027t push a \"dev\" release out as a production-level package?",
+      "revId": "f51401ce91223a13efe039a45038b3a27baac88a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86bf6c3d_1260adcb",
+        "filename": "acumos-package/setup.py",
+        "patchSetId": 35
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2020-03-27T13:11:04Z",
+      "side": 1,
+      "message": "okay for now, we just need to keep a tight view on packages so that it doesn\u0027t go stale",
+      "revId": "f51401ce91223a13efe039a45038b3a27baac88a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}

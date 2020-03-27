@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22e52023_f131d6fc",
+        "filename": "acumos-package/setup.py",
+        "patchSetId": 35
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2020-03-27T13:11:04Z",
+      "side": 0,
+      "message": "mock was traditionally used for testing, I suppose all of the tests have passed but it seems unusual to remove it",
+      "revId": "9314662351876eca64284a7dd5307cf89f85213b",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
