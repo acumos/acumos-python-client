@@ -33,6 +33,23 @@
       "revId": "f51401ce91223a13efe039a45038b3a27baac88a",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3dcba83f_9b469100",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 35
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 290
+      },
+      "writtenOn": "2020-03-30T22:03:46Z",
+      "side": 1,
+      "message": "If you use this release with clio you have to do the trick that is mentioned in https://jira.acumos.org/browse/ACUMOS-4006 with pinning the version.",
+      "revId": "f51401ce91223a13efe039a45038b3a27baac88a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
     }
   ]
 }
