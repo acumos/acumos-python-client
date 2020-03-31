@@ -50,6 +50,24 @@
       "revId": "f51401ce91223a13efe039a45038b3a27baac88a",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7f69389_52a6712a",
+        "filename": "docs/release-notes.rst",
+        "patchSetId": 35
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 212
+      },
+      "writtenOn": "2020-03-31T07:30:20Z",
+      "side": 1,
+      "message": "Hi Justin, you put your comment in Patchset 35 is there any reason ? the last Patchset is 37.\n\nThen I\u0027ve already used version 0.8.0 with Clio without using the trick depicted in ACUMOS-4006. I just check my werkzeug version, it is 1.0.0. I will try again an on-boarding with Clio and aumos python client 0.8.0 and let you know the result",
+      "parentUuid": "3dcba83f_9b469100",
+      "revId": "f51401ce91223a13efe039a45038b3a27baac88a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
     }
   ]
 }
