@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "8cdf9035_01ca0c1c",
+        "filename": "acumos-package/acumos/_version.py",
+        "patchSetId": 37
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 212
+      },
+      "writtenOn": "2020-03-31T16:43:31Z",
+      "side": 1,
+      "message": "That\u0027s what I did on patchset 27 but you never merged my change and then after that on patchset 35 Eric Z said :\n\n\"please revise to remove textual entrants in dotted decimal; just commit to 0.9.3; additionally we probably shouldn\u0027t push a \"dev\" release out as a production-level package?\"\n\nso I moved back 0.9.3dev0 to 0.9.3 and Eric Z never merged my change",
+      "parentUuid": "0270b30a_31aa4f41",
+      "revId": "16fae7c290975a5adf05d45b6ea1561e95a750f3",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e0ce5db9_a5bd0ad3",
         "filename": "acumos-package/setup.py",
         "patchSetId": 37
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "a67e5043_74397441",
+        "filename": "acumos-package/setup.py",
+        "patchSetId": 37
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 212
+      },
+      "writtenOn": "2020-03-31T16:43:31Z",
+      "side": 1,
+      "message": "I don\u0027t know, but what I\u0027m sure is that I never added grpcio dependancy so it is certainly you Paul who added this dependancy",
+      "parentUuid": "e0ce5db9_a5bd0ad3",
+      "revId": "16fae7c290975a5adf05d45b6ea1561e95a750f3",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "984a254e_c1a0d9a5",
         "filename": "acumos-package/setup.py",
         "patchSetId": 37
@@ -47,6 +83,24 @@
       "writtenOn": "2020-03-31T15:33:19Z",
       "side": 1,
       "message": "The acumos client doesn\u0027t need a web application library as an install dependency. This should be removed.",
+      "revId": "16fae7c290975a5adf05d45b6ea1561e95a750f3",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c74f9467_74523d3f",
+        "filename": "acumos-package/setup.py",
+        "patchSetId": 37
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 212
+      },
+      "writtenOn": "2020-03-31T16:43:31Z",
+      "side": 1,
+      "message": "I already did that (patchset 27) but jobs failed when werzeug is not bounding to 1.0 version, So in patchset 35 I added again \u0027Werkzeug\u003c1.0\u0027 and jobs succeeded and Eric Z said : \n\"okay for now, we just need to keep a tight view on packages so that it doesn\u0027t go stale\"",
+      "parentUuid": "984a254e_c1a0d9a5",
       "revId": "16fae7c290975a5adf05d45b6ea1561e95a750f3",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
