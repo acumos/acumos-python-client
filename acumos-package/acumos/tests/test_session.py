@@ -20,6 +20,8 @@
 Provides session tests
 """
 import contextlib
+import logging
+
 import mock
 import tempfile
 import json
@@ -59,16 +61,16 @@ _FAKE_TOKEN = 'secrettoken'
 _FAKE_LICENSE = path_join(TEST_DIR, 'mock-license.json')
 
 
-def test_create_microservice():
+@pytest.mark.parametrize('create_microservice', [True, False])
+def test_create_microservice(create_microservice, caplog):
     '''Tests that the microservice creation parameter is correctly specified'''
     with _patch_auth():
-        extra_headers = {'X-Test-Create': 'true'}
-        opts = Options(create_microservice=True)
+        extra_headers = {'X-Test-Create': str(create_microservice).lower()}
+        opts = Options(create_microservice=create_microservice)
         _push_dummy_model(extra_headers, options=opts)
 
-        extra_headers = {'X-Test-Create': 'false'}
-        opts = Options(create_microservice=False)
-        _push_dummy_model(extra_headers, options=opts)
+        if create_microservice:
+            assert "Acumos model docker image successfully created" in caplog.text, "docker image Uri was not displayed"
 
 
 def test_license():
@@ -363,6 +365,25 @@ def _patch_environ(**kwargs):
         environ.update(orig_vars)
         for extra_key in (kwargs.keys() - orig_vars.keys()):
             del environ[extra_key]
+
+
+@contextlib.contextmanager
+def _acumos_logs_propagated():
+    '''Configures Acumos logger to propagate logs entry so that pytest's caplog can read them'''
+    acumos_root_logger = logging.getLogger("acumos")
+    old_propagate_value = acumos_root_logger.propagate
+    acumos_root_logger.propagate = True
+    try:
+        yield
+    finally:
+        acumos_root_logger.propagate = old_propagate_value
+
+
+@pytest.fixture
+def caplog(caplog):
+    '''Overrides pytest's caplog fixture with acumos logs propagated'''
+    with _acumos_logs_propagated():
+        yield caplog
 
 
 if __name__ == '__main__':

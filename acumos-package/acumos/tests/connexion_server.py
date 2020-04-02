@@ -44,14 +44,17 @@ def upload(model, metadata, schema, license=None):
         if not json.loads(license.read().decode())['license'] == license_header:
             return 'File license does not match test value', 400
 
+    response = {'status': 'OK'}
+
     # test microservice creation parameter
     create_header = request.headers.get('X-Test-Create')
     if create_header is not None:
         is_create = request.headers['isCreateMicroservice']
         if is_create != create_header:
             return "Header isCreateMicroservice ({}) does not match test value ({})".format(is_create, create_header), 400
+        response["dockerImageUri"] = "uri/to/image:tag_or_hash"
 
-    return {'status': 'OK'}, 201
+    return response, 201
 
 
 def authenticate(auth_request):

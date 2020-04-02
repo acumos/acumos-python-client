@@ -192,6 +192,13 @@ def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, opti
     resp = requests.post(push_api, files=files, headers=headers)
     if resp.ok:
         logger.info("Model pushed successfully to {}".format(push_api))
+        if options.create_microservice:
+            try:
+                docker_image_uri = resp.json()["dockerImageUri"]
+                logger.info(f"Acumos model docker image successfully created: {docker_image_uri}")
+            except KeyError:
+                logger.warning("Docker image URI could not be found in server response, "
+                               "on-boarding server is probably running a version prior to Demeter.")
     else:
         clear_jwt()
         if resp.status_code == 401 and tries != max_tries:
