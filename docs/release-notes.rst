@@ -20,6 +20,11 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.9.4, 05 April 2020
+=====================
+
+* give image tag URL from python client 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3961>'_
+
 v0.9.3, 30 Mar 2020
 ===================
 
