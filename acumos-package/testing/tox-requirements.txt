@@ -1,13 +1,14 @@
 pytest
 pytest-rerunfailures
 pytest-cov
-connexion==1.5.2
+connexion~=1.5
+werkzeug~=0.16
 pandas<0.25
 scikit-learn~=0.20.3
 jsonschema==2.6.0
 keras==2.2.4
 h5py
-tensorflow==1.13.1
+tensorflow~=1.13
 pexpect==4.6.0
 pillow
 mock

@@ -32,7 +32,7 @@ except ImportError:
 import numpy as np
 
 from acumos.exc import AcumosError
-from acumos.utils import reraise
+from acumos.utils import inspect_type, reraise
 
 
 _NUMPY_PRIMITIVES = {np.int64, np.int32, np.float64, np.float32}
@@ -249,6 +249,9 @@ def _create_wrapper_ret(f, input_type, output_type):
 
 def _assert_valid_type(t, container=None):
     '''Raises AcumosError if the input type contains an invalid type'''
+
+    inspected = inspect_type(t)
+
     if t in _VALID_PRIMITIVES:
         pass
 
@@ -259,17 +262,21 @@ def _assert_valid_type(t, container=None):
         for tt in t._field_types.values():
             _assert_valid_type(tt)
 
-    elif _is_subclass(t, List):
+    elif _is_subclass(inspected.origin, List):
         if container is not None:
-            raise AcumosError("List types cannot be nested within {} types. Use NamedTuple instead".format(container.__name__))
+            raise AcumosError(
+                "List types cannot be nested within {} types. Use NamedTuple instead"
+                .format(inspect_type(container).origin.__name__))
 
-        _assert_valid_type(t.__args__[0], container=List)
+        _assert_valid_type(inspected.args[0], container=List)
 
-    elif _is_subclass(t, Dict):
+    elif _is_subclass(inspected.origin, Dict):
         if container is not None:
-            raise AcumosError("Dict types cannot be nested within {} types. Use NamedTuple instead".format(container.__name__))
+            raise AcumosError(
+                "Dict types cannot be nested within {} types. Use NamedTuple instead"
+                .format(inspect_type(container).origin.__name__))
 
-        key_type, value_type = t.__args__
+        key_type, value_type = inspected.args
 
         if key_type is not str:
             raise AcumosError('Dict keys must be str type')
