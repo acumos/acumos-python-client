@@ -23,7 +23,8 @@ from importlib.util import spec_from_file_location, module_from_spec
 import os
 import inspect
 import contextlib
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
+import typing_inspect
 
 from acumos.exc import AcumosError
 
@@ -71,3 +72,19 @@ def reraise(prefix, prefix_args):
         yield
     except AcumosError as e:
         raise AcumosError("{}: {}".format(prefix.format(*prefix_args), e)).with_traceback(e.__traceback__)
+
+
+InspectedType = namedtuple('InspectedType', ['type',    # The real type
+                                             'origin',  # The unsubscribed / unaliased typed
+                                             'args',    # The type arguments
+                                             ])
+
+
+def inspect_type(t) -> InspectedType:
+    """Returns basic information on a type as an InspectedType"""
+    args = typing_inspect.get_args(t)
+    if typing_inspect.is_generic_type(t):
+        origin = typing_inspect.get_origin(t)
+    else:
+        origin = t
+    return InspectedType(type=t, origin=origin, args=args)
