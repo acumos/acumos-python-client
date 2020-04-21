@@ -28,7 +28,8 @@ from os import makedirs
 from os.path import basename, isdir, isfile, join as path_join
 from copy import deepcopy
 from functools import partial
-from typing import GenericMeta, Dict, List
+from typing import Dict, List
+from typing_inspect import NEW_TYPING
 from types import ModuleType
 from importlib import import_module
 
@@ -51,29 +52,34 @@ load_model = dill.load
 loads_model = dill.loads
 
 
-def _save_annotation(pickler, obj):
-    '''Workaround for dill annotation serialization bug'''
-    if obj.__origin__ in (Dict, List):
-        # recursively save object
-        t = obj.__origin__
-        args = obj.__args__
-        pickler.save_reduce(_load_annotation, (t, args), obj=obj)
-    else:
-        # eventually hit base type, then use stock pickling logic. temp revert prevents infinite recursion
-        t = obj
-        args = None
-        with _revert_dispatch(GenericMeta):
+if not NEW_TYPING:
+    from typing import GenericMeta
+
+    def _save_annotation(pickler, obj):
+        '''Workaround for dill annotation serialization bug'''
+        from typing import GenericMeta
+        if obj.__origin__ in (Dict, List):
+            # recursively save object
+            t = obj.__origin__
+            args = obj.__args__
             pickler.save_reduce(_load_annotation, (t, args), obj=obj)
+        else:
+            # eventually hit base type, then use stock pickling logic. temp revert prevents infinite recursion
+            t = obj
+            args = None
+            with _revert_dispatch(GenericMeta):
+                pickler.save_reduce(_load_annotation, (t, args), obj=obj)
 
+    def _load_annotation(t, args):
+        '''Workaround for dill annotation serialization bug'''
+        if t is Dict and args is not None:
+            return Dict[args[0], args[1]]
+        elif t is List and args is not None:
+            return List[args[0]]
+        else:
+            return t
 
-def _load_annotation(t, args):
-    '''Workaround for dill annotation serialization bug'''
-    if t is Dict and args is not None:
-        return Dict[args[0], args[1]]
-    elif t is List and args is not None:
-        return List[args[0]]
-    else:
-        return t
+    dill.Pickler.dispatch[GenericMeta] = _save_annotation
 
 
 def _save_namedtuple(pickler, obj):
@@ -230,9 +236,6 @@ def _add_file(subdir, name):
     file_abspath = path_join(subdir, name)
     file_relpath = (basename(subdir), name)
     return file_abspath, file_relpath
-
-
-dill.Pickler.dispatch[GenericMeta] = _save_annotation
 
 
 _CUSTOM_DISPATCH = {
