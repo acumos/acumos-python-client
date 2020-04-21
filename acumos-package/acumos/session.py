@@ -288,7 +288,9 @@ def _gather_package_scripts(packages):
 def _gather_scripts(context, reqs):
     '''Yields absolute paths of Python script dependencies'''
     for script in context.scripts:
-        yield script.__file__
+        # script can be a python built-in module with no associated file
+        if script.__spec__.origin != 'built-in':
+            yield script.__file__
 
     for script_path in reqs.scripts:
         script_abspath = abspath(expanduser(script_path))

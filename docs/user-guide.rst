@@ -29,7 +29,9 @@ to the `Acumos platform <https://www.acumos.org/>`__.
 Installation
 ============
 
-You will need a Python 3.6 environment in order to install ``acumos``.
+You will need a Python 3.6 or 3.7 environment in order to install ``acumos``.
+Python 3.8 can also be used but when version 0.9.5 has been release, some AI 
+framework like Tensor Flow was not supported in Python 3.8
 You can use `Anaconda <https://www.anaconda.com/download/>`__
 (preferred) or `pyenv <https://github.com/pyenv/pyenv>`__ to install and
 manage Python environments.

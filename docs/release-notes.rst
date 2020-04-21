@@ -20,6 +20,12 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.9.5, 22 April 2020
+=====================
+
+* add support of python 3.7 & 3.8 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>'_
+
+
 v0.9.4, 05 April 2020
 =====================
 
