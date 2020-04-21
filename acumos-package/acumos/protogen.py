@@ -31,7 +31,7 @@ import numpy as np
 
 from acumos.exc import AcumosError
 from acumos.modeling import List, Dict, Enum, _is_namedtuple
-from acumos.utils import namedtuple_field_types
+from acumos.utils import inspect_type, namedtuple_field_types
 
 
 _PROTO_SYNTAX = 'syntax = "proto3";'
@@ -128,12 +128,13 @@ def _proto_iter(nt):
         yield nt
 
         for t in nt._field_types.values():
+            inspected = inspect_type(t)
             if _is_namedtuple(t):
                 yield from _proto_iter(t)
-            elif issubclass(t, Enum):
+            elif issubclass(inspected.origin, Enum):
                 yield t
-            elif issubclass(t, List) or issubclass(t, Dict):
-                for tt in t.__args__:
+            elif issubclass(inspected.origin, List) or issubclass(inspected.origin, Dict):
+                for tt in inspected.args:
                     yield from _proto_iter(tt)
 
 
@@ -159,7 +160,10 @@ def _types_equal(t1, t2):
         values_match = all(_types_equal(v1, v2) for v1, v2 in zip(ft1.values(), ft2.values()))
         return names_match and keys_match and values_match
 
-    if issubclass(t1, Enum) and issubclass(t2, Enum):
+    t1_inspected = inspect_type(t1)
+    t2_inspected = inspect_type(t2)
+
+    if issubclass(t1_inspected.origin, Enum) and issubclass(t2_inspected.origin, Enum):
         names_match = t1.__name__ == t2.__name__
         enums_match = [(e.name, e.value) for e in t1] == [(e.name, e.value) for e in t2]
         return names_match and enums_match
@@ -205,23 +209,25 @@ def _field2proto(name, type_, index, type_names, rjust=None):
     '''Returns a protobuf schema field str from a NamedTuple field'''
     string = None
 
+    inspected = inspect_type(type_)
+
     if type_ in _type_lookup:
         string = "{} {} = {};".format(_type2proto(type_), name, index)
 
-    elif _is_namedtuple(type_) or issubclass(type_, Enum):
+    elif _is_namedtuple(type_) or issubclass(inspected.origin, Enum):
         tn = type_.__name__
         if tn not in type_names:
             raise AcumosError("Could not build protobuf field using unknown custom type {}".format(tn))
         string = "{} {} = {};".format(tn, name, index)
 
-    elif issubclass(type_, List):
-        inner = type_.__args__[0]
+    elif issubclass(inspected.origin, List):
+        inner = inspected.args[0]
         if _is_container(inner):
             raise NestedTypeError("Nested container {} is not yet supported; try using NamedTuple instead".format(type_))
         string = "repeated {}".format(_field2proto(name, inner, index, type_names, 0))
 
-    elif issubclass(type_, Dict):
-        k, v = type_.__args__
+    elif issubclass(inspected.origin, Dict):
+        k, v = inspected.args
         if any(map(_is_container, (k, v))):
             raise NestedTypeError("Nested container {} is not yet supported; try using NamedTuple instead".format(type_))
         string = "map<{}, {}> {} = {};".format(_type2proto(k), _type2proto(v), name, index)

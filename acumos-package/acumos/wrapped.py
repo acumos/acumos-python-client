@@ -28,7 +28,7 @@ from google.protobuf.json_format import Parse as ParseJson, ParseDict, MessageTo
 
 from acumos.modeling import _is_namedtuple, List, Dict
 from acumos.pickler import AcumosContextManager, load_model as _load_model
-from acumos.utils import load_module
+from acumos.utils import inspect_type, load_module
 from acumos.exc import AcumosError
 
 
@@ -192,16 +192,19 @@ def _pack_pb_msg(wrapped_in, module):
 
 def _set_pb_value(wrapped_type, value, module):
     '''Recursively traverses the NamedTuple instance to ensure nested NamedTuples become protobuf messages'''
+
+    inspected_type = inspect_type(wrapped_type)
+
     if _is_namedtuple(wrapped_type):
         return _pack_pb_msg(value, module)
 
-    elif issubclass(wrapped_type, Dict):
-        _, val_type = wrapped_type.__args__
+    elif issubclass(inspected_type.origin, Dict):
+        _, val_type = inspected_type.args
         if _is_namedtuple(val_type):
             return {k: _pack_pb_msg(v, module) for k, v in value.items()}
 
-    elif issubclass(wrapped_type, List):
-        list_type = wrapped_type.__args__[0]
+    elif issubclass(inspected_type.origin, List):
+        list_type = inspected_type.args[0]
         if _is_namedtuple(list_type):
             return [_pack_pb_msg(v, module) for v in value]
 
@@ -216,16 +219,19 @@ def _unpack_pb_msg(input_type, pb_msg):
 
 def _get_pb_value(wrapped_type, pb_value):
     '''Recursively traverses the protobuf message to ensure nested messages become NamedTuples'''
+
+    inspected_type = inspect_type(wrapped_type)
+
     if _is_namedtuple(wrapped_type):
         return _unpack_pb_msg(wrapped_type, pb_value)
 
-    elif issubclass(wrapped_type, Dict):
-        _, val_type = wrapped_type.__args__
+    elif issubclass(inspected_type.origin, Dict):
+        _, val_type = inspected_type.args
         if _is_namedtuple(val_type):
             return {k: _unpack_pb_msg(val_type, v) for k, v in pb_value.items()}
 
-    elif issubclass(wrapped_type, List):
-        list_type = wrapped_type.__args__[0]
+    elif issubclass(inspected_type.origin, List):
+        list_type = inspected_type.args[0]
         if _is_namedtuple(list_type):
             return [_unpack_pb_msg(list_type, v) for v in pb_value]
 
