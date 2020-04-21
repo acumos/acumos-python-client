@@ -20,7 +20,7 @@
 acumos-python-client
 ====================
 
-.. image:: docs/images/Acumos_logo_white.png
+.. image:: ../docs/images/Acumos_logo_white.png
 
 |Build Status|
 
