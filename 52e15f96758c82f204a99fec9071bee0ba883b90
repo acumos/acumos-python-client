@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "48a0e5ff_d43e41c9",
+        "filename": "acumos-package/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2020-04-22T11:47:20Z",
+      "side": 1,
+      "message": "please keep strict dotted numeric (e.g. 0.9.5)",
+      "revId": "52e15f96758c82f204a99fec9071bee0ba883b90",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6464ae99_41b2b878",
+        "filename": "acumos-package/testing/tox-requirements.txt",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2020-04-22T11:47:20Z",
+      "side": 1,
+      "message": "why this werkzeug version? I thought we pinned to \u003c 1.0 in prior modification for setup.py",
+      "revId": "52e15f96758c82f204a99fec9071bee0ba883b90",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
