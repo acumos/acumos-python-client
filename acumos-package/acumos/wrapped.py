@@ -135,8 +135,7 @@ class WrappedFunction(object):
 
     def from_raw(self, raw_in):
         '''Consumes a raw type data and returns a WrappedResponse object'''
-        raw_out = self._func.inner(raw_in)
-        return WrappedResponse(raw_out, None, None)
+        return self.from_wrapped(raw_in)
 
     @property
     def pb_input_type(self):

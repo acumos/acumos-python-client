@@ -181,15 +181,21 @@ number of words in the text:
 
     Text = new_type(str, 'Text')
 
-    def count(text: Text) -> Text:
+    def count(text: Text) -> int:
         '''Counts the number of words in the text'''
         return len(text.split(' '))
+
+    def create_text(x: int, y: int) -> Text:
+        '''Returns a string containing ints from x to y'''
+        return " ".join(map(str, range(x, y+1)))
+
+    def reverse_text(text: Text) -> Text:
+        '''Returns an empty image buffer from dimensions'''
+        return text[::-1]
 
 By using the `new_type` function, you inform `acumos` that `Text` is
 unstructured, and therefore `acumos` will not create any structured types or
 messages for the `count` function.
-Version 0.9.x of acumos allows only the use of unstructured types in input and output of
-the user defined function.
 
 You can use the `new_type` function to create dictionaries or byte string
 type unstructured data as shown below.

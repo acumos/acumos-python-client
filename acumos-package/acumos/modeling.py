@@ -140,63 +140,54 @@ def _wrap_function(f, name=None):
     field_types = [(a, anno[a]) for a in spec.args]
     ret_type = anno['return']
 
-    # check to see if use-defined function consumes and/or produces a raw type, and if so, skip NamedTuple generation
-    if _is_raw_type(field_types, ret_type):
+    args_are_raw = any([is_raw_type(field_type) for field_name, field_type in field_types])
+    ret_is_raw = is_raw_type(ret_type)
+
+    if args_are_raw and len(field_types) > 1:
+        raise AcumosError("Cannot process a function with more than 1 argument when using raw types as input")
+
+    if not args_are_raw:
+        for field_name, field_type in field_types:
+            with reraise('Function {} argument {} is invalid', (name, field_name)):
+                _assert_valid_type(field_type)
+
+    if not ret_is_raw and ret_type not in (None, NoReturn):
+        if ret_type not in (None, NoReturn):
+            with reraise('Function {} return type {} is invalid', (name, ret_type)):
+                _assert_valid_type(ret_type)
+
+    wrap_input = True
+    wrap_output = True
+
+    if args_are_raw or _already_wrapped(field_types):
         input_type = field_types[0][1]
-        output_type = ret_type
-        wrapped_f = f
-        return wrapped_f, input_type, output_type
-
-    for field_name, field_type in field_types:
-        with reraise('Function {} argument {} is invalid', (name, field_name)):
-            _assert_valid_type(field_type)
-
-    if ret_type not in (None, NoReturn):
-        with reraise('Function {} return type {} is invalid', (name, ret_type)):
-            _assert_valid_type(ret_type)
-
-    if _already_wrapped(field_types):
-        input_type = field_types[0][1]
-        if _is_namedtuple(ret_type):
-            output_type = ret_type
-            wrapped_f = f
-        else:
-            output_type = _create_ret_type(title, ret_type)
-            wrapped_f = _create_wrapper_ret(f, input_type, output_type)
+        wrap_input = False
     else:
         input_type = _create_input_type(title, field_types)
-        if _is_namedtuple(ret_type):
-            output_type = ret_type
-            wrapped_f = _create_wrapper_args(f, input_type, ret_type)
-        else:
-            output_type = _create_ret_type(title, ret_type)
-            wrapped_f = _create_wrapper_both(f, input_type, output_type)
+        with reraise('Function {} wrapped input type is invalid', (name,)):
+            _assert_valid_type(input_type)
 
-    with reraise('Function {} wrapped input type is invalid', (name, )):
-        _assert_valid_type(input_type)
+    if ret_is_raw or _is_namedtuple(ret_type):
+        output_type = ret_type
+        wrap_output = False
+    else:
+        output_type = _create_ret_type(title, ret_type)
+        with reraise('Function {} wrapped output type is invalid', (name,)):
+            _assert_valid_type(output_type)
 
-    with reraise('Function {} wrapped output type is invalid', (name, )):
-        _assert_valid_type(output_type)
-
-    return wrapped_f, input_type, output_type
+    wrapper = _get_wrapper(wrap_input, wrap_output)
+    return wrapper(f, input_type, output_type), input_type, output_type
 
 
-def _is_raw_type(field_types, ret_type):
-    '''Returns True if field type and ret_type are one of the supported raw types and the user-defined function only consumes and/or produces one raw type'''
-    if not field_types or not ret_type:
-        return False
-
-    if not hasattr(field_types[0][1], '__supertype__') and not hasattr(ret_type, '__supertype__'):
-        return False
-
-    try:
-        '''check if output and input are both unstructured'''
-        assert hasattr(field_types[0][1], '__supertype__')
-        assert hasattr(ret_type, '__supertype__')
-    except AssertionError:
-        raise AcumosError("Usage of unstructured type is only possible when the user-defined function consumes or produces unstructured type for both input and output")
-
-    return len(field_types) == 1 and type(field_types[0][1].__supertype__) == Raw and type(ret_type.__supertype__) == Raw
+def _get_wrapper(wrap_input: bool, wrap_output: bool):
+    """Find a wrapper for the function"""
+    if wrap_input:
+        if wrap_output:
+            return _create_wrapper_both
+        return _create_wrapper_args
+    if wrap_output:
+        return _create_wrapper_ret
+    return lambda f, input_type, output_type: f
 
 
 def _already_wrapped(field_types):
@@ -315,3 +306,11 @@ def create_namedtuple(name, field_types):
 def new_type(raw_type, name, metadata=None, doc=None):
     '''Returns a user specified raw type'''
     return NewType(name, Raw(raw_type, metadata, doc))
+
+
+def is_raw_type(_type: type) -> bool:
+    """Checks if a type is Raw"""
+    try:
+        return type(_type.__supertype__) == Raw
+    except AttributeError:
+        return False

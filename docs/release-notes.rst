@@ -20,6 +20,12 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.9.6, 30 April 2020
+=====================
+
+* Add unstructured to structured type support 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3956>'_
+
+
 v0.9.5, 22 April 2020
 =====================
 

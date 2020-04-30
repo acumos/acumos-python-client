@@ -21,32 +21,79 @@ Provides modeling tests
 """
 import pytest
 
-from acumos.modeling import _wrap_function, AcumosError, NamedTuple, Model, NoReturn, Empty, List, Dict, Raw, new_type
+from acumos.modeling import (_wrap_function,
+                             AcumosError,
+                             NamedTuple,
+                             Model, NoReturn,
+                             Empty,
+                             List,
+                             Dict,
+                             new_type,
+                             is_raw_type,)
 from acumos.protogen import _types_equal
 
 
-def test_wrap_function():
-    '''Tests function wrapper utility'''
+@pytest.fixture()
+def FooIn() -> type:
+    return NamedTuple('FooIn', [('x', int), ('y', int)])
 
-    FooIn = NamedTuple('FooIn', [('x', int), ('y', int)])
-    FooOut = NamedTuple('FooOut', [('value', int)])
 
-    Image = new_type(bytes, 'Image', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+@pytest.fixture()
+def FooOut() -> type:
+    return NamedTuple('FooOut', [('value', int)])
 
-# =============================================================================
-#     check for both user defined raw data type
-# =============================================================================
+
+@pytest.fixture()
+def Image() -> type:
+    return new_type(bytes, 'Image', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+
+
+def test_wrap_function_raw_to_raw(FooIn, FooOut, Image):
+    '''Tests function wrapper utility
+    check for both user defined raw data type'''
+
     def test_image_func(image: Image) -> Image:
         return Image(image)
 
-    f, raw_in_, raw_out = _wrap_function(test_image_func)
+    f, raw_in, raw_out = _wrap_function(test_image_func)
 
-    assert type(raw_in_.__supertype__) == Raw
-    assert type(raw_out.__supertype__) == Raw
+    assert is_raw_type(raw_in)
+    assert is_raw_type(raw_out)
+    assert f(Image(b"1234")) == Image(b"1234")
 
-# =============================================================================
-#     both args and return need to be wrapped
-# =============================================================================
+
+def test_wrap_function_raw_to_structured(FooIn, FooOut, Image):
+    '''Tests function wrapper utility
+    check for user-defined to structured data'''
+
+    def test_get_image_size_func(image: Image) -> int:
+        return len(image)
+
+    f, raw_in, raw_out = _wrap_function(test_get_image_size_func)
+
+    assert is_raw_type(raw_in)
+    assert _types_equal(raw_out, FooOut, ignore_type_name=True)
+    assert f(Image(Image(b"1234"))) == raw_out(4)
+
+
+def test_wrap_function_structured_to_raw(FooIn, FooOut, Image):
+    '''Tests function wrapper utility
+    check for structured to user-defined data'''
+
+    def test_create_image_func(x: int, y: int) -> Image:
+        return Image("b\00" * x * y)
+
+    f, raw_in, raw_out = _wrap_function(test_create_image_func)
+
+    assert _types_equal(raw_in, FooIn, ignore_type_name=True)
+    assert is_raw_type(raw_out)
+    assert f(raw_in(2, 2)) == Image("b\00" * 4)
+
+
+def test_wrap_function_structured_to_structured(FooIn, FooOut, Image):
+    '''Tests function wrapper utility
+    both args and return need to be wrapped'''
+
     def foo(x: int, y: int) -> int:
         return x + y
 
@@ -56,9 +103,10 @@ def test_wrap_function():
     assert _types_equal(out, FooOut)
     assert f(FooIn(1, 2)) == FooOut(3)
 
-# =============================================================================
-#     function is already considered wrapped
-# =============================================================================
+
+def test_wrap_function_structured_to_structured_already_wrapped(FooIn, FooOut, Image):
+    '''Tests function wrapper utility
+    both args and return are already wrapped'''
     def bar(msg: FooIn) -> FooOut:
         return FooOut(msg.x + msg.y)
 
@@ -69,9 +117,10 @@ def test_wrap_function():
     assert _types_equal(out, FooOut)
     assert f(FooIn(1, 2)) == FooOut(3)
 
-# =============================================================================
-#     function args need to be wrapped but return is fine
-# =============================================================================
+
+def test_wrap_function_structured_to_structured_args_already_wrapped(FooIn, FooOut, Image):
+    '''Tests function wrapper utility
+    args are already wrapped'''
     BazIn = NamedTuple('BazIn', [('x', int), ('y', int)])
 
     def baz(x: int, y: int) -> FooOut:
@@ -83,9 +132,10 @@ def test_wrap_function():
     assert _types_equal(out, FooOut)
     assert f(BazIn(1, 2)) == FooOut(3)
 
-# =============================================================================
-#     function return needs to be wrapped but args are fine
-# =============================================================================
+
+def test_wrap_function_structured_to_structured_return_already_wrapped(FooIn, FooOut, Image):
+    '''Tests function wrapper utility
+    return is already wrapped'''
     QuxOut = NamedTuple('QuxOut', [('value', int)])
 
     def qux(msg: FooIn) -> int:
@@ -95,7 +145,7 @@ def test_wrap_function():
 
     assert _types_equal(in_, FooIn)
     assert _types_equal(out, QuxOut)
-    assert f(BazIn(1, 2)) == QuxOut(3)
+    assert f(FooIn(1, 2)) == QuxOut(3)
 
 
 def test_bad_annotations():

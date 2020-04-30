@@ -37,7 +37,7 @@ from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
 from google.protobuf.json_format import MessageToJson, MessageToDict
 
-from acumos.wrapped import load_model, _pack_pb_msg
+from acumos.wrapped import _unpack_pb_msg, load_model, _pack_pb_msg
 from acumos.modeling import Model, create_dataframe, List, Dict, create_namedtuple, new_type
 from acumos.session import _dump_model, _copy_dir, Requirements
 
@@ -166,47 +166,77 @@ def _dict_skips(as_, from_):
     return as_ in {'as_pb_bytes', 'as_json'}
 
 
-@pytest.mark.flaky(reruns=5)
-def test_raw_type():
+Text = new_type(str, 'Text', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+Image = new_type(bytes, 'Image', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+Dictionary = new_type(dict, 'Dictionary', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+
+
+def f1(text: Text) -> Text:
+    '''Return a raw text'''
+    return Text(text)
+
+
+def f2(image: Image) -> Image:
+    '''Return an image'''
+    return Image(image)
+
+
+def f3(dictionary: Dictionary) -> Dictionary:
+    '''Return a raw dictionary'''
+    return Dictionary(dictionary)
+
+
+def f4(image: Image) -> int:
+    '''Return the size in bytes of the image'''
+    return len(image)
+
+
+def f5(x: int, y: int) -> Image:
+    '''Return an empty image'''
+    return Image(b"\00" * x * y)
+
+
+@pytest.mark.parametrize(
+    ["func", "f_in", "f_out", "in_media_type", "out_media_type", "in_is_raw", "out_is_raw"], (
+        pytest.param(f1, "test string", "test string", ["text/plain"], ["text/plain"], True, True, id="string"),
+        pytest.param(f2, b'test bytes', b'test bytes', ["application/octet-stream"], ["application/octet-stream"], True, True, id="bytes"),
+        pytest.param(f3, {'a': 1, 'b': 2}, {'a': 1, 'b': 2}, ["application/json"], ["application/json"], True, True, id="dict"),
+        pytest.param(f4, b'test bytes', 10, ["application/octet-stream"], ["application/vnd.google.protobuf"], True, False, id="bytes->int"),
+        pytest.param(f5, (2, 2), b"\00\00\00\00", ["application/vnd.google.protobuf"], ["application/octet-stream"], False, True, id="int->bytes"),
+    ))
+def test_raw_type(func, f_in, f_out, in_media_type, out_media_type, in_is_raw, out_is_raw):
     '''Tests to make sure that supported raw data type models are working correctly'''
+    model = Model(transform=func)
+    model_name = 'my-model'
 
-    Text = new_type(str, 'Text', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+    with TemporaryDirectory() as tdir:
+        with _dump_model(model, model_name) as dump_dir:
+            _copy_dir(dump_dir, tdir, model_name)
 
-    def f1(text: Text) -> Text:
-        '''Return a raw text'''
-        return Text(text)
+        copied_dump_dir = path_join(tdir, model_name)
+        metadata_file_path = path_join(copied_dump_dir, 'metadata.json')
 
-    Image = new_type(bytes, 'Image', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+        with open(metadata_file_path) as metadata_file:
+            metadata_json = json.load(metadata_file)
 
-    def f2(image: Image) -> Image:
-        '''Return an image'''
-        return Image(image)
+            assert metadata_json['methods']['transform']['input']['media_type'] == in_media_type
+            assert metadata_json['methods']['transform']['output']['media_type'] == out_media_type
 
-    Dictionary = new_type(dict, 'Dictionary', {'dcae_input_name': 'a', 'dcae_output_name': 'a'}, 'example description')
+        wrapped_model = load_model(copied_dump_dir)
+        if in_is_raw:
+            wrapped_return = wrapped_model.transform.from_raw(f_in)
+        else:
+            arguments = model.transform.input_type(*f_in)
+            arguments_pb_msg = _pack_pb_msg(arguments, wrapped_model.transform._module)
+            wrapped_return = wrapped_model.transform.from_pb_msg(arguments_pb_msg)
 
-    def f3(dictionary: Dictionary) -> Dictionary:
-        '''Return a raw dictionary'''
-        return Dictionary(dictionary)
+        if out_is_raw:
+            ret = wrapped_return.as_raw()
+        else:
+            ret_pb_msg = wrapped_return.as_pb_msg()
+            ret = _unpack_pb_msg(model.transform.output_type, ret_pb_msg).value
 
-    # input / output "answers"
-
-    f1_in = Text("test string")
-    f1_out = Text("test string")
-    f1_in_media_type = ["text/plain"]
-    f1_out_media_type = ["text/plain"]
-
-    f2_in = Image(b'test bytes')
-    f2_out = Image(b'test bytes')
-    f2_in_media_type = ["application/octet-stream"]
-    f2_out_media_type = ["application/octet-stream"]
-
-    f3_in = Dictionary({'a': 1, 'b': 2})
-    f3_out = Dictionary({'a': 1, 'b': 2})
-    f3_in_media_type = ["application/json"]
-    f3_out_media_type = ["application/json"]
-
-    for func, in_, out, in_media_type, out_media_type in ((f1, f1_in, f1_out, f1_in_media_type, f1_out_media_type), (f2, f2_in, f2_out, f2_in_media_type, f2_out_media_type), (f3, f3_in, f3_out, f3_in_media_type, f3_out_media_type)):
-        _raw_type_test(func, in_, out, in_media_type, out_media_type)
+        assert ret == f_out
 
 
 @pytest.mark.flaky(reruns=5)
@@ -296,28 +326,6 @@ def test_wrapped_tensorflow():
     out = (yhat, )
 
     _generic_test(f2, in_, out, wrapped_eq=lambda a, b: (a[0] == b[0]).all(), preload=tf.reset_default_graph)
-
-
-def _raw_type_test(func, in_, out, in_media_type, out_media_type, wrapped_eq=eq, byte_eq=eq, dict_eq=eq, json_eq=eq, reqs=None, skip=None):
-    '''Test for model with raw type data function '''
-    model = Model(transform=func)
-    model_name = 'my-model'
-
-    with TemporaryDirectory() as tdir:
-        with _dump_model(model, model_name, reqs) as dump_dir:
-            _copy_dir(dump_dir, tdir, model_name)
-
-        copied_dump_dir = path_join(tdir, model_name)
-        metadata_file_path = path_join(copied_dump_dir, 'metadata.json')
-
-        with open(metadata_file_path) as metadata_file:
-            metadata_json = json.load(metadata_file)
-
-            assert metadata_json['methods']['transform']['input']['media_type'] == in_media_type
-            assert metadata_json['methods']['transform']['output']['media_type'] == out_media_type
-
-        wrapped_model = load_model(copied_dump_dir)
-        assert wrapped_model.transform.from_raw(in_).as_raw() == out
 
 
 def _generic_test(func, in_, out, wrapped_eq=eq, pb_mg_eq=eq, pb_bytes_eq=eq, dict_eq=eq, json_eq=eq, preload=None, reqs=None, skip=None):

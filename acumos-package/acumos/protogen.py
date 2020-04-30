@@ -30,7 +30,7 @@ from os import makedirs
 import numpy as np
 
 from acumos.exc import AcumosError
-from acumos.modeling import List, Dict, Enum, _is_namedtuple
+from acumos.modeling import List, Dict, Enum, _is_namedtuple, is_raw_type, Empty
 from acumos.utils import inspect_type, namedtuple_field_types
 
 
@@ -124,6 +124,11 @@ def model2proto(model, package_name):
 
 def _proto_iter(nt):
     '''Recursively yields all types contained within the NamedTuple relevant to protobuf gen'''
+    if is_raw_type(nt):
+        # Empty is used here as a placeholder for raw types
+        yield Empty
+        return
+
     if _is_namedtuple(nt):
         yield nt
 
@@ -151,10 +156,10 @@ def _require_unique(types):
     return [l[0] for l in dd.values()]
 
 
-def _types_equal(t1, t2):
+def _types_equal(t1, t2, *, ignore_type_name: bool = False):
     '''Returns True if t1 and t2 types are equal. Can't override __eq__ on NamedTuple unfortunately.'''
     if _is_namedtuple(t1) and _is_namedtuple(t2):
-        names_match = t1.__name__ == t2.__name__
+        names_match = ignore_type_name or t1.__name__ == t2.__name__
         ft1, ft2 = namedtuple_field_types(t1), namedtuple_field_types(t2)
         keys_match = ft1.keys() == ft2.keys()
         values_match = all(_types_equal(v1, v2) for v1, v2 in zip(ft1.values(), ft2.values()))
@@ -164,7 +169,7 @@ def _types_equal(t1, t2):
     t2_inspected = inspect_type(t2)
 
     if issubclass(t1_inspected.origin, Enum) and issubclass(t2_inspected.origin, Enum):
-        names_match = t1.__name__ == t2.__name__
+        names_match = ignore_type_name or t1.__name__ == t2.__name__
         enums_match = [(e.name, e.value) for e in t1] == [(e.name, e.value) for e in t2]
         return names_match and enums_match
 
@@ -257,7 +262,13 @@ def _type2proto(t):
 
 def _gen_service(model, name='Model'):
     '''Returns a protobuf service definition string'''
-    rpc_comps = ((n, f.input_type.__name__, f.output_type.__name__) for n, f in model.methods.items() if _is_namedtuple(f.input_type))
+    def _type_name(t: type):
+        "we use empty as placeholders for raw types in protobuf"
+        return t.__name__ if not is_raw_type(t) else Empty.__name__
+
+    rpc_comps = ((n, _type_name(f.input_type), _type_name(f.output_type))
+                 for n, f in model.methods.items()
+                 if _is_namedtuple(f.input_type) or _is_namedtuple(f.output_type))
     rpc_defs = '\n'.join(_gen_rpc(*comps) for comps in rpc_comps)
     return _service_template.format(name=name, service_def=rpc_defs)
 

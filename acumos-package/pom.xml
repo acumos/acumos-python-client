@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.acumos.acumos-python-client</groupId>
     <artifactId>acumos-python-client</artifactId>
-    <version>0.9.5</version> <!-- REPEATED IN acumos/_version.py MUST MATCH -->
+    <version>0.9.6</version> <!-- REPEATED IN acumos/_version.py MUST MATCH -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.sources>.</sonar.sources>
