@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d0bd4a57_de44b6f5",
+        "filename": "acumos-package/acumos/modeling.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2020-05-07T02:40:28Z",
+      "side": 1,
+      "message": "I still don\u0027t see the explicit need for raw types that aren\u0027t defined.  The original bug described words parsed from text, but they could be used in a repeatable array.  Will this cause similar problems for other runners in different languages?",
+      "revId": "87bbb0e12fcd7389eca0bf40e3b3ffe77c9ee36a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af6762d7_7b97483a",
+        "filename": "acumos-package/acumos/protogen.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 10
+      },
+      "writtenOn": "2020-05-07T02:40:28Z",
+      "side": 1,
+      "message": "This seems heavy-handed; why would we want to ignore a typename?  Was there a specific type that varied between versions or instances?",
+      "revId": "87bbb0e12fcd7389eca0bf40e3b3ffe77c9ee36a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    }
+  ]
+}
