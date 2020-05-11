@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0ed3571c_4dcb9794",
+        "filename": "acumos-package/acumos/modeling.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 212
+      },
+      "writtenOn": "2020-05-11T14:30:58Z",
+      "side": 1,
+      "message": "Hi Eric, what we want to do here is to take into account asymetric type, I mean structured type in input and raw type in output and conversely. it is more than the jira defect mentionned in the comit message. This typical case of raw type is only taken into account in python, no matters with others runners in different languages.",
+      "parentUuid": "d0bd4a57_de44b6f5",
+      "revId": "87bbb0e12fcd7389eca0bf40e3b3ffe77c9ee36a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "af6762d7_7b97483a",
         "filename": "acumos-package/acumos/protogen.py",
         "patchSetId": 1
