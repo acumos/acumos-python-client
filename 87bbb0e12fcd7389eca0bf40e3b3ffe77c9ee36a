@@ -51,6 +51,24 @@
       "revId": "87bbb0e12fcd7389eca0bf40e3b3ffe77c9ee36a",
       "serverId": "655300a2-7a56-4504-9153-881edd907bea",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb831da7_170c9e0e",
+        "filename": "acumos-package/acumos/protogen.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 391
+      },
+      "writtenOn": "2020-05-12T10:05:11Z",
+      "side": 1,
+      "message": "No, I needed that possibility in my tests ( since my method names are different, and I test more cases, it was easier to just check if the type\u0027s internals were the same, regardless of their name). But I can adapt my test instead if you think this might lead to confusions in the future.",
+      "parentUuid": "af6762d7_7b97483a",
+      "revId": "87bbb0e12fcd7389eca0bf40e3b3ffe77c9ee36a",
+      "serverId": "655300a2-7a56-4504-9153-881edd907bea",
+      "unresolved": true
     }
   ]
 }
