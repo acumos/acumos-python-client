@@ -145,15 +145,15 @@ def _proto_iter(nt):
 
 def _require_unique(types):
     '''Returns a list of unique types. Raises AcumosError if named types are not uniquely defined'''
-    dd = defaultdict(list)
-    for t in types:
-        dd[t.__name__].append(t)
+    types_by_name = defaultdict(list)
+    for _type in types:
+        types_by_name[_type.__name__].append(_type)
 
-    for n, l in dd.items():
-        if len(l) > 1 and not all(_types_equal(l[0], t) for t in l[1:]):
-            raise AcumosError("Multiple definitions found for type {}: {}".format(n, l))
+    for name, types in types_by_name.items():
+        if len(types) > 1 and not all(_types_equal(types[0], t) for t in types[1:]):
+            raise AcumosError("Multiple definitions found for type {}: {}".format(name, types))
 
-    return [l[0] for l in dd.values()]
+    return [types[0] for types in types_by_name.values()]
 
 
 def _types_equal(t1, t2, *, ignore_type_name: bool = False):
