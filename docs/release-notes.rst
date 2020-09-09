@@ -1,4 +1,4 @@
-.. ===============LICENSE_START=======================================================
+i.. ===============LICENSE_START=======================================================
 .. Acumos CC-BY-4.0
 .. ===================================================================================
 .. Copyright (C) 2017-2018 AT&T Intellectual Property & Tech Mahindra. All rights reserved.
@@ -19,18 +19,6 @@
 ==================================
 Acumos Python Client Release Notes
 ==================================
-
-v0.9.6, 30 April 2020
-=====================
-
-* Add unstructured to structured type support 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3956>'_
-
-
-v0.9.5, 22 April 2020
-=====================
-
-* add support of python 3.7 & 3.8 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>'_
-
 
 v0.9.4, 05 April 2020
 =====================
