@@ -49,6 +49,16 @@ You can also specify certain tox environments to test:
     $ tox -e py36  # only test against Python 3.6
     $ tox -e flake8  # only lint code
 
+A set of integration test is also available in ``acumos-package/testing/integration_tests``.
+To run those, use ``acumos-package/testing/tox-integration.ini`` as tox config (-c flag),
+onboarding tests will be ran with python 3.6 to 3.9.
+You will need to set your user credentials and platform configuration in ``tox-integration.ini``.
+
+.. code:: bash
+
+    $ tox -c acumos-package/testing/integration_tests
+
+
 Packaging
 =========
 
