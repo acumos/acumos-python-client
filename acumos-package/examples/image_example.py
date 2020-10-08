@@ -50,4 +50,4 @@ def get_shape(data: bytes) -> ImageShape:
 model = Model(get_format=get_format, get_shape=get_shape)
 
 session = AcumosSession()
-session.dump(model, 'image-model', '.')  # creates ./image-model
+session.dump_zip(model, 'image-model', './image-model.zip', replace=True)  # creates ./image-model.zip

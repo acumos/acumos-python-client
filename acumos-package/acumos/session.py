@@ -19,10 +19,13 @@
 """
 Provides a Acumos session for pushing and dumping models
 """
+import os
 import random
 import string
 import shutil
 import json
+from typing import Optional, Union
+
 import requests
 import fnmatch
 import warnings
@@ -77,9 +80,9 @@ class AcumosSession(object):
         if auth_api is not None:
             warnings.warn(_DEPR_MSG, DeprecationWarning, stacklevel=2)
 
-    def push(self, model, name, requirements=None, extra_headers=None, options=None):
+    def push(self, model, name, requirements=None, extra_headers=None, options=None) -> Optional[str]:
         '''
-        Pushes a model to Acumos
+        Pushes a model to Acumos, returns the docker image URI.
 
         Parameters
         ----------
@@ -100,9 +103,9 @@ class AcumosSession(object):
         options = _validate_options(options)
 
         with _dump_model(model, name, requirements) as dump_dir:
-            _push_model(dump_dir, self.push_api, self.auth_api, options, extra_headers=extra_headers)
+            return _push_model(dump_dir, self.push_api, self.auth_api, options, extra_headers=extra_headers)
 
-    def dump(self, model, name, outdir, requirements=None):
+    def dump(self, model: Model, name: str, outdir: Union[Path, str], requirements: Optional[Requirements] = None, replace: bool = False):
         '''
         Creates a directory located at ``outdir/name`` containing Acumos model artifacts
 
@@ -112,15 +115,52 @@ class AcumosSession(object):
             An Acumos model instance
         name : str
             The name of your model
-        outdir : str
+        outdir : str or Path
             The directory or folder to save your model .zip to
         requirements : ``acumos.metadata.Requirements``, optional
             Additional Python dependencies that you can optionally specify
+        replace: bool
+            If the model dir already exists, acumos will fail unless replace is set to True
         '''
         _assert_valid_input(model, requirements)
 
+        outdir = Path(expanduser(outdir))
+
+        if outdir.exists() and replace:
+            shutil.rmtree(outdir)
+
         with _dump_model(model, name, requirements) as dump_dir:
-            _copy_dir(dump_dir, expanduser(outdir), name)
+            _copy_dir(dump_dir, outdir, name)
+
+    def dump_zip(self, model: Model, name: str, outfile: Union[Path, str], requirements: Optional[Requirements] = None, replace: bool = False):
+        '''
+        Creates a zipped package located at ``outfile``
+
+        Parameters
+        ----------
+        model : ``acumos.modeling.Model``
+            An Acumos model instance
+        name : str
+            The name of your model
+        outfile : str or Path
+            The name or path to the ouput .zip
+        requirements : ``acumos.metadata.Requirements``, optional
+            Additional Python dependencies that you can optionally specify
+        replace: bool
+            If the model zip already exists, acumos will fail unless replace is set to True
+        '''
+        _assert_valid_input(model, requirements)
+        outfile = Path(outfile)
+        if not outfile.name.lower().endswith(".zip"):
+            raise AcumosError("outfile must have a zip extension.")
+        with _dump_model(model, name, requirements) as dump_dir:
+            import zipfile
+            if outfile.exists() and not replace:
+                raise AcumosError("Model {} has already been dumped, set replace to True to overwrite.".format(outfile))
+            with zipfile.ZipFile(outfile, 'w') as model_zip:
+                for root, _, files in os.walk(dump_dir):
+                    for file in files:
+                        model_zip.write(filename=os.path.join(root, file), arcname=file)
 
 
 def _validate_options(options):
@@ -151,8 +191,8 @@ def _assert_valid_api(param, api, required):
             logger.warning("Provided `{}` API {} does not begin with 'https'. Your password and token are visible in plaintext!".format(param, api))
 
 
-def _push_model(dump_dir, push_api, auth_api, options, max_tries=2, extra_headers=None):
-    '''Pushes a model to the Acumos server'''
+def _push_model(dump_dir, push_api, auth_api, options, max_tries=2, extra_headers=None) -> Optional[str]:
+    '''Pushes a model to the Acumos server, returns the docker image URI if requested'''
     with ExitStack() as stack:
         model = stack.enter_context(open(path_join(dump_dir, 'model.zip'), 'rb'))
         meta = stack.enter_context(open(path_join(dump_dir, 'metadata.json')))
@@ -169,7 +209,7 @@ def _push_model(dump_dir, push_api, auth_api, options, max_tries=2, extra_header
             files['license'] = (_LICENSE_NAME, license, 'application/json')
 
         tries = 1
-        _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, options)
+        return _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, options)
 
 
 def _add_license(rootdir, license_str):
@@ -182,8 +222,8 @@ def _add_license(rootdir, license_str):
         dump_artifact(license_dst, data=license_dict, module=json, mode='w')
 
 
-def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, options):
-    '''Attempts to post the model to Acumos'''
+def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, options) -> Optional[str]:
+    '''Attempts to post the model to Acumos, returns the docker image URI'''
     headers = {'Authorization': get_jwt(auth_api),
                'isCreateMicroservice': 'true' if options.create_microservice else 'false'}
     if extra_headers is not None:
@@ -196,6 +236,7 @@ def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, opti
             try:
                 docker_image_uri = resp.json()["dockerImageUri"]
                 logger.info(f"Acumos model docker image successfully created: {docker_image_uri}")
+                return docker_image_uri
             except KeyError:
                 logger.warning("Docker image URI could not be found in server response, "
                                "on-boarding server is probably running a version prior to Demeter.")

@@ -20,16 +20,23 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.9.8, 06 November 2020
+========================
+
+* Return docker URI & added an optional flag to replace and existing model when dumping 'ACUMOS-4298 <https://jira.acumos.org/browse/ACUMOS-4298>'_
+* The model bundle can now be dumped directly as a zip file 'ACUMOS-4273 <https://jira.acumos.org/browse/ACUMOS-4273>'_
+* Allow installation on python 3.9 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>'_
+
 v0.9.7, 27 August 2020
 ======================
 
-* add support of python 3.7 & 3.8 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>'_
+* Add support of python 3.7 & 3.8 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>'_
 * Display acumos logo on github 'ACUMOS-4094 <https://jira.acumos.org/browse/ACUMOS-4094>'_
 
 v0.9.4, 05 April 2020
 =====================
 
-* give image tag URL from python client 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3961>'_
+* Give image tag URL from python client 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3961>'_
 
 v0.9.3, 30 Mar 2020
 ===================
@@ -40,7 +47,7 @@ v0.9.3, 30 Mar 2020
 v0.9.2, 31 Jan 2020
 ===================
 
-* remove support for python 3.5 `Gerrit-6275 <https://gerrit.acumos.org/r/c/acumos-python-client/+/6275>`_
+* Remove support for python 3.5 `Gerrit-6275 <https://gerrit.acumos.org/r/c/acumos-python-client/+/6275>`_
 
 v0.9.1
 ======
