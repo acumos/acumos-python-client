@@ -21,6 +21,8 @@ Provides session tests
 """
 import contextlib
 import logging
+from pathlib import Path
+from typing import Optional
 
 import mock
 import tempfile
@@ -67,10 +69,11 @@ def test_create_microservice(create_microservice, caplog):
     with _patch_auth():
         extra_headers = {'X-Test-Create': str(create_microservice).lower()}
         opts = Options(create_microservice=create_microservice)
-        _push_dummy_model(extra_headers, options=opts)
+        maybe_docker_image_uri = _push_dummy_model(extra_headers, options=opts)
 
         if create_microservice:
             assert "Acumos model docker image successfully created" in caplog.text, "docker image Uri was not displayed"
+            assert maybe_docker_image_uri == "uri/to/image:tag_or_hash"
 
 
 def test_license():
@@ -130,7 +133,7 @@ def test_extra_header():
             _push_dummy_model(extra_headers)
 
 
-def _push_dummy_model(extra_headers=None, use_model_url=True, use_auth_url=False, options=None):
+def _push_dummy_model(extra_headers=None, use_model_url=True, use_auth_url=False, options=None) -> Optional[str]:
     '''Generic dummy model push routine'''
 
     def my_transform(x: int, y: int) -> int:
@@ -144,7 +147,7 @@ def _push_dummy_model(extra_headers=None, use_model_url=True, use_auth_url=False
         auth_url = _auth_url if use_auth_url else None
 
         session = AcumosSession(model_url, auth_url)
-        session.push(model, name='my-model', extra_headers=extra_headers, options=options)
+        return session.push(model, name='my-model', extra_headers=extra_headers, options=options)
 
 
 def test_custom_package():
@@ -215,7 +218,11 @@ def _abspath(*files):
     return tuple(path_join(TEST_DIR, file) for file in files)
 
 
-def test_session_dump():
+@pytest.mark.parametrize(["replace"], argvalues=[
+    pytest.param(True, id="replace"),
+    pytest.param(False, id="noreplace"),
+])
+def test_session_dump(replace: bool):
     '''Tests session dump'''
 
     def my_transform(x: int, y: int) -> int:
@@ -231,9 +238,41 @@ def test_session_dump():
         session.dump(model, model_name, tdir)
         model_dir = path_join(tdir, model_name)
         assert set(listdir(model_dir)) == set(_REQ_FILES)
+        if replace is False:
+            with pytest.raises(AcumosError):
+                session.dump(model, model_name, tdir)  # file already exists
+        else:
+            session.dump(model, model_name, tdir, replace=replace)  # file already exists but it will be replaced
 
-        with pytest.raises(AcumosError):
-            session.dump(model, model_name, tdir)  # file already exists
+
+@pytest.mark.parametrize(["replace"], argvalues=[
+    pytest.param(True, id="replace"),
+    pytest.param(False, id="noreplace"),
+])
+def test_session_dump_zip(replace: bool):
+    '''Tests session dump zip'''
+
+    def my_transform(x: int, y: int) -> int:
+        return x + y
+
+    model = Model(transform=my_transform)
+    model_name = 'my-model'
+
+    session = AcumosSession()
+
+    with tempfile.TemporaryDirectory() as tdir:
+        model_zip_path = Path(tdir) / f"{model_name}.zip"
+
+        session.dump_zip(model, model_name, model_zip_path)
+        import zipfile
+        with zipfile.ZipFile(model_zip_path, "r") as model_zip:
+            assert set(model_zip.namelist()) == set(_REQ_FILES)
+
+        if replace is False:
+            with pytest.raises(AcumosError):
+                session.dump_zip(model, model_name, model_zip_path)  # file already exists
+        else:
+            session.dump_zip(model, model_name, model_zip_path, replace=replace)  # file already exists but it will be replaced
 
 
 def test_dump_model():
