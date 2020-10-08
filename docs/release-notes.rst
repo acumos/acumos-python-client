@@ -10,7 +10,7 @@
 ..
 ..      http://creativecommons.org/licenses/by/4.0
 ..
-.. This file is distributed on an "AS IS" BASIS,
+.. This file is distributed on an "AS IS" BASIS,loa
 .. WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
@@ -19,6 +19,12 @@
 ==================================
 Acumos Python Client Release Notes
 ==================================
+
+v0.9.8, october 2020
+======================
+
+* The model bundle can now be dumped directly as a zip file 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4273>'_
+* Allow installation on python 3.9 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>'_
 
 v0.9.7, 27 August 2020
 ======================

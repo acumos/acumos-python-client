@@ -100,14 +100,14 @@ Exporting Models
 ================
 
 We can now export our model using the ``AcumosSession`` object created
-earlier. The ``push`` and ``dump`` APIs are shown below. The ``dump`` method will
+earlier. The ``push`` and ``dump_zip`` APIs are shown below. The ``dump_zip`` method will
 save the model to disk so that it can be onboarded via the Acumos website. The
 ``push`` method pushes the model directly to Acumos.
 
 .. code:: python
 
     session.push(model, 'my-model')
-    session.dump(model, 'my-model', '~/')  # creates ~/my-model
+    session.dump_zip(model, 'my-model', '~/my-model.zip')  # creates ~/my-model.zip
 
 For more information on how to onboard a dumped model via the Acumos website,
 see the `web onboarding guide <https://docs.acumos.org/en/latest/submodules/portal-marketplace/docs/user-guides/portal-user/portal/portal-onboarding-intro.html#on-boarding-by-web>`__.

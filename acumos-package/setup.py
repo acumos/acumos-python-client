@@ -48,6 +48,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'License :: OSI Approved :: Apache Software License',
     ],
     description='Acumos client library for building and pushing Python models',
@@ -66,7 +67,7 @@ setup(
     long_description_content_type="text/x-rst",
     name='acumos',
     packages=find_packages(),
-    python_requires='>=3.6, <3.9',
+    python_requires='>=3.6, <3.10',
     url='https://gerrit.acumos.org/r/gitweb?p=acumos-python-client.git',
     version=__version__,
 )
