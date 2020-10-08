@@ -20,7 +20,7 @@
 Acumos Python Client
 ====================
 
-The User Guide is located on `PyPI <https://pypi.org/project/acumos/0.8.0/>`_.
+The User Guide is located on `PyPI <https://pypi.org/project/acumos/>`_.
 (Recommended version for Clio release is 0.8.0)
 
 .. toctree::

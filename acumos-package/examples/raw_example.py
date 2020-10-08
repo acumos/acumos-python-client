@@ -37,4 +37,4 @@ if __name__ == '__main__':
     model = Model(imgae_func=image_func)
 
     session = AcumosSession()
-    session.dump(model, 'example', '.')
+    session.dump_zip(model, 'raw', './raw.zip', replace=True)  # creates ./raw.zip
