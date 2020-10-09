@@ -1,0 +1,7 @@
+Verified+1: Acumos Jobbuilder <acumos-jobbuilder@jenkins.acumos.org>
+Code-Review+2: Eric Ball <eball@linuxfoundation.org>
+Submitted-by: Philippe  Dooze <philippe.dooze@orange.com>
+Submitted-at: Fri, 09 Oct 2020 12:46:44 +0000
+Reviewed-on: https://gerrit.acumos.org/r/c/acumos-python-client/+/8288
+Project: acumos-python-client
+Branch: refs/heads/master
