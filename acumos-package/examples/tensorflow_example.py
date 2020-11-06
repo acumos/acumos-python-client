@@ -83,4 +83,4 @@ def classify_iris(df: IrisDataFrame) -> List[int]:
 model = Model(classify=classify_iris)
 
 session = AcumosSession()
-session.dump(model, 'model', '.')  # creates ./model
+session.dump_zip(model, 'tensorflow', './tensorflow.zip', replace=True)  # creates ./tensorflow.zip
