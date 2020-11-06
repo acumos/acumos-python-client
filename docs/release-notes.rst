@@ -23,7 +23,7 @@ Acumos Python Client Release Notes
 v0.9.8, 06 November 2020
 ========================
 
-* Return docker URI & added an optional flag to replace and existing model when dumping 'ACUMOS-4298 <https://jira.acumos.org/browse/ACUMOS-4298>'_
+* Return docker URI & added an optional flag to replace and existing model when dumping the model bundle 'ACUMOS-4298 <https://jira.acumos.org/browse/ACUMOS-4298>'_
 * The model bundle can now be dumped directly as a zip file 'ACUMOS-4273 <https://jira.acumos.org/browse/ACUMOS-4273>'_
 * Allow installation on python 3.9 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>'_
 
