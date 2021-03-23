@@ -49,14 +49,17 @@ class Options(object):
     ----------
     create_microservice : bool, optional
         If True, instructs the Acumos platform to eagerly build the model microservice
+    deploy : bool, optional
+        If True, ask to deploy model using Jenkins runner (create_microservice should be also True)
     license : str, optional
         A license to include with the Acumos model. This parameter may either be a path to a license
         file, or a string containing the license content.
     '''
-    __slots__ = ('create_microservice', 'license')
+    __slots__ = ('create_microservice', 'deploy', 'license')
 
-    def __init__(self, create_microservice=True, license=None):
-        self.create_microservice = create_microservice
+    def __init__(self, create_microservice=True, deploy=False, license=None):
+        self.create_microservice = create_microservice or deploy
+        self.deploy = deploy 
         self.license = license
 
 
