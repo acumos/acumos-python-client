@@ -225,7 +225,9 @@ def _add_license(rootdir, license_str):
 def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, options) -> Optional[str]:
     '''Attempts to post the model to Acumos, returns the docker image URI'''
     headers = {'Authorization': get_jwt(auth_api),
-               'isCreateMicroservice': 'true' if options.create_microservice else 'false'}
+               'isCreateMicroservice': 'true' if options.create_microservice else 'false',
+               'deploy': 'true' if options.deploy else 'false'}
+
     if extra_headers is not None:
         headers.update(extra_headers)
 
