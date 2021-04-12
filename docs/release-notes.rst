@@ -20,29 +20,33 @@
 Acumos Python Client Release Notes
 ==================================
 
+v0.9.9, 12 April 2021
+=====================
+* Take into account "deploy" parameter in python client `ACUMOS-4303 <https://jira.acumos.org/browse/ACUMOS-4303>`_
+
 v0.9.8, 06 November 2020
 ========================
 
-* Return docker URI & added an optional flag to replace and existing model when dumping 'ACUMOS-4298 <https://jira.acumos.org/browse/ACUMOS-4298>'_
-* The model bundle can now be dumped directly as a zip file 'ACUMOS-4273 <https://jira.acumos.org/browse/ACUMOS-4273>'_
-* Allow installation on python 3.9 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>'_
+* Return docker URI & added an optional flag to replace and existing model when dumping `ACUMOS-4298 <https://jira.acumos.org/browse/ACUMOS-4298>`_
+* The model bundle can now be dumped directly as a zip file `ACUMOS-4273 <https://jira.acumos.org/browse/ACUMOS-4273>`_
+* Allow installation on python 3.9 `ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>`_
 
 v0.9.7, 27 August 2020
 ======================
 
-* Add support of python 3.7 & 3.8 'ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>'_
-* Display acumos logo on github 'ACUMOS-4094 <https://jira.acumos.org/browse/ACUMOS-4094>'_
+* Add support of python 3.7 & 3.8 `ACUMOS-4123 <https://jira.acumos.org/browse/ACUMOS-4123>`_
+* Display acumos logo on github `ACUMOS-4094 <https://jira.acumos.org/browse/ACUMOS-4094>`_
 
 v0.9.4, 05 April 2020
 =====================
 
-* Give image tag URL from python client 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3961>'_
+* Give image tag URL from python client `ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3961>`_
 
 v0.9.3, 30 Mar 2020
 ===================
 
-* Modify unstructured type section in pypi 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3956>'_
-* Raise an Error when using asymetric type 'ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3956>'_
+* Modify unstructured type section in pypi `ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3956>`_
+* Raise an Error when using asymetric type `ACUMOS-3956 <https://jira.acumos.org/browse/ACUMOS-3956>`_
 
 v0.9.2, 31 Jan 2020
 ===================
