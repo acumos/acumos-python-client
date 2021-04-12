@@ -132,7 +132,7 @@ def _proto_iter(nt):
     if _is_namedtuple(nt):
         yield nt
 
-        for t in nt._field_types.values():
+        for t in nt.__annotations__.values():
             inspected = inspect_type(t)
             if _is_namedtuple(t):
                 yield from _proto_iter(t)
