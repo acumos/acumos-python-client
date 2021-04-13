@@ -398,7 +398,7 @@ if not, ``create_microservice`` will be force to True to create the micro-servic
 
     opts = Options(license="Apache 2.0",      # "./path/to/license_file" also works
                    create_microservice=True,  # Build the microservice just after the on-boarding
-                   deploy=True,               # Deploy the microservice based on an external Jenkins server  
+                   deploy=True)               # Deploy the microservice based on an external Jenkins server  
 
     session.push(model, 'my-model', options=opts)
 
