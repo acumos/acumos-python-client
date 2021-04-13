@@ -388,9 +388,9 @@ string or a path to a license file. Likewise, we can specify whether or not the 
 platform should eagerly build the model microservice via the ``create_microservice``
 parameter. Then thanks to the ``deploy`` parameter you can specifiy if you want to deploy
 this microservice automatically. (Please refer to the appropriate documentation on Acumos
-wiki to use this functionality based on an external jenkins server). if ``create_microservice=True``,
+wiki to use this functionality based on an external jenkins server). if ``create_microservice``=True,
 ``deploy`` can be True or False. But if ``create_microservice``=False, ``deploy`` must be set to False
-if not, ``create_microservice`` will be force to True to create the micro-service and depoy it.
+if not, ``create_microservice`` will be force to True to create the micro-service and deploy it.
 
 .. code:: python
 
@@ -398,12 +398,13 @@ if not, ``create_microservice`` will be force to True to create the micro-servic
 
     opts = Options(license="Apache 2.0",      # "./path/to/license_file" also works
                    create_microservice=True,  # Build the microservice just after the on-boarding
-                   deploy=True,               # Deploy the microservice based on an external Jenkins server  
+                   deploy=True)               # Deploy the microservice based on an external Jenkins server
 
     session.push(model, 'my-model', options=opts)
 
 Keras and TensorFlow
 ====================
+
 
 Check out the Keras and TensorFlow examples in the ``examples/`` directory of
 the `Acumos Python client repository <https://gerrit.acumos.org/r/gitweb?p=acumos-python-client.git;a=summary>`__.

@@ -48,7 +48,7 @@ class Empty(tuple):
     '''Empty NamedTuple-ish type that consumes any input and returns an empty tuple'''
     __slots__ = ()
     _fields = ()
-    _field_types = OrderedDict()
+    __annotations__ = OrderedDict()
 
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
@@ -197,7 +197,7 @@ def _already_wrapped(field_types):
 
 def _is_namedtuple(t):
     '''Returns True if type `t` is a NamedTuple type'''
-    return isclass(t) and issubclass(t, tuple) and hasattr(t, '_field_types')
+    return isclass(t) and issubclass(t, tuple) and hasattr(t, '__annotations__')
 
 
 def _is_subclass(c, t):
@@ -250,7 +250,7 @@ def _assert_valid_type(t, container=None):
         if t.__name__ in _RESERVED_NAMES and t not in _RESERVED_TYPES:
             raise AcumosError("NamedTuple {} cannot use a reserved name: {}".format(t, _RESERVED_NAMES))
 
-        for tt in t._field_types.values():
+        for tt in t.__annotations__.values():
             _assert_valid_type(tt)
 
     elif _is_subclass(inspected.origin, List):
