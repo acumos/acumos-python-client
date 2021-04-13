@@ -20,9 +20,11 @@
 Acumos Python Client Release Notes
 ==================================
 
-v0.9.9, 12 April 2021
+v1.0.0, 13 April 2021
 =====================
-* Take into account "deploy" parameter in python client `ACUMOS-4303 <https://jira.acumos.org/browse/ACUMOS-4303>`_
+
+* Fix Type issue with python 3.9 `ACUMOS-4323 <https://jira.acumos.org/browse/ACUMOS-4323>`_
+* Take into account "deploy" parameter in acumos python client `ACUMOS-4303 <https://jira.acumos.org/browse/ACUMOS-4303>`_
 
 v0.9.8, 06 November 2020
 ========================
