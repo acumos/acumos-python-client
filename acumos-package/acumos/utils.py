@@ -31,7 +31,7 @@ from acumos.exc import AcumosError
 
 def namedtuple_field_types(nt):
     '''Returns an OrderedDict corresponding to NamedTuple field types'''
-    field_types = nt._field_types
+    field_types = nt.__annotations__
     return OrderedDict((field, field_types[field]) for field in nt._fields)
 
 
