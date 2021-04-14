@@ -1,0 +1,5 @@
+---
+pypi_project: acumos
+python_version: '3.9'
+version: 1.0.0
+log_dir: acumos-python-client-pypi-merge-master/28
