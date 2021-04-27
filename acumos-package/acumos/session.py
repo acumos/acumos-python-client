@@ -38,7 +38,7 @@ from collections import namedtuple
 from glob import glob
 
 from acumos.pickler import AcumosContextManager, dump_model
-from acumos.metadata import create_model_meta, Requirements, Options
+from acumos.metadata import create_model_meta, create_model_meta_clio, Requirements, Options
 from acumos.utils import dump_artifact, get_qualname
 from acumos.exc import AcumosError
 from acumos.protogen import model2proto, compile_protostr
@@ -247,6 +247,15 @@ def _post_model(files, push_api, auth_api, tries, max_tries, extra_headers, opti
         if resp.status_code == 401 and tries != max_tries:
             logger.warning('Model push failed due to an authorization failure. Clearing credentials and trying again')
             _post_model(files, push_api, auth_api, tries + 1, max_tries, extra_headers, options)
+        elif resp.status_code == 500 and tries != max_tries:
+            with ExitStack() as stack:
+                print("\x1b[31m Warning : Status code  500 received, Trying with the 0.4.0 Clio schema\x1b[39m \n")
+                dump_dir = str(files['model'][1]).split('name=')[1].split('model.zip')[0].split('\'')[1]
+                meta_clio = stack.enter_context(open(path_join(dump_dir, 'metadata_clio.json')))
+                model = stack.enter_context(open(path_join(dump_dir, 'model.zip'), 'rb'))
+                proto = stack.enter_context(open(path_join(dump_dir, 'model.proto')))
+                files_Clio = {'model': ('model.zip', model, 'application/zip'), 'metadata': ('metadata.json', meta_clio, 'application/json'), 'schema': ('model.proto', proto, 'text/plain')}
+                _post_model(files_Clio, push_api, auth_api, tries + 1, max_tries, extra_headers, options)
         else:
             raise AcumosError("Model push failed: {}".format(_ServerResponse(resp.status_code, resp.reason, resp.text)))
 
@@ -280,6 +289,9 @@ def _dump_model(model, name, requirements=None):
             requirements.reqs.update(context.package_names)
             metadata = create_model_meta(model, name, requirements)
             dump_artifact(rootdir, 'metadata.json', data=metadata, module=json, mode='w')
+            # generate model metadata for clio compatibility (0.4.0 schema version)
+            metadata_clio = create_model_meta_clio(model, name, requirements)
+            dump_artifact(rootdir, 'metadata_clio.json', data=metadata_clio, module=json, mode='w')
 
             # bundle user-provided code
             code_dir = context.create_subdir('scripts', 'user_provided')
@@ -301,6 +313,12 @@ def _dump_model(model, name, requirements=None):
 def _copy_dir(src_dir, outdir, name):
     '''Copies a directory to a new location'''
     dst_path = path_join(outdir, name)
+
+    # Remove metadata_clio.json file if exist
+    clioFile = path_join(src_dir, "metadata__clio.json")
+    if os.path.isfile(clioFile):
+        os.remove(clioFile)
+
     if isdir(dst_path):
         raise AcumosError("Model {} has already been dumped".format(dst_path))
     shutil.copytree(src_dir, dst_path)
