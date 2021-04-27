@@ -33,6 +33,8 @@ BUILTIN_MODULE_NAMES = set(sys.builtin_module_names)
 PACKAGE_DIRS = {'site-packages', 'dist-packages'}
 SCHEMA_VERSION = '0.6.0'
 _SCHEMA = "acumos.schema.model:{}".format(SCHEMA_VERSION)
+SCHEMA_VERSION_CLIO = '0.4.0'
+_SCHEMA_CLIO = "acumos.schema.model:{}".format(SCHEMA_VERSION_CLIO)
 _MEDIA_TYPES = {str: 'text/plain', bytes: 'application/octet-stream', dict: 'application/json', 'protobuf': 'application/vnd.google.protobuf'}
 
 # known package mappings because Python packaging is madness
@@ -116,6 +118,16 @@ def create_model_meta(model, name, requirements, encoding='protobuf'):
                                           'media_type': [_MEDIA_TYPES[encoding if _is_namedtuple(f.output_type) else f.output_type.__supertype__._raw_type]],
                                           'metadata': {} if _is_namedtuple(f.output_type) else f.output_type.__supertype__._metadata,
                                           'description': '' if _is_namedtuple(f.output_type) else f.output_type.__supertype__._doc},
+                               'description': f.description} for name, f in model.methods.items()}}
+
+
+def create_model_meta_clio(model, name, requirements, encoding='protobuf'):
+    '''Returns a model metadata dictionary'''
+    return {'schema': _SCHEMA_CLIO,
+            'runtime': _create_runtime(requirements, encoding),
+            'name': name,
+            'methods': {name: {'input': f.input_type.__name__,
+                               'output': f.output_type.__name__,
                                'description': f.description} for name, f in model.methods.items()}}
 
 

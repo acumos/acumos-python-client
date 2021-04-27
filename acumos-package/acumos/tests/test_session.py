@@ -56,7 +56,7 @@ from user_module import user_function
 
 _USER_PACKAGE_DIR = path_join(TEST_DIR, 'user_package')
 _MODEL_LOADER_HELPER = path_join(TEST_DIR, 'model_loader_helper.py')
-_REQ_FILES = ('model.zip', 'model.proto', 'metadata.json')
+_REQ_FILES = ('model.zip', 'model.proto', 'metadata.json', 'metadata_clio.json')
 _FAKE_USERNAME = 'foo'
 _FAKE_PASSWORD = 'bar'
 _FAKE_TOKEN = 'secrettoken'

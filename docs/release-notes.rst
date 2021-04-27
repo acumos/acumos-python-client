@@ -20,6 +20,11 @@
 Acumos Python Client Release Notes
 ==================================
 
+v1.0.1, 27 April 2021
+=====================
+
+* use acumos-python-client > 0.8.0 with Acumos clio `ACUMOS-4330 <https://jira.acumos.org/browse/ACUMOS-4330>`_
+
 v1.0.0, 13 April 2021
 =====================
 
